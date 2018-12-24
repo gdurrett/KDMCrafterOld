@@ -7,15 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB1309F421CD66D100CAA684 /* Gear.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F321CD66D100CAA684 /* Gear.swift */; };
+		FB1309F621CD687D00CAA684 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F521CD687D00CAA684 /* Location.swift */; };
+		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
 		FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD693F21C43BA200CAA684 /* AppDelegate.swift */; };
 		FBFD694221C43BA200CAA684 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694121C43BA200CAA684 /* FirstViewController.swift */; };
 		FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694321C43BA200CAA684 /* SecondViewController.swift */; };
 		FBFD694721C43BA200CAA684 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694521C43BA200CAA684 /* Main.storyboard */; };
 		FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694821C43BA400CAA684 /* Assets.xcassets */; };
 		FBFD694C21C43BA400CAA684 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694A21C43BA400CAA684 /* LaunchScreen.storyboard */; };
+		FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695321C4581A00CAA684 /* DataModel.swift */; };
+		FBFD695721C458B300CAA684 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695621C458B300CAA684 /* Resource.swift */; };
+		FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695821C8181F00CAA684 /* Settlement.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FB1309F321CD66D100CAA684 /* Gear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gear.swift; sourceTree = "<group>"; };
+		FB1309F521CD687D00CAA684 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		FB1309F721CDA5FE00CAA684 /* Innovation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Innovation.swift; sourceTree = "<group>"; };
 		FBFD693C21C43BA200CAA684 /* KDMCrafter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDMCrafter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFD693F21C43BA200CAA684 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBFD694121C43BA200CAA684 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +33,9 @@
 		FBFD694821C43BA400CAA684 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FBFD694B21C43BA400CAA684 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FBFD694D21C43BA400CAA684 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FBFD695321C4581A00CAA684 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		FBFD695621C458B300CAA684 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
+		FBFD695821C8181F00CAA684 /* Settlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settlement.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +68,7 @@
 		FBFD693E21C43BA200CAA684 /* KDMCrafter */ = {
 			isa = PBXGroup;
 			children = (
+				FBFD695521C4582800CAA684 /* Model */,
 				FBFD693F21C43BA200CAA684 /* AppDelegate.swift */,
 				FBFD694121C43BA200CAA684 /* FirstViewController.swift */,
 				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
@@ -65,6 +78,19 @@
 				FBFD694D21C43BA400CAA684 /* Info.plist */,
 			);
 			path = KDMCrafter;
+			sourceTree = "<group>";
+		};
+		FBFD695521C4582800CAA684 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FBFD695321C4581A00CAA684 /* DataModel.swift */,
+				FBFD695621C458B300CAA684 /* Resource.swift */,
+				FBFD695821C8181F00CAA684 /* Settlement.swift */,
+				FB1309F321CD66D100CAA684 /* Gear.swift */,
+				FB1309F521CD687D00CAA684 /* Location.swift */,
+				FB1309F721CDA5FE00CAA684 /* Innovation.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,8 +164,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB1309F421CD66D100CAA684 /* Gear.swift in Sources */,
 				FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */,
+				FB1309F621CD687D00CAA684 /* Location.swift in Sources */,
+				FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */,
+				FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */,
 				FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */,
+				FBFD695721C458B300CAA684 /* Resource.swift in Sources */,
+				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FBFD694221C43BA200CAA684 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
