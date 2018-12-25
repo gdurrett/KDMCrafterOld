@@ -29,10 +29,10 @@ class FirstViewController: UIViewController {
         
         myStorage![lionTail]! += 4
         myStorage![shankBone]! += 2
-        myStorage![birdBeak]! += 4
-        myStorage![leather]! += 8
-        myStorage![musclyGums]! += 0
-        myStorage![scrap]! += 1
+        myStorage![birdBeak]! += 3
+        myStorage![leather]! += 3
+        myStorage![screamingBrain]! += 2
+        myStorage![multi]! += 1
         myInnovations!.append(paint)
         myLocations!.append(barberSurgeon)
         
@@ -97,13 +97,15 @@ class FirstViewController: UIViewController {
         if innovationRequirement != nil {
             innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
         }
-        if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 {
+        if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 { // No special resource required, no innovation required (only regular types)
             maxCraftable = craftableTypes.min()!
-        } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 {
+        } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 { // Special and regular resource types required, but no innovation required
             maxCraftable = [craftableTypes.min()!, numSpecialCraftable].min()!
-        } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements.count != 0 {
+        } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count == 0 { //Special resource required, no innovation or regular types required
+            maxCraftable = numSpecialCraftable
+        } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements.count != 0 { // Innovation required and regular resource types required
             maxCraftable = craftableTypes.min()!
-        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements.count != 0 {
+        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements.count != 0 { //Innovation and regular resource type required (no special required)
             maxCraftable = [craftableTypes.min()!, numSpecialCraftable].min()!
         }
         
