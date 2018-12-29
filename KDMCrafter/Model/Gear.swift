@@ -12,7 +12,7 @@ struct Gear: Hashable {
     
     let name: String
     let description: String
-    let resourceTypeRequirements: [resourceType:Int]
+    var resourceTypeRequirements: [resourceType:Int]
     var resourceSpecialRequirements: [Resource:Int]? = nil
     var innovationRequirement: Innovation? = nil
     var locationRequirement: Location
@@ -66,3 +66,6 @@ let bugTrap = Gear(name: "Bug Trap", description: "At the start of the showdown,
 let brainMint = Gear(name: "Brain Mint", description: "Spend an action to Consume: Remove all your tokens and stand up. You may use this while knocked down, once per showdown.", resourceTypeRequirements: [:], resourceSpecialRequirements: [screamingBrain:1], locationRequirement: barberSurgeon)
 let elderEarrings = Gear(name: "Elder Earrings", description: "At the start of showdown, gain +2 survival. Gain +1 Hunt XP after showdown.", resourceTypeRequirements: [.scrap:1], resourceSpecialRequirements: [shankBone:1], locationRequirement: barberSurgeon)
 let firstAidKit = Gear(name: "First Aid Kit", description: "On arrival, all survivors gain +3 survival. Spend an action: remove 1 bleeding or negative attribute token from yourself or an adjacent survivor.", resourceTypeRequirements: [.bone:2, .leather:1], locationRequirement: barberSurgeon)
+let muskBomb = Gear(name: "Musk Bomb", description: "If adjacent to monster when it draws an AI card, you may spend 2 survival and archive Musk Bomb to roll 1d10. On a 3+, discard the AI card without playing it.", resourceTypeRequirements: [.any : 7], innovationRequirement: pottery, locationRequirement: barberSurgeon)
+let scavengerKit = Gear(name: "Scavenger Kit", description: "When you defeat a monster, gain either 1 random basic resource or 1 random monster resource from that monster's resource deck.", resourceTypeRequirements: [.scrap:1], resourceSpecialRequirements: [pelt:1], locationRequirement: barberSurgeon)
+let speedPowder = Gear(name: "Speed Powder", description: "Spend 1 activation to suffer 2 brain damage. Gain 1 speed token. Use once per showdown.", resourceTypeRequirements: [.organ:2], resourceSpecialRequirements: [secondHeart:1], locationRequirement: barberSurgeon)

@@ -12,13 +12,13 @@ struct Location: Hashable {
     
     let name: String
     let locationRequirement: String
-    let resourceRequirement: [resourceType:Int]
+    let resourceRequirements: [resourceType:Int]
     
     init(name: String, locationRequirement: String, resourceRequirement: [resourceType:Int]) {
         
         self.name = name
         self.locationRequirement = locationRequirement
-        self.resourceRequirement = resourceRequirement
+        self.resourceRequirements = resourceRequirement
         
     }
 }
@@ -29,7 +29,7 @@ let blackSmith = Location(name: "Blacksmith", locationRequirement: "Special: Inn
 let boneSmith = Location(name: "Bone Smith", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])
 let catarium = Location(name: "Catarium", locationRequirement: "Special: Defeat White Lion", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
 let exhaustedLanternHoard = Location(name: "Exhausted Lantern Hoard", locationRequirement: "Special: Archive Lantern Hoard at endgame", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
-let lanternHoard = Location(name: "Lantern Hoard", locationRequirement: "Special", resourceRequirement: [:]) // Enabled by default
+let lanternHoard = Location(name: "Lantern Hoard", locationRequirement: "Special: Enabled by default", resourceRequirement: [:]) // Enabled by default
 let leatherWorker = Location(name: "Leather Worker", locationRequirement: "Skinnery", resourceRequirement: [.hide:3, .organ:1])
 let maskMaker = Location(name: "Mask Maker", locationRequirement: "Special: Acquire Forsaker Mask", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
 let organGrinder = Location(name: "Organ Grinder", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])

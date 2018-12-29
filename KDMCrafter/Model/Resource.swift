@@ -18,6 +18,7 @@ enum resourceKind {
     case whiteLion
 }
 enum resourceType: String {
+    case any = "Any Type"
     case bone = "Bone"
     case consumable = "Consumable"
     case endeavor = "Endeavor"
@@ -49,6 +50,7 @@ struct Resource: Hashable {
 }
 
 // Basic Resource declarations
+let endeavor = Resource(name: "Endeavor", kind: .basic, type: [.endeavor])
 let multi = Resource(name: "???", kind: .basic, type: [.bone, .consumable, .hide, .organ])
 let brokenLantern = Resource(name: "Broken Lantern", kind: .basic, type: [.scrap])
 let loveJuice = Resource(name: "Love Juice", kind: .basic, type: [.organ])

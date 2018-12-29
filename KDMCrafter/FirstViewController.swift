@@ -15,7 +15,8 @@ class FirstViewController: UIViewController {
     var myAvailableGear: [Gear]?
     var hidesTotal: Int?
     var myInnovations: [Innovation]?
-    var myLocations: [Location]?
+    var myBuiltLocations: [Location]?
+    var myAvailableLocations: Set<Location>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,27 +24,51 @@ class FirstViewController: UIViewController {
         myStorage = mySettlement.resourceStorage
         myAvailableGear = mySettlement.availableGear
         myInnovations = mySettlement.innovations
-        myLocations = mySettlement.locations
+        myBuiltLocations = mySettlement.builtLocations
+//        myAvailableLocations = Set(mySettlement.allLocations).subtracting(myBuiltLocations!)
         
         //let currentResource = myStorage!.filter { $0.key.name == "Lion Tail" }.first
         
         myStorage![lionTail]! += 4
-        myStorage![shankBone]! += 2
+        myStorage![scrap]! += 2
         myStorage![birdBeak]! += 3
         myStorage![leather]! += 3
-        myStorage![screamingBrain]! += 2
+        myStorage![freshAcanthus]! += 2
         myStorage![multi]! += 1
-        myInnovations!.append(paint)
-        myLocations!.append(barberSurgeon)
+        myStorage![musclyGums]! += 1
+        myStorage![endeavor]! += 1
+        myInnovations!.append(pottery)
+        myBuiltLocations!.append(boneSmith)
+        myBuiltLocations!.append(barberSurgeon)
         
-        for gear in myAvailableGear! {
-            let count = checkCraftability(gear: gear)
-            print("We can craft: \(count) \(gear.name)")
+//        for gear in myAvailableGear! {
+//            let count = checkCraftability(gear: gear)
+//            print("We can craft: \(count) \(gear.name)")
+//        }
+//        for location in myAvailableLocations! {
+//            if checkBuildability(location: location) {
+//                print("We can build: \(location.name)!")
+//            } else {
+//                print("We cannot build: \(location.name)")
+//            }
+//        }
+        print("Built")
+        for location in myBuiltLocations! {
+            print(location.name)
+        }
+        print("Available")
+        for location in Set(mySettlement.allLocations).subtracting(myBuiltLocations!) {
+            print(location.name)
         }
     }
     
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
-        let count = resources.filter { key, value in return key.type.contains(type) }.values.reduce(0, +)
+        var count = Int()
+        if type == .any { // e.g. for Musk Bomb
+            count = resources.count
+        } else {
+            count = resources.filter { key, value in return key.type.contains(type) }.values.reduce(0, +)
+        }
         return count
     }
     func getSpecialCount(special: Resource) -> Int {
@@ -58,10 +83,43 @@ class FirstViewController: UIViewController {
         }
     }
     func getLocationExists(location: Location) -> Bool {
-        if myLocations!.contains(location) {
+        if myBuiltLocations!.contains(location) {
             return true
         } else {
             return false
+        }
+    }
+    func checkBuildability(location: Location) -> Bool {
+        let resourceRequirements = location.resourceRequirements
+        var resourceRequirementsMet = Bool()
+        
+        if resourceRequirements.count != 0 {
+            for (type, qty) in resourceRequirements {
+                let typeCount = getTypeCount(type: type, resources: myStorage!)
+                if typeCount < qty {
+                    print("Not enough \(type) for \(location.name)")
+                    resourceRequirementsMet = false
+                    break
+                } else {
+                    resourceRequirementsMet = true
+                }
+            }
+        }
+        if location.locationRequirement.contains("Special") {
+            print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
+            return true
+        } else {
+            let locationNames = myBuiltLocations!.map { $0.name }
+            if locationNames.contains(location.locationRequirement) && resourceRequirementsMet {
+                return true
+            } else {
+                if !resourceRequirementsMet {
+                    print("We cannot build \(location.name) due to lack of resources.")
+                } else if !locationNames.contains (location.locationRequirement) {
+                    print("We cannot build \(location.name) due to lack of location.")
+                }
+                return false
+            }
         }
     }
     func checkCraftability(gear: Gear) -> Int {
@@ -97,6 +155,7 @@ class FirstViewController: UIViewController {
         if innovationRequirement != nil {
             innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
         }
+        
         if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 { // No special resource required, no innovation required (only regular types)
             maxCraftable = craftableTypes.min()!
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements.count != 0 { // Special and regular resource types required, but no innovation required
@@ -105,8 +164,10 @@ class FirstViewController: UIViewController {
             maxCraftable = numSpecialCraftable
         } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements.count != 0 { // Innovation required and regular resource types required
             maxCraftable = craftableTypes.min()!
-        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements.count != 0 { //Innovation and regular resource type required (no special required)
+        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements.count != 0 && gear.resourceSpecialRequirements != nil { //Innovation and regular resource and special required
             maxCraftable = [craftableTypes.min()!, numSpecialCraftable].min()!
+        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements.count == 0 && gear.resourceSpecialRequirements != nil { //Requires special and innovation but not regular
+            maxCraftable = numSpecialCraftable
         }
         
         return maxCraftable
