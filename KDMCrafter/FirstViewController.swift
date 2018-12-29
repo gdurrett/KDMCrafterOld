@@ -170,6 +170,8 @@ class FirstViewController: UIViewController {
             maxCraftable = numSpecialCraftable
         }
         
+        // Need to deal with gear type 'any' case when we get to actually decrementing gear storage for crafting!
+        
         return maxCraftable
     }
 }
