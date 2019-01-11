@@ -11,7 +11,6 @@ import Foundation
 class DataModel {
     
     static var sharedInstance = DataModel()
-
     var currentSettlement: Settlement?
     
     private init() {
@@ -26,8 +25,10 @@ class DataModel {
         if fileManager.fileExists(atPath: filePath!) {
             // Load code
         } else {
+            // Set currentSettlement to loaded file (later!)
             // Create new settlement
             currentSettlement = Settlement(name: "Death's Respite")
+
         }
     }
 }
