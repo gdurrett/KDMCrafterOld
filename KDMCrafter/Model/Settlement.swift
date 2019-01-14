@@ -112,6 +112,15 @@ class Settlement {
         availableGear.append(lionHeaddress)
         let lionSkinCloak = Gear(name: "Lion Skin Cloak", description: "+0 armor to body location. Reduce damage from every hit suffered by 1, to a minimum of 1.", qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [whiteFur:2], locationRequirement: catarium)
         availableGear.append(lionSkinCloak)
+        let whiskerHarp = Gear(name: "Whisker Harp", description: "On Arrival, all survivors gain +1 survival. Spend an action to Strum: Roll 1d10. On a result of 6+, discard 1 mood currently in play.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [goldenWhiskers:1], locationRequirement: catarium)
+        availableGear.append(whiskerHarp)
+        let whiteLionBoots = Gear(name: "White Lion Boots", description: "+2 armor to the legs location. 2 red affinities: +1 movement.", qtyAvailable: 3, resourceTypeRequirements: [.hide:1], resourceSpecialRequirements: [whiteFur:1], locationRequirement: catarium)
+        availableGear.append(whiteLionBoots)
+        let whiteLionCoat = Gear(name: "White Lion Coat", description: "+2 armor to the body location. 2 red affinities: +1 movement.", qtyAvailable: 3, resourceTypeRequirements: [.hide:1], resourceSpecialRequirements: [whiteFur:1], locationRequirement: catarium)
+        availableGear.append(whiteLionCoat)
+        let whiteLionGauntlet = Gear(name: "White Lion Gauntlet", description: "+2 armor to the arms location. When you pounce, gain +1 accuracy for your next attack this turn.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [whiteFur:1], locationRequirement: catarium)
+        availableGear.append(whiteLionGauntlet)
+        
         
         
         // Initialize gear storage with cloth and founding stones
