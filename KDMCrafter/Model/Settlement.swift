@@ -26,7 +26,7 @@ class Settlement {
         self.name = name
         
         // Initialize storage with zero of everything
-        self.resourceStorage = [endeavor:0, multi:0, brokenLantern:0, loveJuice:0, monsterBone:0, monsterHide:0, monsterOrgan:0, scrap:0, skull:0, birdBeak:0, blackSkull:0, hollowWingBones:0, muculentDroppings:0, phoenixEye:0, phoenixFinger:0, pustules:0, rainbowDroppings:0, shimmeringHalo:0, smallFeathers:0, smallHandParasites:0, tailFeathers:0, wishbone:0, beastSteak:0, bladder:0, largeFlatTooth:0, musclyGums:0, pelt:0, screamingBrain:0, shankBone:0, spiralHorn:0, blackLichen:0, cocoonMembrane:0, elderCatTeeth:0, freshAcanthus:0, iron:0, lanternTube:0, leather:0, legendaryHorns:0, perfectCrucible:0, phoenixCrest:0, secondHeart:0, crabSpider:0, cyclopsFly:0, hissingCockroach:0, lonelyAnt:0, nightmareTick:0, swordBeetle:0, curiousHand:0, eyeOfCat:0, goldenWhiskers:0, lionClaw:0, lionTail:0, lionTestes:0, shimmeringMane:0, sinew:0, whiteFur:0]
+        self.resourceStorage = [endeavor:0, multi:0, brokenLantern:0, loveJuice:0, monsterBone:0, monsterHide:0, monsterOrgan:0, scrap:0, skull:0, beaconShieldResource:0, birdBeak:0, blackSkull:0, hollowWingBones:0, lanternDaggerResource:0, lanternGlaiveResource:0, lanternHelmResource:0, lanternSwordResource:0, muculentDroppings:0, phoenixEye:0, phoenixFinger:0, pustules:0, rainbowDroppings:0, shimmeringHalo:0, smallFeathers:0, smallHandParasites:0, tailFeathers:0, wishbone:0, beastSteak:0, bladder:0, largeFlatTooth:0, musclyGums:0, pelt:0, ringWhipResource:0, screamingBrain:0, shankBone:0, spiralHorn:0, blackLichen:0, cocoonMembrane:0, elderCatTeeth:0, freshAcanthus:0, iron:0, lanternTube:0, leather:0, legendaryHorns:0, perfectCrucible:0, phoenixCrest:0, secondHeart:0, crabSpider:0, cyclopsFly:0, hissingCockroach:0, lonelyAnt:0, nightmareTick:0, swordBeetle:0, curiousHand:0, eyeOfCat:0, goldenWhiskers:0, lionClaw:0, lionTail:0, lionTestes:0, shimmeringMane:0, sinew:0, whiteFur:0]
 
         // Initialize locations with the starter Lantern Hoard
         self.builtLocations.append(lanternHoard)
@@ -120,7 +120,41 @@ class Settlement {
         availableGear.append(whiteLionCoat)
         let whiteLionGauntlet = Gear(name: "White Lion Gauntlet", description: "+2 armor to the arms location. When you pounce, gain +1 accuracy for your next attack this turn.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [whiteFur:1], locationRequirement: catarium)
         availableGear.append(whiteLionGauntlet)
-        
+        let whiteLionHelm = Gear(name: "White Lion Helm", description: "+2 armor to head location. With red+blue affinity: Spend an action and 1 survival to Roar: Non-Deaf Insane survivors gain +2 strength until the end of round. All other survivors gain +1 insanity.", qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [greatCatBone:1, whiteFur:1], locationRequirement: catarium)
+        availableGear.append(whiteLionHelm)
+        let whiteLionSkirt = Gear(name: "White Lion Skirt", description: "+2 armor to waist location.", qtyAvailable: 3, resourceTypeRequirements: [.hide:1], resourceSpecialRequirements: [whiteFur:1], locationRequirement: catarium)
+        availableGear.append(whiteLionSkirt)
+        // Exhausted Lantern Hoard Gear
+        let oxidizedBeaconShield = Gear(name: "Oxidized Beacon Shield", description: "1/6+/6. +2 armor to all hit locations. Deflect 2: Spend an activation - you now have exactly 2 deflect tokens. The next 2 times you are hit, ignore a hit and lose 1 deflect token.", qtyAvailable: 3, resourceTypeRequirements: [.bone:3, .endeavor:1, .hide:1, .organ:3], resourceSpecialRequirements: [beaconShieldResource:1, blackLichen:1, cocoonMembrane:1, iron:2, leather:3], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedBeaconShield)
+        let oxidizedLanternDagger = Gear(name: "Oxidized Lantern Dagger", description: "3/6+/4. Sharp, Paired. With 2 red affinities: On a Perfect hit, gain +1 survival.", qtyAvailable: 4, resourceTypeRequirements: [.bone:3, .endeavor:1, .hide:4, .organ:3], resourceSpecialRequirements: [blackLichen:1, cocoonMembrane:1, iron:1, lanternDaggerResource:1, leather:3], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedLanternDagger)
+        let oxidizedLanternGlaive = Gear(name: "Oxidized Lantern Glaive", description: "1/5+/6. Sharp, Reach 2. With green and red affinities: On a Perfect hit, the edge sharpens. This weapon gains +4 strength for this attack.", qtyAvailable: 3, resourceTypeRequirements: [.bone:7, .endeavor:1, .organ:3], resourceSpecialRequirements: [blackLichen:1, cocoonMembrane:1, iron:1, lanternGlaiveResource:1, leather:3], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedLanternGlaive)
+        let oxidizedLanternHelm = Gear(name: "Oxidized Lantern Helm", description: "+6 armor to head location. With red and green affinities: If you are not deaf, you may ignore effects that taget non-deaf survivors.", qtyAvailable: 3, resourceTypeRequirements: [.bone:7, .endeavor:1, .organ:3], resourceSpecialRequirements: [blackLichen:1, cocoonMembrane:1, iron:1, lanternHelmResource:1, leather:3], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedLanternHelm)
+        let oxidizedLanternSword = Gear(name: "Oxidized Lantern Sword", description: "3/5+/5. Sharp. Deflect 1: Spend an activation - you now have exactly 1 deflect token. The next 1 time you are hit, ignore that hit and lose 1 deflect token.", qtyAvailable: 3, resourceTypeRequirements: [.bone:3, .endeavor:1, .organ:3], resourceSpecialRequirements: [blackLichen:1, cocoonMembrane:1, lanternSwordResource:1, lanternTube:1, leather:3], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedLanternSword)
+        let oxidizedRingWhip = Gear(name: "Oxidixed Ring Whip", description: "2/5+/3. Sharp, Reach 2. With 1 blue and 3 red affinities - Provoke: When you wound with this weapon, gain the Priority Target token.", qtyAvailable: 3, resourceTypeRequirements: [.bone:3, .endeavor:1, .organ:7], resourceSpecialRequirements: [blackLichen:1, cocoonMembrane:1, iron:1, ringWhipResource:1], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(oxidizedRingWhip)
+        let survivorsLantern = Gear(name: "Survivors' Lantern", description: "Provides 1 Green, 1 Red, and 1 Blue affinity.", qtyAvailable: 4, resourceTypeRequirements: [.endeavor:1], resourceSpecialRequirements: [finalLanternResource:1], locationRequirement: exhaustedLanternHoard)
+        availableGear.append(survivorsLantern)
+        // Leather Worker Gear
+        let hunterWhip = Gear(name: "Hunter Whip", description: "3/6+/3. With two blue affinities - On a Perfect hit, discard 1 mood in play.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [leather:2], locationRequirement: leatherWorker)
+        availableGear.append(hunterWhip)
+        let leatherBoots = Gear(name: "Leather Boots", description: "+3 armor to legs location. With two blue affinities - At the end of your act, you may move 1 space.", qtyAvailable: 3, resourceTypeRequirements: [.hide:1], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
+        availableGear.append(leatherBoots)
+        let leatherBracers = Gear(name: "Leather Bracers", description: "+3 armor to arms location. When you depart, gain +2 survival.", qtyAvailable: 3, resourceTypeRequirements: [.hide:1], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
+        availableGear.append(leatherBracers)
+        let leatherCuirass = Gear(name: "Leather Cuirass", description: "+3 armor to body location.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
+        availableGear.append(leatherCuirass)
+        let leatherMask = Gear(name: "Leather Mask", description: "+3 armor to head location. When you depart, gain +2 insanity.", qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [leather:1, scrap:1], locationRequirement: leatherWorker)
+        availableGear.append(leatherMask)
+        let leatherSkirt = Gear(name: "Leather Skirt", description: "+3 armor to waist location.", qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
+        availableGear.append(leatherSkirt)
+        let roundLeatherShield = Gear(name: "Round Leather Shield", description: "1/8+/1. Add +1 armor to all hit locations. Block 1: Spend an activation to ignore 1 hit the next time you are attacked. Lasts until your next act. You cannot use block more than once per attack.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1, .hide:1], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
+        availableGear.append(roundLeatherShield)
+        // Mask Maker Gear
         
         
         // Initialize gear storage with cloth and founding stones

@@ -15,19 +15,27 @@ enum resourceKind {
     case screamingAntelope
     case strange
     case vermin
+    case gear
     case whiteLion
 }
 enum resourceType: String {
     case any = "Any Type"
+    case beaconShield = "Beacon Shield"
     case bone = "Bone"
     case consumable = "Consumable"
     case endeavor = "Endeavor"
     case herb = "Herb"
     case hide = "Hide"
     case iron = "Iron"
+    case finalLantern = "Final Lantern"
+    case lanternDagger = "Lantern Dagger"
+    case lanternGlaive = "Lantern Glaive"
+    case lanternHelm = "Lantern Helm"
+    case lanternSword = "Lantern Sword"
     case leather = "Leather"
     case organ = "Organ"
     case other = "Other"
+    case ringWhip = "Ring Whip"
     case scrap = "Scrap"
     case skull = "Skull"
     case vermin = "Vermin"
@@ -59,6 +67,15 @@ let monsterHide = Resource(name: "Monster Hide", kind: .basic, type: [.hide])
 let monsterOrgan = Resource(name: "Monster Organ", kind: .basic, type: [.organ])
 let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
 let skull = Resource(name: "Skull", kind: .basic, type: [.bone])
+
+// Gear Resource declarations
+let beaconShieldResource = Resource(name: "Beacon Shield", kind: .gear, type: [.beaconShield])
+let finalLanternResource = Resource(name: "Final Lantern", kind: .gear, type: [.finalLantern])
+let lanternDaggerResource = Resource(name: "Lantern Dagger", kind: .gear, type: [.lanternDagger])
+let lanternGlaiveResource = Resource(name: "Lantern Glaive", kind: .gear, type: [.lanternGlaive])
+let lanternHelmResource = Resource(name: "Lantern Helm", kind: .gear, type: [.lanternHelm])
+let lanternSwordResource = Resource(name: "Lantern Sword", kind: .gear, type: [.lanternSword])
+let ringWhipResource = Resource(name: "Ring Whip", kind: .gear, type: [.ringWhip])
 
 // Phoenix Resource declarations
 let birdBeak = Resource(name: "Bird Beak", kind: .phoenix, type: [.bone])
