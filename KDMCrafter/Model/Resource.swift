@@ -28,6 +28,7 @@ enum resourceType: String {
     case hide = "Hide"
     case iron = "Iron"
     case finalLantern = "Final Lantern"
+    case foundingStone = "Founding Stone"
     case lanternDagger = "Lantern Dagger"
     case lanternGlaive = "Lantern Glaive"
     case lanternHelm = "Lantern Helm"
@@ -71,6 +72,7 @@ let skull = Resource(name: "Skull", kind: .basic, type: [.bone])
 // Gear Resource declarations
 let beaconShieldResource = Resource(name: "Beacon Shield", kind: .gear, type: [.beaconShield])
 let finalLanternResource = Resource(name: "Final Lantern", kind: .gear, type: [.finalLantern])
+let foundingStoneResource = Resource(name: "Founding Stone", kind: .gear, type: [.foundingStone])
 let lanternDaggerResource = Resource(name: "Lantern Dagger", kind: .gear, type: [.lanternDagger])
 let lanternGlaiveResource = Resource(name: "Lantern Glaive", kind: .gear, type: [.lanternGlaive])
 let lanternHelmResource = Resource(name: "Lantern Helm", kind: .gear, type: [.lanternHelm])

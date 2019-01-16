@@ -155,6 +155,32 @@ class Settlement {
         let roundLeatherShield = Gear(name: "Round Leather Shield", description: "1/8+/1. Add +1 armor to all hit locations. Block 1: Spend an activation to ignore 1 hit the next time you are attacked. Lasts until your next act. You cannot use block more than once per attack.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1, .hide:1], resourceSpecialRequirements: [leather:1], locationRequirement: leatherWorker)
         availableGear.append(roundLeatherShield)
         // Mask Maker Gear
+        let antelopeMask = Gear(name: "Antelope Mask", description: "+2 armor to head location. Unique, Irreplaceable, Accessory. with two red and two blue affinities - At the start of your act, if insane, gain an activation.", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], resourceSpecialRequirements: [pelt:1], locationRequirement: maskMaker)
+        availableGear.append(antelopeMask)
+        let deathMask = Gear(name: "Death Mask", description: "+2 armor to head location. Unique, irreplaceable, Accessory. If you have no affinities, gain +4 luck and suffer -4 to all severe injury rolls. Must lose 1 population upon crafting!", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], locationRequirement: maskMaker)
+        availableGear.append(deathMask)
+        let godMask = Gear(name: "God Mask", description: "+2 armor to the head location. Unique, Irreplaceable, Accessory. With two of each affinity - At the start of your act, if insane, gain +1 survival.", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], resourceSpecialRequirements: [foundingStoneResource:1], locationRequirement: maskMaker)
+        availableGear.append(godMask)
+        let manMask = Gear(name: "Man Mask", description: "+2 armor to head location. Unique, Irreplaceable, Accessory. With one red and one green affinity - If insane, you may spend negative attribute tokens in place of insanity.", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], resourceSpecialRequirements: [skull:1], locationRequirement: maskMaker)
+        availableGear.append(manMask)
+        let phoenixMask = Gear(name: "Phoenix Mask", description: "+2 armor to head location. Unique, Irreplaceable, Accessory. With four red affinities - If insane, you may dodge 1 additional time per round.", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], resourceSpecialRequirements: [smallFeathers:1], locationRequirement: maskMaker)
+        availableGear.append(phoenixMask)
+        let whiteLionMask = Gear(name: "White Lion Mask", description: "+2 armor to head location. Unique, Irreplaceable, Accessory. With two green affinities - If insane, spend an activation to lose all your survival and gain that many +1 Strength tokens.", qtyAvailable: 1, resourceTypeRequirements: [.bone:6, .endeavor:1, .organ:4], resourceSpecialRequirements: [shimmeringMane:1], locationRequirement: maskMaker)
+        availableGear.append(whiteLionMask)
+        // Organ Grinder Gear
+        let driedAcanthus = Gear(name: "Dried Acanthus", description: "When you depart, gain +2 survival. When you suffer a severe injury, ignore it and archive this card instead.", qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [freshAcanthus:1], locationRequirement: organGrinder)
+        availableGear.append(driedAcanthus)
+        let fecalSalve = Gear(name: "Fecal Salve", description: "When you depart, gain +1 survival. Spend an activation: you are not a threat until you attack. If you have the priority target token, remove it.", qtyAvailable: 3, resourceTypeRequirements: [.organ:1], locationRequirement: organGrinder)
+        availableGear.append(fecalSalve)
+        let luckyCharm = Gear(name: "Lucky Charm", description: "With two blue affinities - +1 luck.", qtyAvailable: 3, resourceTypeRequirements: [.organ:1], locationRequirement: organGrinder)
+        availableGear.append(luckyCharm)
+        let monsterGrease = Gear(name: "Monster Grease", description: "Gain +1 evasion. With three green affninities - gain another +1 evasion.", qtyAvailable: 3, resourceTypeRequirements: [.organ:1], locationRequirement: organGrinder)
+        availableGear.append(monsterGrease)
+        let monsterToothNecklace = Gear(name: "Monster Tooth Necklace", description: "Gain +1 strength. With two red affinities - gain another +1 strength.", qtyAvailable: 3, resourceTypeRequirements: [.bone:1], resourceSpecialRequirements: [scrap:1], innovationRequirement: heat, locationRequirement: organGrinder)
+        availableGear.append(monsterToothNecklace)
+        let stoneNoses = Gear(name: "Stone Noses", description: "On arrival, gain +1 survival and +1 insanity.", qtyAvailable: 3, resourceTypeRequirements: [.endeavor:1], locationRequirement: organGrinder)
+        availableGear.append(stoneNoses)
+        // Plumery Gear
         
         
         // Initialize gear storage with cloth and founding stones
