@@ -86,6 +86,7 @@ let hollowWingBones = Resource(name: "Hollow Wing Bones", kind: .phoenix, type: 
 let muculentDroppings = Resource(name: "Muculent Droppings", kind: .phoenix, type: [.organ])
 let phoenixEye = Resource(name: "Phoenix Eye", kind: .phoenix, type: [.organ, .scrap])
 let phoenixFinger = Resource(name: "Phoenix Finger", kind: .phoenix, type: [.bone])
+let phoenixWhisker = Resource(name: "Phoenix Whisker", kind: .phoenix, type: [.hide])
 let pustules = Resource(name: "Pustules", kind: .phoenix, type: [.consumable, .organ])
 let rainbowDroppings = Resource(name: "Rainbow Droppings", kind: .phoenix, type: [.consumable, .organ])
 let shimmeringHalo = Resource(name: "Shimmering Halo", kind: .phoenix, type: [.organ])
