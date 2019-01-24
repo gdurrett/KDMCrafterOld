@@ -49,6 +49,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FB3D9A8421F649E200CAA684 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FBFD694121C43BA200CAA684 /* FirstViewController.swift */,
+				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FB3D9A8521F649F100CAA684 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBFD694521C43BA200CAA684 /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		FBFD693321C43BA200CAA684 = {
 			isa = PBXGroup;
 			children = (
@@ -68,11 +85,10 @@
 		FBFD693E21C43BA200CAA684 /* KDMCrafter */ = {
 			isa = PBXGroup;
 			children = (
+				FB3D9A8521F649F100CAA684 /* View */,
 				FBFD695521C4582800CAA684 /* Model */,
 				FBFD693F21C43BA200CAA684 /* AppDelegate.swift */,
-				FBFD694121C43BA200CAA684 /* FirstViewController.swift */,
-				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
-				FBFD694521C43BA200CAA684 /* Main.storyboard */,
+				FB3D9A8421F649E200CAA684 /* Controller */,
 				FBFD694821C43BA400CAA684 /* Assets.xcassets */,
 				FBFD694A21C43BA400CAA684 /* LaunchScreen.storyboard */,
 				FBFD694D21C43BA400CAA684 /* Info.plist */,

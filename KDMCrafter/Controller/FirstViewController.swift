@@ -147,6 +147,7 @@ class FirstViewController: UIViewController {
         }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
+                print("Getting \(special.name)")
                 let specialCount = getSpecialCount(special: special)
                 numSpecialCraftable = (specialCount/qty)
                 craftableSpecials.append(numSpecialCraftable)
