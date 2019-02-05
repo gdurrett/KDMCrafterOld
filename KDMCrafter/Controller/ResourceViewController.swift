@@ -8,7 +8,11 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
+class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ResourceTableViewCellDelegate {
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    
     let dataModel = DataModel.sharedInstance
     
     var myStorage: [Resource:Int]?
@@ -18,14 +22,25 @@ class FirstViewController: UIViewController {
     var myBuiltLocations: [Location]?
     var myAvailableLocations: Set<Location>?
     
+    var resourceName: String?
+    var resourceValue: Int?
+    
+    var currentResource: Resource?
+    var mySettlement: Settlement?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let mySettlement = dataModel.currentSettlement!
-        myStorage = mySettlement.resourceStorage
-        myAvailableGear = mySettlement.availableGear
-        myInnovations = mySettlement.innovations
-        myBuiltLocations = mySettlement.builtLocations
-        myAvailableLocations = Set(mySettlement.allLocations).subtracting(myBuiltLocations!)
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
+        
+        mySettlement = dataModel.currentSettlement!
+        myStorage = mySettlement!.resourceStorage
+        myAvailableGear = mySettlement!.availableGear
+        myInnovations = mySettlement!.innovations
+        myBuiltLocations = mySettlement!.builtLocations
+        myAvailableLocations = Set(mySettlement!.allLocations).subtracting(myBuiltLocations!)
         
         //let currentResource = myStorage!.filter { $0.key.name == "Lion Tail" }.first
         
@@ -42,10 +57,10 @@ class FirstViewController: UIViewController {
         myBuiltLocations!.append(blackSmith)
         myBuiltLocations!.append(barberSurgeon)
         
-        for gear in myAvailableGear! {
-            let count = checkCraftability(gear: gear)
-            print("We can craft: \(count) \(gear.name)")
-        }
+//        for gear in myAvailableGear! {
+//            let count = checkCraftability(gear: gear)
+//            print("We can craft: \(count) \(gear.name)")
+//        }
 //        for location in myAvailableLocations! {
 //            if checkBuildability(location: location) {
 //                print("We can build: \(location.name)!")
@@ -98,7 +113,7 @@ class FirstViewController: UIViewController {
             for (type, qty) in resourceRequirements {
                 let typeCount = getTypeCount(type: type, resources: myStorage!)
                 if typeCount < qty {
-                    print("Not enough \(type) for \(location.name)")
+                    //print("Not enough \(type) for \(location.name)")
                     resourceRequirementsMet = false
                     break
                 } else {
@@ -107,7 +122,7 @@ class FirstViewController: UIViewController {
             }
         }
         if location.locationRequirement.contains("Special") {
-            print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
+            //print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
             return true
         } else {
             let locationNames = myBuiltLocations!.map { $0.name }
@@ -115,9 +130,9 @@ class FirstViewController: UIViewController {
                 return true
             } else {
                 if !resourceRequirementsMet {
-                    print("We cannot build \(location.name) due to lack of resources.")
+                    //print("We cannot build \(location.name) due to lack of resources.")
                 } else if !locationNames.contains (location.locationRequirement) {
-                    print("We cannot build \(location.name) due to lack of location.")
+                    //print("We cannot build \(location.name) due to lack of location.")
                 }
                 return false
             }
@@ -141,18 +156,18 @@ class FirstViewController: UIViewController {
                 numTypeCraftable = (typeCount/qty)
                 craftableTypes.append(numTypeCraftable)
                 if numTypeCraftable == 0 {
-                    print("Missing \(type.rawValue)")
+                    //print("Missing \(type.rawValue)")
                 }
             }
         }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
-                print("Getting \(special.name)")
+                //print("Getting \(special.name)")
                 let specialCount = getSpecialCount(special: special)
                 numSpecialCraftable = (specialCount/qty)
                 craftableSpecials.append(numSpecialCraftable)
                 if numSpecialCraftable == 0 {
-                    print("Missing \(special.name) special resource for \(gear.name).")
+                    //print("Missing \(special.name) special resource for \(gear.name).")
                 }
             }
         }
@@ -182,5 +197,64 @@ class FirstViewController: UIViewController {
         
         return maxCraftable
     }
+    
+    // TableViewDelegate stuff
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataModel.currentSettlement!.resourceStorage.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
+        //let cell = makeCell(for: tableView)
+        cell.backgroundColor = UIColor.clear
+        cell.delegate = self
+        
+        let key = Array(self.myStorage!.keys)[indexPath.row]
+        let value = Array(self.myStorage!.values)[indexPath.row]
+
+        resourceName = key.name
+        resourceValue = value
+        
+        configureTitle(for: cell, with: resourceName!)
+        configureValue(for: cell, with: resourceValue!)
+        
+        cell.stepperOutlet.value = Double(value)
+        cell.resourceCountLabel.text! = "\(value)"
+        cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
+            cell.resourceCountLabel.text = "\(change.newValue!)"
+            self.myStorage![key] = Int(change.newValue!)
+        }
+        print(myStorage![lanternTube]!)
+        return cell
+    }
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        (cell as! ResourceTableViewCell).observation = nil
+    }
+    fileprivate func makeCell(for tableView: UITableView) -> UITableViewCell {
+        let cellIdentifier = "ResourceTableViewCell"
+        if let cell =
+            tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
+            return cell
+        } else {
+            return UITableViewCell(style: .subtitle,reuseIdentifier: cellIdentifier)
+        }
+    }
+    fileprivate func configureTitle(for cell: UITableViewCell, with name: String) {
+        let label = cell.viewWithTag(3500) as! UILabel
+        label.text = name
+        label.sizeToFit()
+    }
+    fileprivate func configureValue(for cell: UITableViewCell, with value: Int) {
+        let label = cell.viewWithTag(3550) as! UILabel
+        label.text = String(value)
+        label.sizeToFit()
+    }
+
+    func updateResourceCount() {
+        for resource in myStorage! {
+            print(resource.key.name, resource.value)
+        }
+    }
+    
 }
 
