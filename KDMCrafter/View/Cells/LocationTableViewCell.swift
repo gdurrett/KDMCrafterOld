@@ -1,25 +1,15 @@
 //
-//  ResourceTableViewCell.swift
+//  LocationTableViewCell.swift
 //  KDMCrafter
 //
-//  Created by Greg Durrett on 1/25/19.
+//  Created by Greg Durrett on 2/5/19.
 //  Copyright © 2019 AppHazard Productions. All rights reserved.
 //
 
 import UIKit
 
-class ResourceTableViewCell: UITableViewCell {
+class LocationTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var resourceLabel: UILabel!
-    
-    @IBOutlet weak var resourceCountLabel: UILabel!
-    
-    @IBOutlet weak var stepperOutlet: UIStepper!
-    
-    @IBAction func stepperAction(_ sender: UIStepper) {
-        resourceCountLabel.text = "\(Int(sender.value))"
-    }
-    
     var observation: NSKeyValueObservation?
     
     static var nib:UINib {
@@ -34,11 +24,12 @@ class ResourceTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
+
 
 }

@@ -8,25 +8,29 @@
 
 import UIKit
 
-class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ResourceTableViewCellDelegate {
+class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     
     
     let dataModel = DataModel.sharedInstance
     
+    var mySettlement: Settlement?
     var myStorage: [Resource:Int]?
+    var sortedStorage: [(key: Resource, value: Int)]?
     var myAvailableGear: [Gear]?
-    var hidesTotal: Int?
     var myInnovations: [Innovation]?
     var myBuiltLocations: [Location]?
     var myAvailableLocations: Set<Location>?
     
     var resourceName: String?
     var resourceValue: Int?
-    
     var currentResource: Resource?
-    var mySettlement: Settlement?
+
+    var hidden:[Bool] = [true, true, true] // For collapsible sections
+    var numResourceRows: Int?
+    var numLocationRows: Int?
+    var numInnovationRows: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +38,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
+        tableView.register(LocationTableViewCell.nib, forCellReuseIdentifier: LocationTableViewCell.identifier)
         
         mySettlement = dataModel.currentSettlement!
         myStorage = mySettlement!.resourceStorage
@@ -42,40 +47,18 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         myBuiltLocations = mySettlement!.builtLocations
         myAvailableLocations = Set(mySettlement!.allLocations).subtracting(myBuiltLocations!)
         
-        //let currentResource = myStorage!.filter { $0.key.name == "Lion Tail" }.first
-        
-        myStorage![leather]! += 4
-        myStorage![scrap]! += 2
-        myStorage![birdBeak]! += 3
-        myStorage![leather]! += 5
-        myStorage![freshAcanthus]! += 2
-        myStorage![multi]! += 1
-        myStorage![musclyGums]! += 1
-        myStorage![iron]! += 2
-        myStorage![skull]! += 1
         myInnovations!.append(ammonia)
         myBuiltLocations!.append(blackSmith)
         myBuiltLocations!.append(barberSurgeon)
         
-//        for gear in myAvailableGear! {
-//            let count = checkCraftability(gear: gear)
-//            print("We can craft: \(count) \(gear.name)")
-//        }
-//        for location in myAvailableLocations! {
-//            if checkBuildability(location: location) {
-//                print("We can build: \(location.name)!")
-//            } else {
-//                print("We cannot build: \(location.name)")
-//            }
-//        }
-//        print("Built")
-//        for location in myBuiltLocations! {
-//            print(location.name)
-//        }
-//        print("Available")
-//        for location in Set(mySettlement.allLocations).subtracting(myBuiltLocations!) {
-//            print(location.name)
-//        }
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
+        
+        numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
+        numLocationRows = 1
+        numInnovationRows = 1
+        //numLocationRows = dataModel.currentSettlement!.availableLocations.count
+        //numInnovationRows = dataModel.currentSettlement!.innovations.count
+        
     }
     
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
@@ -200,17 +183,29 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
     
     // TableViewDelegate stuff
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataModel.currentSettlement!.resourceStorage.count
+        if hidden[section] {
+            return 0
+        } else
+            if section == 0 {
+            return numResourceRows!
+        } else if section == 1 {
+            return numLocationRows!
+        } else if section == 2 {
+            return numInnovationRows!
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         //let cell = makeCell(for: tableView)
         cell.backgroundColor = UIColor.clear
-        cell.delegate = self
         
-        let key = Array(self.myStorage!.keys)[indexPath.row]
-        let value = Array(self.myStorage!.values)[indexPath.row]
+//        let key = Array(self.myStorage!.keys)[indexPath.row]
+//        let value = Array(self.myStorage!.values)[indexPath.row]
+        let key = sortedStorage![indexPath.row].0
+        let value = sortedStorage![indexPath.row].1
 
         resourceName = key.name
         resourceValue = value
@@ -222,14 +217,42 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         cell.resourceCountLabel.text! = "\(value)"
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
             cell.resourceCountLabel.text = "\(change.newValue!)"
-            self.myStorage![key] = Int(change.newValue!)
+            //self.myStorage![key] = Int(change.newValue!)
+            self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
+            self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
+            DataModel.sharedInstance.currentSettlement!.resourceStorage[self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
         }
-        print(myStorage![lanternTube]!)
         return cell
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         (cell as! ResourceTableViewCell).observation = nil
     }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UITableViewHeaderFooterView()
+        headerView.textLabel?.textAlignment = .left
+        headerView.tag = section
+        
+        if section == 0 {
+            headerView.textLabel?.text = "Settlement Resource Storage"
+        } else if section == 1 {
+            headerView.textLabel?.text = "Settlement Locations"
+        } else if section == 2 {
+            headerView.textLabel?.text = "Settlement Innovations"
+        }
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapFunction))
+        headerView.isUserInteractionEnabled = true
+        headerView.addGestureRecognizer(tap)
+        return headerView
+
+    }
+    // Helper functions
     fileprivate func makeCell(for tableView: UITableView) -> UITableViewCell {
         let cellIdentifier = "ResourceTableViewCell"
         if let cell =
@@ -249,12 +272,25 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         label.text = String(value)
         label.sizeToFit()
     }
-
-    func updateResourceCount() {
-        for resource in myStorage! {
-            print(resource.key.name, resource.value)
+    @objc func tapFunction(sender:UITapGestureRecognizer) {
+        let section = sender.view!.tag
+        var indexPaths = [IndexPath]()
+        if section == 0 {
+            indexPaths = (0..<66).map { i in return IndexPath(item: i, section: section)  }
+        } else if section == 1 {
+            indexPaths = (0..<1).map { i in return IndexPath(item: i, section: section)  }
+        } else if section == 2 {
+            indexPaths = (0..<1).map { i in return IndexPath(item: i, section: section)  }
         }
+        hidden[section] = !hidden[section]
+        
+        tableView?.beginUpdates()
+        if hidden[section] {
+            tableView?.deleteRows(at: indexPaths, with: .fade)
+        } else {
+            tableView?.insertRows(at: indexPaths, with: .fade)
+        }
+        tableView?.endUpdates()
     }
-    
 }
 

@@ -12,6 +12,8 @@
 		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
 		FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */; };
 		FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */; };
+		FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */; };
+		FBEA74A1220A534700CAA684 /* LocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */; };
 		FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD693F21C43BA200CAA684 /* AppDelegate.swift */; };
 		FBFD694221C43BA200CAA684 /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694121C43BA200CAA684 /* ResourceViewController.swift */; };
 		FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694321C43BA200CAA684 /* SecondViewController.swift */; };
@@ -29,6 +31,8 @@
 		FB1309F721CDA5FE00CAA684 /* Innovation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Innovation.swift; sourceTree = "<group>"; };
 		FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTableViewCell.swift; sourceTree = "<group>"; };
 		FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceTableViewCell.xib; sourceTree = "<group>"; };
+		FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
+		FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationTableViewCell.xib; sourceTree = "<group>"; };
 		FBFD693C21C43BA200CAA684 /* KDMCrafter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDMCrafter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFD693F21C43BA200CAA684 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBFD694121C43BA200CAA684 /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
@@ -76,6 +80,8 @@
 			children = (
 				FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */,
 				FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */,
+				FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */,
+				FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -185,6 +191,7 @@
 				FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */,
 				FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */,
 				FBFD694721C43BA200CAA684 /* Main.storyboard in Resources */,
+				FBEA74A1220A534700CAA684 /* LocationTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +210,7 @@
 				FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */,
 				FBFD695721C458B300CAA684 /* Resource.swift in Sources */,
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
+				FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */,
 				FBFD694221C43BA200CAA684 /* ResourceViewController.swift in Sources */,
 				FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */,
 			);
