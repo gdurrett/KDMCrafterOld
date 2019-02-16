@@ -13,7 +13,7 @@ class Settlement {
     // For the settlement object
     let name: String
     var resourceStorage = [Resource:Int]()
-    let allLocations: Set = [barberSurgeon, blackSmith, boneSmith, catarium, exhaustedLanternHoard, lanternHoard, leatherWorker, maskMaker, organGrinder, plumery, skinnery, stoneCircle, weaponCrafter]
+    let allLocations = [barberSurgeon, blackSmith, boneSmith, catarium, exhaustedLanternHoard, lanternHoard, leatherWorker, maskMaker, organGrinder, plumery, skinnery, stoneCircle, weaponCrafter]
     var builtLocations = [Location]()
     var availableLocations = [Location]()
     var availableGear = [Gear]()

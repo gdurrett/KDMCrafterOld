@@ -8,9 +8,20 @@
 
 import UIKit
 
+protocol LocationTableViewCellDelegate: class {
+    func tappedBuildButton(cell: LocationTableViewCell)
+}
+
 class LocationTableViewCell: UITableViewCell {
 
-    var observation: NSKeyValueObservation?
+    @IBOutlet weak var locationName: UILabel!
+    @IBOutlet weak var buildButton: UIButton!
+    @IBAction func buildButtonTapped(_ sender: UIButton) {
+        cellDelegate?.tappedBuildButton(cell: self)
+    }
+    
+    weak var cellDelegate: LocationTableViewCellDelegate?
+    
     
     static var nib:UINib {
         return UINib(nibName: identifier, bundle: nil)
