@@ -104,6 +104,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         }
         return myDict
     }
+
     func isBuildable(location: Location) -> Bool {
         let resourceRequirements = location.resourceRequirements
         var resourceRequirementsMet = Bool()
@@ -124,17 +125,21 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             return true
         } else {
             //let locationNames = myBuiltLocations!.map { $0.name }
-            let locationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
-            if locationNames.contains(location.locationRequirement) && resourceRequirementsMet {
+            let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
+            if builtLocationNames.contains(location.locationRequirement) && resourceRequirementsMet {
                 return true
+            } else if builtLocationNames.contains(location.locationRequirement) && !resourceRequirementsMet {
+                print("Location \(location.locationRequirement) is built, but we don't have the resources to build \(location.name).")
+//                if !resourceRequirementsMet {
+//
+//                    print("We cannot build \(location.name) due to lack of resources.")
+//                } else if !builtLocationNames.contains (location.locationRequirement) {
+//                    missingLocation = location.locationRequirement
+//                    print("We cannot build \(location.name) due to lack of location.")
+//                }
+                return false
             } else {
-                if !resourceRequirementsMet {
-                    
-                    print("We cannot build \(location.name) due to lack of resources.")
-                } else if !locationNames.contains (location.locationRequirement) {
-                    missingLocation = location.locationRequirement
-                    //print("We cannot build \(location.name) due to lack of location.")
-                }
+                print("Resource requirements \(resourceRequirements) to build \(location.name) are met, but the required location \(location.locationRequirement) is not built.")
                 return false
             }
         }
@@ -255,6 +260,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             let buildableStatus = isBuildable(location: location)
             var buildableStatusString = String()
             var missingResourcesString = String()
+            let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
             
             if location.name == "Lantern Hoard" {
                 buildableStatusString = ""
@@ -269,7 +275,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 let dict = getMissingLocationResourceRequirements(location: location)
                 if dict == [:] {
                     missingResourcesString = "Missing: \(location.locationRequirement)"
-                } else if missingLocation == nil {
+                } else if !location.locationRequirement.contains("Special") && builtLocationNames.contains(location.locationRequirement) {
                     missingResourcesString = "Missing: \(dict)"
                 } else {
                     missingResourcesString = "Missing: \(location.locationRequirement), \(dict)"
@@ -283,8 +289,12 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             
             configureTitle(for: cell, with: myLocations![indexPath.row].name, with: 3600)
             configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
-            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
             
+            if !location.isBuilt {
+                configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
+            } else {
+                configureMissingResourceLabel(for: cell, with: "", with: 3700)
+            }
             tableViewCell = cell
         default:
             tableViewCell = UITableViewCell()
