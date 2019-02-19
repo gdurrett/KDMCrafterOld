@@ -106,9 +106,17 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     func isBuildable(location: Location) -> Bool {
+        if location.isBuilt { return false }
+        if isResourceRequirementMet(location: location) && isLocationRequirementMet(location: location) {
+            return true
+        } else {
+            return false
+        }
+    }
+    func isResourceRequirementMet(location: Location) -> Bool {
         let resourceRequirements = location.resourceRequirements
         var resourceRequirementsMet = Bool()
-        if location.isBuilt { return false }
+        if location.locationRequirement.contains("Special") { resourceRequirementsMet = true }
         if resourceRequirements.count != 0 {
             for (type, qty) in resourceRequirements {
                 let typeCount = getTypeCount(type: type, resources: myStorage!)
@@ -120,29 +128,22 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 }
             }
         }
+        return resourceRequirementsMet
+    }
+    func isLocationRequirementMet(location: Location) -> Bool {
+        var locationRequirementMet = Bool()
         if location.locationRequirement.contains("Special") {
             //print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
-            return true
+            locationRequirementMet = true
         } else {
-            //let locationNames = myBuiltLocations!.map { $0.name }
             let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
-            if builtLocationNames.contains(location.locationRequirement) && resourceRequirementsMet {
-                return true
-            } else if builtLocationNames.contains(location.locationRequirement) && !resourceRequirementsMet {
-                print("Location \(location.locationRequirement) is built, but we don't have the resources to build \(location.name).")
-//                if !resourceRequirementsMet {
-//
-//                    print("We cannot build \(location.name) due to lack of resources.")
-//                } else if !builtLocationNames.contains (location.locationRequirement) {
-//                    missingLocation = location.locationRequirement
-//                    print("We cannot build \(location.name) due to lack of location.")
-//                }
-                return false
+            if builtLocationNames.contains(location.locationRequirement) {
+                locationRequirementMet = true
             } else {
-                print("Resource requirements \(resourceRequirements) to build \(location.name) are met, but the required location \(location.locationRequirement) is not built.")
-                return false
+                locationRequirementMet = false
             }
         }
+        return locationRequirementMet
     }
     func checkCraftability(gear: Gear) -> Int {
         let typeRequirements = gear.resourceTypeRequirements
@@ -286,11 +287,13 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             }
             cell.backgroundColor = UIColor.clear
 
-            
             configureTitle(for: cell, with: myLocations![indexPath.row].name, with: 3600)
             configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
             
-            if !location.isBuilt {
+            //if !location.isBuilt {
+            if !isBuildable(location: location) && !location.isBuilt {
+                configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
+            } else if location.locationRequirement.contains("Special") {
                 configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
             } else {
                 configureMissingResourceLabel(for: cell, with: "", with: 3700)
