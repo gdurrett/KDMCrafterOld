@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocationTableViewCellDelegate {
+class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocationTableViewCellDelegate, SpendResourcesVCDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -53,12 +53,12 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         myLocations = mySettlement!.allLocations
         
         myInnovations!.append(ammonia)
-//        myStorage![monsterHide] = 1
-//        myStorage![monsterOrgan] = 1
-//        myStorage![endeavor] = 3
-//        myStorage![lionClaw] = 1
-//        myLocations![2].isBuilt = true
-//        myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
+        //myStorage![monsterHide] = 3
+        myStorage![secondHeart] = 2
+        myStorage![endeavor] = 3
+        //myStorage![bladder] = 4
+//        myLocations![9].isBuilt = true
+        myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
         
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
         
@@ -66,10 +66,15 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         numLocationRows = dataModel.currentSettlement!.allLocations.count
         numInnovationRows = 1
 
-
+        tableView.reloadData()
         
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+        //print(myStorage!.sorted(by: { $0.key.name < $1.key.name })
+        //sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
+    }
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
         var count = Int()
         if type == .any { // e.g. for Musk Bomb
@@ -98,7 +103,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 let typeCount = getTypeCount(type: type, resources: myStorage!)
                 if typeCount < qty {
                     myDict[type.rawValue] = (qty - typeCount)
-                    print("adding \(myDict)")
                 }
             }
         }
@@ -244,7 +248,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             cell.stepperOutlet.value = Double(value)
             cell.resourceCountLabel.text! = "\(value)"
             cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
-                cell.resourceCountLabel.text = "\(change.newValue!)"
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
                 //self.myStorage![key] = Int(change.newValue!)
                 self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
                 self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
@@ -416,14 +420,47 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
         if isBuildable(location: location) {
-            print("I can build \(location.name)")
-            myLocations![cell.tag].isBuilt = true
+            spendResources(for: location)
+            //myLocations![cell.tag].isBuilt = true // Need to do this in SpendResourcesVC Save function
         } else if location.isBuilt {
-            print("UnBuilding \(location.name)")
             myLocations![cell.tag].isBuilt = false
         }
         tableView.reloadData()
     }
-    
+    fileprivate func spendResources(for location: Location) {
+        let requiredTypes = location.resourceRequirements.map { $0.key }
+        let requiredResourceTypes = location.resourceRequirements
+        var spendableResources = [Resource:Int]()
+        
+        let spendResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "spendResourcesVC") as! SpendResourcesViewController
+        
+        for resource in myStorage!.keys {
+            if myStorage![resource]! > 0 {
+                for type in resource.type {
+                    if requiredTypes.contains(type) {
+                        spendableResources[resource] = myStorage![resource]! //assign value
+                        //print("We have \(myStorage![resource]!) \(resource.name)")
+                        break
+                    }
+                }
+            }
+        }
+        spendResourcesVC.spendableResources = spendableResources
+        spendResourcesVC.requiredResourceTypes = requiredResourceTypes
+        spendResourcesVC.location = location
+        spendResourcesVC.delegate = self
+        
+        self.present(spendResourcesVC, animated: true, completion: nil)
+
+    }
+    func updateStorage(with spentResources: [Resource : Int], location: Location) {
+        for (resource, qty) in spentResources {
+            DataModel.sharedInstance.currentSettlement!.resourceStorage[resource]! -= qty
+            myStorage![resource]! -= qty
+        }
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
+        self.myLocations![self.myLocations!.lastIndex(of: location)!].isBuilt = true
+        tableView.reloadData()
+    }
 }
 

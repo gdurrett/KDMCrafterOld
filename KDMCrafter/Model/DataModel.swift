@@ -12,6 +12,8 @@ class DataModel {
     
     static var sharedInstance = DataModel()
     var currentSettlement: Settlement?
+    var observation: NSKeyValueObservation?
+
     
     private init() {
         
