@@ -54,8 +54,9 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         
         myInnovations!.append(ammonia)
         //myStorage![monsterHide] = 3
-        myStorage![secondHeart] = 2
+        myStorage![blackLichen] = 2
         myStorage![endeavor] = 3
+        myStorage![monsterHide] = 5
         //myStorage![bladder] = 4
 //        myLocations![9].isBuilt = true
         myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
@@ -272,7 +273,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             } else if buildableStatus == true {
                 buildableStatusString = "Build"
             } else if location.isBuilt {
-                buildableStatusString = "UnBuild"
+                buildableStatusString = "Destroy"
             } else {
                 buildableStatusString = "Unbuildable"
             }
@@ -374,13 +375,16 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         button.layer.cornerRadius = 5
         
         if status == "Build" {
-            button.backgroundColor = UIColor.green
+            button.backgroundColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
         } else if status == "Unbuildable" {
+            button.setTitle("Build", for: .normal)
             button.backgroundColor = UIColor.gray
+        } else if status == "Destroy" {
+            button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         } else {
-            button.backgroundColor = UIColor.red
+            //button.isHidden = true
         }
-        button.sizeToFit()
+        //button.sizeToFit()
         
     }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {

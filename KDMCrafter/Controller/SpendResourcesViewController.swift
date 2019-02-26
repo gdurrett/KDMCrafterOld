@@ -11,7 +11,7 @@ import UIKit
 protocol SpendResourcesVCDelegate: class {
     func updateStorage(with spentResources: [Resource:Int], location: Location)
 }
-class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
 
     @IBOutlet weak var tableView: UITableView!
@@ -39,6 +39,17 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     
     var resourceName: String?
     var resourceValue: Int?
+    
+    // For type picker alertView
+    var typeChoices = [resourceType]()
+    var pickerView = UIPickerView()
+    var typeValue = String()
+    
+    var currentResource: Resource?
+    var currentQty: Int?
+    var selectedType: resourceType?
+    var currentCell: ResourceTableViewCell?
+    var stepperVal: Int?
     
     weak var delegate: SpendResourcesVCDelegate?
     
@@ -81,23 +92,33 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         cell.resourceCountLabel.text! = "\(value)"
         
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
-            cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            //cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            self.stepperVal = Int(change.newValue!)
+            self.currentCell = cell
+            
             self.save.isHidden = true
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
-            let spentResource = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            if spentResource >= 0 {
+            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
+            if self.sortedSpentResources![indexPath.row].0.type.count > 1 {
+                self.typeChoices = self.sortedSpentResources![indexPath.row].0.type
+                self.showChoices(self)
+            } else {
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            }
+            if spentResourceQty >= 0 {
                 for type in self.sortedSpentResources![indexPath.row].0.type {
-                    self.spentResourceTypes[key] = [type:spentResource]
+                    //self.spentResourceTypes[key] = [type:spentResourceQty]
+                    self.currentResource = key
+                    self.currentQty = spentResourceQty
+                    self.setSpentTypes(key: key, type: type, spentResourceQty: spentResourceQty)
                 }
             }
             let typeVals = Array(self.spentResourceTypes.values)
             for type in self.requiredResourceTypes.keys {
                 let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
-                //print("Spent \(spentAmount) \(type.rawValue)")
                 self.spentResourceTypesTemp[type] = spentAmount
             }
             for (resource, qty) in self.spentResourceTypes {
-                //print("We spent \(Array(qty.values)[0]) \(resource.name)")
                 self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
             }
 
@@ -119,5 +140,39 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
         }
+    }
+    fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
+            self.spentResourceTypes[key] = [type:spentResourceQty]
+    }
+    @IBAction func showChoices(_ sender: Any) {
+        let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)
+        alert.isModalInPopover = true
+        
+        let pickerFrame = UIPickerView(frame: CGRect(x: 5, y: 20, width: 250, height: 140))
+        
+        alert.view.addSubview(pickerFrame)
+        pickerFrame.dataSource = self
+        pickerFrame.delegate = self
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) in
+            
+            self.spentResourceTypes[self.currentResource!] = [self.selectedType!:self.currentQty!]
+            self.currentCell!.resourceCountLabel.text = "\(self.stepperVal!)"
+
+        }))
+        self.present(alert,animated: true, completion: nil )
+    }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return typeChoices.count
+    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return typeChoices[row].rawValue
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedType = self.typeChoices[row]
     }
 }

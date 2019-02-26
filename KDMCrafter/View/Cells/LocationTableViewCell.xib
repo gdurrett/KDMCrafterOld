@@ -13,24 +13,29 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="LocationTableViewCell" customModule="KDMCrafter" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="87"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" tag="3600" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="axq-KJ-dug">
-                    <rect key="frame" x="16" y="30" width="66" height="31"/>
+                    <rect key="frame" x="16" y="30" width="66" height="27"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" tag="3700" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUT-EA-oJ0">
-                    <rect key="frame" x="16" y="61" width="340" height="30"/>
+                    <rect key="frame" x="16" y="78" width="340" height="0.0"/>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hls-8v-XDp">
-                    <rect key="frame" x="310" y="30" width="46" height="30"/>
-                    <state key="normal" title="Button"/>
+                    <rect key="frame" x="296" y="31" width="60" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="TaL-XQ-Bi8"/>
+                    </constraints>
+                    <state key="normal" title="Button">
+                        <color key="titleColor" red="0.99607843139999996" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
                     <connections>
                         <action selector="buildButtonTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="ie8-K7-7dl"/>
                     </connections>
@@ -40,15 +45,14 @@
             <accessibility key="accessibilityConfiguration" identifier="LocationTableViewCell"/>
             <constraints>
                 <constraint firstItem="eUT-EA-oJ0" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="0sL-Xh-l2U"/>
-                <constraint firstItem="eUT-EA-oJ0" firstAttribute="top" secondItem="hls-8v-XDp" secondAttribute="bottom" constant="1" id="2Qg-ld-qpD"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="axq-KJ-dug" secondAttribute="bottom" constant="39" id="CdR-tT-pzG"/>
+                <constraint firstItem="hls-8v-XDp" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="8nx-WN-AmN"/>
+                <constraint firstItem="axq-KJ-dug" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="Du9-ro-OeN"/>
+                <constraint firstItem="hls-8v-XDp" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="31" id="Pf5-zY-2hN"/>
                 <constraint firstItem="axq-KJ-dug" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="30" id="WS5-4G-Orc"/>
                 <constraint firstItem="axq-KJ-dug" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="aSP-KI-e45"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="eUT-EA-oJ0" secondAttribute="bottom" constant="9" id="h1n-Ov-o7V"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="eUT-EA-oJ0" secondAttribute="trailing" constant="19" id="kUt-Ac-t4v"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="hls-8v-XDp" secondAttribute="trailing" constant="19" id="nhM-jF-HFS"/>
-                <constraint firstItem="eUT-EA-oJ0" firstAttribute="top" secondItem="axq-KJ-dug" secondAttribute="bottom" id="p63-lS-Dyf"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="axq-KJ-dug" secondAttribute="bottom" constant="39" id="plu-xf-0Cq"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
@@ -56,7 +60,7 @@
                 <outlet property="buildButton" destination="hls-8v-XDp" id="A4d-ax-TCV"/>
                 <outlet property="locationName" destination="axq-KJ-dug" id="pp2-UP-O35"/>
             </connections>
-            <point key="canvasLocation" x="138.40000000000001" y="-110.64467766116942"/>
+            <point key="canvasLocation" x="140" y="-170"/>
         </view>
     </objects>
 </document>

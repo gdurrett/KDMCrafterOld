@@ -62,6 +62,7 @@
 		FB3D9A8421F649E200CAA684 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
 				FBFD694121C43BA200CAA684 /* ResourceViewController.swift */,
 				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
 			);
@@ -91,7 +92,6 @@
 		FBFD693321C43BA200CAA684 = {
 			isa = PBXGroup;
 			children = (
-				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
 				FBFD693E21C43BA200CAA684 /* KDMCrafter */,
 				FBFD693D21C43BA200CAA684 /* Products */,
 			);
