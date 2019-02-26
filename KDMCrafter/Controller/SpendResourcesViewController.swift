@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SpendResourcesVCDelegate: class {
-    func updateStorage(with spentResources: [Resource:Int], location: Location)
+    func updateStorage(with spentResources: [Resource:Int])
 }
 class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
@@ -17,7 +17,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var tableView: UITableView!
     
     @IBAction func save(_ sender: Any) { // Maybe use notification to update values?
-        delegate!.updateStorage(with: spentResources, location: location)
+        delegate!.updateStorage(with: spentResources)
         self.dismiss(dismiss(animated: true, completion: nil))
     }
     
@@ -28,7 +28,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     }
     var spendableResources: [Resource:Int]! // Sent by Resource VC
     var requiredResourceTypes: [resourceType:Int]! // Sent by Resource VC
-    var location: Location! // Sent by ResourceVC
     
     var spentResources = [Resource:Int]() // Track spent resources
     var spentResourceTypes = [Resource:[resourceType:Int]]() // Track spent resource types by Resource
@@ -107,7 +106,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             }
             if spentResourceQty >= 0 {
                 for type in self.sortedSpentResources![indexPath.row].0.type {
-                    //self.spentResourceTypes[key] = [type:spentResourceQty]
                     self.currentResource = key
                     self.currentQty = spentResourceQty
                     self.setSpentTypes(key: key, type: type, spentResourceQty: spentResourceQty)

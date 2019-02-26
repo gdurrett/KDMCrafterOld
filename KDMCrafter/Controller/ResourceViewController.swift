@@ -21,8 +21,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
-//    var myBuiltLocations: [Location]?
-//    var myAvailableLocations: Set<Location>?
     
     var resourceName: String?
     var resourceValue: Int?
@@ -73,8 +71,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
 
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
-        //print(myStorage!.sorted(by: { $0.key.name < $1.key.name })
-        //sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
     }
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
         var count = Int()
@@ -168,14 +164,10 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 let typeCount = getTypeCount(type: type, resources: myStorage!)
                 numTypeCraftable = (typeCount/qty)
                 craftableTypes.append(numTypeCraftable)
-                if numTypeCraftable == 0 {
-                    //print("Missing \(type.rawValue)")
-                }
             }
         }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
-                //print("Getting \(special.name)")
                 let specialCount = getSpecialCount(special: special)
                 numSpecialCraftable = (specialCount/qty)
                 craftableSpecials.append(numSpecialCraftable)
@@ -451,19 +443,19 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
-        spendResourcesVC.location = location
+        self.currentLocation = location
         spendResourcesVC.delegate = self
         
         self.present(spendResourcesVC, animated: true, completion: nil)
 
     }
-    func updateStorage(with spentResources: [Resource : Int], location: Location) {
+        func updateStorage(with spentResources: [Resource : Int]) {
         for (resource, qty) in spentResources {
             DataModel.sharedInstance.currentSettlement!.resourceStorage[resource]! -= qty
             myStorage![resource]! -= qty
         }
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
-        self.myLocations![self.myLocations!.lastIndex(of: location)!].isBuilt = true
+            self.myLocations![self.myLocations!.lastIndex(of: self.currentLocation!)!].isBuilt = true
         tableView.reloadData()
     }
 }
