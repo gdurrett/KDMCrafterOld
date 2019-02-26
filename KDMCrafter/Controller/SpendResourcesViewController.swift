@@ -28,7 +28,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     }
     var spendableResources: [Resource:Int]! // Sent by Resource VC
     var requiredResourceTypes: [resourceType:Int]! // Sent by Resource VC
-    var location: Location! // Sent by ResorurceVC
+    var location: Location! // Sent by ResourceVC
     
     var spentResources = [Resource:Int]() // Track spent resources
     var spentResourceTypes = [Resource:[resourceType:Int]]() // Track spent resource types by Resource

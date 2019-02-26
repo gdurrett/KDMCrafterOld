@@ -54,12 +54,12 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         
         myInnovations!.append(ammonia)
         //myStorage![monsterHide] = 3
-        myStorage![blackLichen] = 2
-        myStorage![endeavor] = 3
-        myStorage![monsterHide] = 5
+//        myStorage![blackLichen] = 2
+//        myStorage![endeavor] = 3
+//        myStorage![monsterHide] = 5
         //myStorage![bladder] = 4
 //        myLocations![9].isBuilt = true
-        myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
+        //myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
         
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
         
