@@ -144,14 +144,15 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                     self.setSpentTypes(key: key, type: type, spentResourceQty: spentResourceQty)
                 }
             }
-            let typeVals = Array(self.spentResourceTypes.values)
-            self.spentTypesString = "Spent: "
-            for type in self.requiredResourceTypes.keys {
-                let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
-                self.spentResourceTypesTemp[type] = spentAmount
-                self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
-            }
-            self.spentTypesLabel.text = self.spentTypesString
+            self.setSpentTypes()
+//            let typeVals = Array(self.spentResourceTypes.values)
+//            self.spentTypesString = "Spent: "
+//            for type in self.requiredResourceTypes.keys {
+//                let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
+//                self.spentResourceTypesTemp[type] = spentAmount
+//                self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
+//            }
+//            self.spentTypesLabel.text = self.spentTypesString
             
             self.checkIfRequirementsMet()
         }
@@ -181,6 +182,16 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
             self.spentResourceTypes[key] = [type:spentResourceQty]
     }
+    fileprivate func setSpentTypes() {
+        let typeVals = Array(self.spentResourceTypes.values)
+        self.spentTypesString = "Spent: "
+        for type in self.requiredResourceTypes.keys {
+            let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
+            self.spentResourceTypesTemp[type] = spentAmount
+            self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
+        }
+        self.spentTypesLabel.text = self.spentTypesString
+    }
     @IBAction func showChoices(_ sender: Any) {
         let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)
         alert.isModalInPopover = true
@@ -196,6 +207,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             
             self.spentResourceTypes[self.currentResource!] = [self.selectedType!:self.currentQty!]
             self.currentCell!.resourceCountLabel.text = "\(self.stepperVal!)"
+            self.setSpentTypes()
 
         }))
         self.present(alert,animated: true, completion: nil )
