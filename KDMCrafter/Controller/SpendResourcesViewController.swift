@@ -13,7 +13,9 @@ protocol SpendResourcesVCDelegate: class {
 }
 class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
-
+    @IBOutlet weak var requiredTypesLabel: UILabel!
+    @IBOutlet weak var spentTypesLabel: UILabel!
+    
     @IBOutlet weak var tableView: UITableView!
     
     @IBAction func save(_ sender: Any) { // Maybe use notification to update values?
@@ -39,6 +41,10 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     var resourceName: String?
     var resourceValue: Int?
     
+    var requiredTypesString = "Required: "
+    var spentTypesString = "Spent: "
+    var providedTypesString = "Provides: "
+    
     // For type picker alertView
     var typeChoices = [resourceType]()
     var pickerView = UIPickerView()
@@ -60,10 +66,20 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         
         save.isHidden = true
+        spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         
         sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
         sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
-
+        
+        for (type, qty) in requiredResourceTypes {
+            requiredTypesString.append("\(type.rawValue):\(qty) ")
+        }
+        requiredTypesLabel.text! = requiredTypesString
+        for (type, _) in requiredResourceTypes {
+            spentTypesString.append("\(type.rawValue.capitalized):0 ")
+        }
+        spentTypesLabel.text! = spentTypesString
+        
     }
     
 
@@ -76,7 +92,9 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         //let cell = makeCell(for: tableView)
         cell.backgroundColor = UIColor.clear
-
+        
+        providedTypesString = "Provides: "
+        
         let key = sortedSpendableResources![indexPath.row].0
         let value = sortedSpendableResources![indexPath.row].1
 
@@ -85,6 +103,19 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         
         configureTitle(for: cell, with: resourceName!, with: 3500)
         configureValue(for: cell, with: resourceValue!)
+        
+        for (idx, type) in key.type.enumerated() {
+            if key.type.count > 1 && !(idx == key.type.endIndex - 1) {
+                self.providedTypesString.append("\(type.rawValue), ")
+            } else if key.type.count > 1 {
+                self.providedTypesString.append("\(type.rawValue)")
+            } else {
+                self.providedTypesString.append("\(type.rawValue)")
+            }
+        }
+        cell.providedTypesLabel.text! = self.providedTypesString
+        cell.providedTypesLabel.textColor = UIColor.gray
+        
         
         cell.stepperOutlet.value = Double(value)
         cell.stepperOutlet.maximumValue = Double(value)
@@ -96,6 +127,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             self.currentCell = cell
             
             self.save.isHidden = true
+            self.spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
             let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             if self.sortedSpentResources![indexPath.row].0.type.count > 1 {
@@ -112,16 +145,17 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
             let typeVals = Array(self.spentResourceTypes.values)
+            self.spentTypesString = "Spent: "
             for type in self.requiredResourceTypes.keys {
                 let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
                 self.spentResourceTypesTemp[type] = spentAmount
+                self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
             }
-            for (resource, qty) in self.spentResourceTypes {
-                self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
-            }
-
+            self.spentTypesLabel.text = self.spentTypesString
+            
             self.checkIfRequirementsMet()
         }
+        
         return cell
     }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
@@ -137,6 +171,11 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     fileprivate func checkIfRequirementsMet() {
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
+            self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+        } else {
+            for (resource, qty) in self.spentResourceTypes {
+                self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
+            }
         }
     }
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {

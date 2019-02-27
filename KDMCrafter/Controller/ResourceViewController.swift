@@ -51,10 +51,10 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         myLocations = mySettlement!.allLocations
         
         myInnovations!.append(ammonia)
-        //myStorage![monsterHide] = 3
+        myStorage![monsterHide] = 3
 //        myStorage![blackLichen] = 2
-//        myStorage![endeavor] = 3
-//        myStorage![monsterHide] = 5
+        myStorage![endeavor] = 3
+        myStorage![monsterOrgan] = 5
         //myStorage![bladder] = 4
 //        myLocations![9].isBuilt = true
         //myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
@@ -449,13 +449,13 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         self.present(spendResourcesVC, animated: true, completion: nil)
 
     }
-        func updateStorage(with spentResources: [Resource : Int]) {
+    func updateStorage(with spentResources: [Resource : Int]) {
         for (resource, qty) in spentResources {
             DataModel.sharedInstance.currentSettlement!.resourceStorage[resource]! -= qty
             myStorage![resource]! -= qty
         }
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
-            self.myLocations![self.myLocations!.lastIndex(of: self.currentLocation!)!].isBuilt = true
+        self.myLocations![self.myLocations!.lastIndex(of: self.currentLocation!)!].isBuilt = true
         tableView.reloadData()
     }
 }
