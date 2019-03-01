@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  BuildLocationViewController.swift
 //  KDMCrafter
 //
 //  Created by Greg Durrett on 12/14/18.
@@ -8,12 +8,13 @@
 
 import UIKit
 
-class ResourceViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocationTableViewCellDelegate, SpendResourcesVCDelegate {
+class BuildLocationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocationTableViewCellDelegate, SpendResourcesVCDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
     
     let dataModel = DataModel.sharedInstance
+    let validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
     
     var mySettlement: Settlement?
     var myStorage: [Resource:Int]?
@@ -50,11 +51,11 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         //myBuiltLocations = mySettlement!.builtLocations
         myLocations = mySettlement!.allLocations
         
-        myInnovations!.append(ammonia)
-        myStorage![monsterHide] = 3
+//        myInnovations!.append(ammonia)
+//        myStorage![monsterHide] = 3
 //        myStorage![blackLichen] = 2
-        myStorage![endeavor] = 3
-        myStorage![monsterOrgan] = 5
+//        myStorage![endeavor] = 3
+//        myStorage![monsterOrgan] = 5
         //myStorage![bladder] = 4
 //        myLocations![9].isBuilt = true
         //myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
@@ -91,116 +92,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         } else {
             return false
         }
-    }
-    func getMissingLocationResourceRequirements(location: Location) -> [String:Int] {
-        var myDict = [String:Int]()
-        let resourceRequirements = location.resourceRequirements
-        if resourceRequirements.count != 0 {
-            for (type, qty) in resourceRequirements {
-                let typeCount = getTypeCount(type: type, resources: myStorage!)
-                if typeCount < qty {
-                    myDict[type.rawValue] = (qty - typeCount)
-                }
-            }
-        }
-        return myDict
-    }
-
-    func isBuildable(location: Location) -> Bool {
-        if location.isBuilt { return false }
-        if isResourceRequirementMet(location: location) && isLocationRequirementMet(location: location) {
-            return true
-        } else {
-            return false
-        }
-    }
-    func isResourceRequirementMet(location: Location) -> Bool {
-        let resourceRequirements = location.resourceRequirements
-        var resourceRequirementsMet = Bool()
-        if location.locationRequirement.contains("Special") { resourceRequirementsMet = true }
-        if resourceRequirements.count != 0 {
-            for (type, qty) in resourceRequirements {
-                let typeCount = getTypeCount(type: type, resources: myStorage!)
-                if typeCount < qty {
-                    resourceRequirementsMet = false
-                    break
-                } else {
-                    resourceRequirementsMet = true
-                }
-            }
-        }
-        return resourceRequirementsMet
-    }
-    func isLocationRequirementMet(location: Location) -> Bool {
-        var locationRequirementMet = Bool()
-        if location.locationRequirement.contains("Special") {
-            //print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
-            locationRequirementMet = true
-        } else {
-            let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
-            if builtLocationNames.contains(location.locationRequirement) {
-                locationRequirementMet = true
-            } else {
-                locationRequirementMet = false
-            }
-        }
-        return locationRequirementMet
-    }
-    func checkCraftability(gear: Gear) -> Int {
-        let typeRequirements = gear.resourceTypeRequirements
-        let specialRequirements = gear.resourceSpecialRequirements
-        let innovationRequirement = gear.innovationRequirement
-        var numTypeCraftable = Int()
-        var numSpecialCraftable = Int()
-        var innovationExists = Bool()
-        //let locationExists = getLocationExists(location: gear.locationRequirement)
-        let locationExists = gear.locationRequirement.isBuilt
-        var maxCraftable = Int()
-        var craftableTypes = [Int]()
-        var craftableSpecials = [Int]()
-        
-        if typeRequirements?.count != 0 || typeRequirements != nil {
-            for (type, qty) in typeRequirements! {
-                let typeCount = getTypeCount(type: type, resources: myStorage!)
-                numTypeCraftable = (typeCount/qty)
-                craftableTypes.append(numTypeCraftable)
-            }
-        }
-        if specialRequirements?.count != nil {
-            for (special, qty) in specialRequirements! {
-                let specialCount = getSpecialCount(special: special)
-                numSpecialCraftable = (specialCount/qty)
-                craftableSpecials.append(numSpecialCraftable)
-                if numSpecialCraftable == 0 {
-                    //print("Missing \(special.name) special resource for \(gear.name).")
-                }
-            }
-        }
-        if innovationRequirement != nil {
-            innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
-        }
-        
-        if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Basic resource only
-            maxCraftable = craftableTypes.min()!
-        } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Special and regular resource types required, but no innovation required
-            if gear.name == "Skull Helm" { // Special case of either/or
-                maxCraftable = craftableTypes.min()! + craftableSpecials.min()!
-            } else {
-                maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
-            }
-        } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count == 0 { //Special resource required, no innovation or regular types required
-            maxCraftable = craftableSpecials.min()!
-        } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements!.count != 0 { // Innovation required and regular resource types required
-            maxCraftable = craftableTypes.min()!
-        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count != 0 && gear.resourceSpecialRequirements != nil { //Innovation and regular resource and special required
-            maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
-        } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count == 0 && gear.resourceSpecialRequirements != nil { //Requires special and innovation but not regular
-            maxCraftable = craftableSpecials.min()!
-        }
-        
-        // Need to deal with gear type 'any' case when we get to actually decrementing gear storage for crafting!
-        
-        return maxCraftable
     }
     
     // TableViewDelegate stuff
@@ -255,7 +146,8 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             cell.tag = indexPath.row
             
             let location = myLocations![indexPath.row]
-            let buildableStatus = isBuildable(location: location)
+            let buildableStatus = validator.isBuildable(resources: myStorage!,locations: myLocations!, location: location)
+        
             var buildableStatusString = String()
             var missingResourcesString = String()
             let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
@@ -270,7 +162,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 buildableStatusString = "Unbuildable"
             }
             if buildableStatus != true && !location.isBuilt {
-                let dict = getMissingLocationResourceRequirements(location: location)
+                let dict = validator.getMissingLocationResourceRequirements(resources: myStorage!, location: location)
                 if dict == [:] {
                     missingResourcesString = "Missing: \(location.locationRequirement)"
                 } else if !location.locationRequirement.contains("Special") && builtLocationNames.contains(location.locationRequirement) {
@@ -288,7 +180,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
             configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
             
             //if !location.isBuilt {
-            if !isBuildable(location: location) && !location.isBuilt {
+            if !validator.isBuildable(resources: myStorage!, locations: myLocations!, location: location) && !location.isBuilt {
                 configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
             } else if location.locationRequirement.contains("Special") {
                 configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
@@ -338,15 +230,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
 
     }
     // Helper functions
-    fileprivate func makeCell(for tableView: UITableView) -> UITableViewCell {
-        let cellIdentifier = "ResourceTableViewCell"
-        if let cell =
-            tableView.dequeueReusableCell(withIdentifier: cellIdentifier) {
-            return cell
-        } else {
-            return UITableViewCell(style: .subtitle,reuseIdentifier: cellIdentifier)
-        }
-    }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
         label.text = name
@@ -415,11 +298,15 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
     }
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
-        if isBuildable(location: location) {
+        if location.locationRequirement.contains("Special") {
+            print("Alert view goes here!")
+            myLocations![cell.tag].isBuilt = true
+            //dataModel.currentSettlement!.allLocations[cell.tag].isBuilt = true
+            mySettlement!.locationsBuiltDict[location] = true
+        } else if validator.isBuildable(resources: myStorage!, locations: myLocations!, location: location) {
             spendResources(for: location)
-            //myLocations![cell.tag].isBuilt = true // Need to do this in SpendResourcesVC Save function
         } else if location.isBuilt {
-            myLocations![cell.tag].isBuilt = false
+            myLocations![cell.tag].isBuilt = false // Destroy instead
         }
         tableView.reloadData()
     }
@@ -435,7 +322,6 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
                 for type in resource.type {
                     if requiredTypes.contains(type) {
                         spendableResources[resource] = myStorage![resource]! //assign value
-                        //print("We have \(myStorage![resource]!) \(resource.name)")
                         break
                     }
                 }
@@ -456,6 +342,7 @@ class ResourceViewController: UIViewController, UITableViewDelegate, UITableView
         }
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         self.myLocations![self.myLocations!.lastIndex(of: self.currentLocation!)!].isBuilt = true
+        mySettlement!.locationsBuiltDict[currentLocation!] = true
         tableView.reloadData()
     }
 }

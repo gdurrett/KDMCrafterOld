@@ -144,16 +144,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                     self.setSpentTypes(key: key, type: type, spentResourceQty: spentResourceQty)
                 }
             }
-            self.setSpentTypes()
-//            let typeVals = Array(self.spentResourceTypes.values)
-//            self.spentTypesString = "Spent: "
-//            for type in self.requiredResourceTypes.keys {
-//                let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
-//                self.spentResourceTypesTemp[type] = spentAmount
-//                self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
-//            }
-//            self.spentTypesLabel.text = self.spentTypesString
-            
+            self.setSpentTypes()            
             self.checkIfRequirementsMet()
         }
         
@@ -173,6 +164,9 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+            for (resource, qty) in self.spentResourceTypes {
+                self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
+            }
         } else {
             for (resource, qty) in self.spentResourceTypes {
                 self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources

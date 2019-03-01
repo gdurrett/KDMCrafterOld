@@ -16,7 +16,7 @@ struct Gear: Hashable {
     var resourceTypeRequirements: [resourceType:Int]? = nil
     var resourceSpecialRequirements: [Resource:Int]? = nil
     var innovationRequirement: Innovation? = nil
-    var locationRequirement: Location
+    var locationRequirement: Location?
     
     // Full init
     init(name: String, description: String, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [Resource:Int], innovationRequirement: Innovation, locationRequirement: Location) {

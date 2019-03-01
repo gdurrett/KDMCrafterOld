@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FB1309F421CD66D100CAA684 /* Gear.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F321CD66D100CAA684 /* Gear.swift */; };
 		FB1309F621CD687D00CAA684 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F521CD687D00CAA684 /* Location.swift */; };
 		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
 		FB2B42A2221CD5B200CAA684 /* SpendResourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */; };
+		FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */; };
+		FB5930BB2227188F00CAA684 /* CraftBuildValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930BA2227188F00CAA684 /* CraftBuildValidator.swift */; };
+		FB5930BC2227609F00CAA684 /* Gear.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F321CD66D100CAA684 /* Gear.swift */; };
+		FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930B4222705AF00CAA684 /* GearTableViewCell.swift */; };
+		FB5930BF222764C300CAA684 /* GearTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB5930BE222764C300CAA684 /* GearTableViewCell.xib */; };
 		FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */; };
 		FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */; };
 		FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */; };
 		FBEA74A1220A534700CAA684 /* LocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */; };
 		FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD693F21C43BA200CAA684 /* AppDelegate.swift */; };
-		FBFD694221C43BA200CAA684 /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694121C43BA200CAA684 /* ResourceViewController.swift */; };
+		FBFD694221C43BA200CAA684 /* BuildLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */; };
 		FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694321C43BA200CAA684 /* SecondViewController.swift */; };
 		FBFD694721C43BA200CAA684 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694521C43BA200CAA684 /* Main.storyboard */; };
 		FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694821C43BA400CAA684 /* Assets.xcassets */; };
@@ -31,13 +35,17 @@
 		FB1309F521CD687D00CAA684 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		FB1309F721CDA5FE00CAA684 /* Innovation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Innovation.swift; sourceTree = "<group>"; };
 		FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendResourcesViewController.swift; sourceTree = "<group>"; };
+		FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftGearViewController.swift; sourceTree = "<group>"; };
+		FB5930B4222705AF00CAA684 /* GearTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearTableViewCell.swift; sourceTree = "<group>"; };
+		FB5930BA2227188F00CAA684 /* CraftBuildValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftBuildValidator.swift; sourceTree = "<group>"; };
+		FB5930BE222764C300CAA684 /* GearTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GearTableViewCell.xib; sourceTree = "<group>"; };
 		FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTableViewCell.swift; sourceTree = "<group>"; };
 		FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceTableViewCell.xib; sourceTree = "<group>"; };
 		FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
 		FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationTableViewCell.xib; sourceTree = "<group>"; };
 		FBFD693C21C43BA200CAA684 /* KDMCrafter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDMCrafter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFD693F21C43BA200CAA684 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FBFD694121C43BA200CAA684 /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
+		FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildLocationViewController.swift; sourceTree = "<group>"; };
 		FBFD694321C43BA200CAA684 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		FBFD694621C43BA200CAA684 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FBFD694821C43BA400CAA684 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -62,8 +70,9 @@
 		FB3D9A8421F649E200CAA684 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */,
 				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
-				FBFD694121C43BA200CAA684 /* ResourceViewController.swift */,
+				FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */,
 				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
 			);
 			path = Controller;
@@ -85,6 +94,8 @@
 				FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */,
 				FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */,
 				FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */,
+				FB5930B4222705AF00CAA684 /* GearTableViewCell.swift */,
+				FB5930BE222764C300CAA684 /* GearTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -108,9 +119,9 @@
 		FBFD693E21C43BA200CAA684 /* KDMCrafter */ = {
 			isa = PBXGroup;
 			children = (
+				FBFD693F21C43BA200CAA684 /* AppDelegate.swift */,
 				FB3D9A8521F649F100CAA684 /* View */,
 				FBFD695521C4582800CAA684 /* Model */,
-				FBFD693F21C43BA200CAA684 /* AppDelegate.swift */,
 				FB3D9A8421F649E200CAA684 /* Controller */,
 				FBFD694821C43BA400CAA684 /* Assets.xcassets */,
 				FBFD694A21C43BA400CAA684 /* LaunchScreen.storyboard */,
@@ -122,6 +133,7 @@
 		FBFD695521C4582800CAA684 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FB5930BA2227188F00CAA684 /* CraftBuildValidator.swift */,
 				FBFD695321C4581A00CAA684 /* DataModel.swift */,
 				FBFD695621C458B300CAA684 /* Resource.swift */,
 				FBFD695821C8181F00CAA684 /* Settlement.swift */,
@@ -190,6 +202,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB5930BF222764C300CAA684 /* GearTableViewCell.xib in Resources */,
 				FBFD694C21C43BA400CAA684 /* LaunchScreen.storyboard in Resources */,
 				FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */,
 				FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */,
@@ -205,17 +218,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB1309F421CD66D100CAA684 /* Gear.swift in Sources */,
+				FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */,
+				FB5930BC2227609F00CAA684 /* Gear.swift in Sources */,
 				FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */,
+				FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */,
 				FB1309F621CD687D00CAA684 /* Location.swift in Sources */,
 				FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */,
 				FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */,
 				FB2B42A2221CD5B200CAA684 /* SpendResourcesViewController.swift in Sources */,
 				FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */,
+				FB5930BB2227188F00CAA684 /* CraftBuildValidator.swift in Sources */,
 				FBFD695721C458B300CAA684 /* Resource.swift in Sources */,
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */,
-				FBFD694221C43BA200CAA684 /* ResourceViewController.swift in Sources */,
+				FBFD694221C43BA200CAA684 /* BuildLocationViewController.swift in Sources */,
 				FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
