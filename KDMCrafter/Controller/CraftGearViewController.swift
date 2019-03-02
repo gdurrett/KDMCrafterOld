@@ -24,6 +24,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var myLocations: [Location]?
     var numGearRows: Int?
 
+    var expandedRows = Set<Int>()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,6 +33,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.dataSource = self
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         tableView.register(GearTableViewCell.nib, forCellReuseIdentifier: GearTableViewCell.identifier)
+        tableView.rowHeight = UITableView.automaticDimension
+        
         
         mySettlement = dataModel.currentSettlement!
         myStorage = mySettlement!.resourceStorage
@@ -52,12 +56,16 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         //
         return numGearRows!
     }
-    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
         cell.cellDelegate = self
         cell.selectionStyle = .none
         cell.tag = indexPath.row
+        
+        cell.isExpanded = self.expandedRows.contains(indexPath.row)
         
         let gear = self.sortedGear![indexPath.row]
         let craftableStatus = validator.checkCraftability(gear: gear) > 0 ? true:false
@@ -87,6 +95,31 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? GearTableViewCell else { return }
+        
+        switch cell.isExpanded {
+        case true:
+            self.expandedRows.remove(indexPath.row)
+        case false:
+            self.expandedRows.insert(indexPath.row)
+        }
+
+        cell.isExpanded = !cell.isExpanded
+        
+//        self.tableView.reloadData()
+        self.tableView.beginUpdates()
+        self.tableView.endUpdates()
+        
+    }
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? GearTableViewCell else { return }
+        self.expandedRows.remove(indexPath.row)
+        cell.isExpanded = false
+//        self.tableView.reloadData()
+        self.tableView.beginUpdates()
+        self.tableView.endUpdates()
+    }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
         label.text = name
@@ -115,7 +148,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
-        let label = cell.viewWithTag(tag) as! UILabel
+        let label = cell.viewWithTag(tag) as! UITextView
         label.text = missing.replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
         if label.text!.contains("Missing") && label.text != "Lantern Hoard" {
             label.textColor = UIColor.red
