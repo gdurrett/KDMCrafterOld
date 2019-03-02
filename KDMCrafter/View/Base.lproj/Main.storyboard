@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--First-->
+        <!--Manage Resources-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <viewController storyboardIdentifier="BuildLocationViewController" id="9pv-A4-QxB" customClass="BuildLocationViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ManageResourcesViewController" id="9pv-A4-QxB" customClass="ManageResourcesViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -32,9 +32,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="First" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Manage Resources" image="first" id="acW-dT-cKf"/>
                     <connections>
-                        <outlet property="tableView" destination="ENq-Ks-dml" id="DfM-cd-xHy"/>
+                        <outlet property="tableView" destination="ENq-Ks-dml" id="kLK-cq-z7Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
@@ -116,7 +116,7 @@
             </objects>
             <point key="canvasLocation" x="1685.5999999999999" y="-330.58470764617692"/>
         </scene>
-        <!--Second-->
+        <!--Craft Gear-->
         <scene sceneID="wg7-f3-ORb">
             <objects>
                 <viewController storyboardIdentifier="CraftGearViewController" id="8rJ-Kc-sve" customClass="CraftGearViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
@@ -138,7 +138,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="O1u-W8-tvY"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Second" image="second" id="cPa-gy-q4n"/>
+                    <tabBarItem key="tabBarItem" title="Craft Gear" image="second" id="cPa-gy-q4n"/>
                     <connections>
                         <outlet property="tableView" destination="DP0-mO-r1L" id="cQg-ZS-pVh"/>
                     </connections>
@@ -146,6 +146,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="749.60000000000002" y="359.37031484257875"/>
+        </scene>
+        <!--Build Locations-->
+        <scene sceneID="R60-OV-K6Y">
+            <objects>
+                <viewController storyboardIdentifier="BuildLocationViewController" id="30M-tm-Aru" customClass="BuildLocationViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SeT-us-5NZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zq9-7I-wJO">
+                                <rect key="frame" x="16" y="79" width="343" height="539"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="XqU-cj-ECq" firstAttribute="trailing" secondItem="zq9-7I-wJO" secondAttribute="trailing" constant="16" id="EVx-cL-sCC"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="bottom" secondItem="XqU-cj-ECq" secondAttribute="bottom" id="HIU-Tu-xyJ"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="top" secondItem="XqU-cj-ECq" secondAttribute="top" constant="59" id="Hfw-nt-g7w"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="leading" secondItem="XqU-cj-ECq" secondAttribute="leading" constant="16" id="yOg-g0-jTb"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="XqU-cj-ECq"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Build Locations" image="second" id="xIE-0Z-20g"/>
+                    <connections>
+                        <outlet property="tableView" destination="zq9-7I-wJO" id="3T9-hk-v3T"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F4D-iO-DDw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="744.79999999999995" y="1078.1109445277361"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -157,13 +188,14 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
-                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
+                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="ZHC-c9-uXK"/>
+                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="I8y-mt-ZSU"/>
+                        <segue destination="30M-tm-Aru" kind="relationship" relationship="viewControllers" id="udc-dA-Gjg"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="0.0"/>
+            <point key="canvasLocation" x="-148" y="230"/>
         </scene>
     </scenes>
     <resources>

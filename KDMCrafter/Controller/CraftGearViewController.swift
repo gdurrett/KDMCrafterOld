@@ -44,6 +44,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
         myStorage = mySettlement!.resourceStorage
+        validator.resources = mySettlement!.resourceStorage
+        validator.settlement.builtLocations = mySettlement!.builtLocations
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,18 +61,29 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let gear = self.sortedGear![indexPath.row]
         let craftableStatus = validator.checkCraftability(gear: gear) > 0 ? true:false
-
         var craftableStatusString = String()
-//        var missingResourcesString = String()
+        var missingResourcesString = String()
         
         if craftableStatus == true {
             craftableStatusString = "Craft"
+            configureMissingResourceLabel(for: cell, with: "", with: 3850)
         } else {
+            let dict = validator.getMissingGearResourceRequirements(gear: gear)
+            let locationBuiltStatus = mySettlement!.locationsBuiltDict[gear.locationRequirement!]
+            if locationBuiltStatus == false && !dict.isEmpty {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(dict)"
+            } else if locationBuiltStatus == true {
+                missingResourcesString = "Missing: \(dict)"
+            } else {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name)"
+            }
             craftableStatusString = "Uncraftable"
+            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
         }
         
         configureTitle(for: cell, with: gear.name, with: 3750)
         configureCraftLabel(for: cell, with: craftableStatusString, with: 3800)
+        
         return cell
     }
     
@@ -100,6 +113,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         //button.sizeToFit()
         
+    }
+    fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
+        let label = cell.viewWithTag(tag) as! UILabel
+        label.text = missing.replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
+        if label.text!.contains("Missing") && label.text != "Lantern Hoard" {
+            label.textColor = UIColor.red
+        } else {
+            label.textColor = UIColor.black
+        }
+        if label.text!.contains("Special") {
+            label.text = missing.replacingOccurrences(of: "Special: ", with: "")
+            label.textColor = UIColor.gray
+        }
+        label.backgroundColor = UIColor.clear
     }
     func tappedCraftButton(cell: GearTableViewCell) {
         //

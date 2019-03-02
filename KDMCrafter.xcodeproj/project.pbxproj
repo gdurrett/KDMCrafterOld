@@ -15,13 +15,13 @@
 		FB5930BC2227609F00CAA684 /* Gear.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F321CD66D100CAA684 /* Gear.swift */; };
 		FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930B4222705AF00CAA684 /* GearTableViewCell.swift */; };
 		FB5930BF222764C300CAA684 /* GearTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB5930BE222764C300CAA684 /* GearTableViewCell.xib */; };
+		FB5930C02228C13D00CAA684 /* ManageResourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */; };
 		FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */; };
 		FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */; };
 		FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */; };
 		FBEA74A1220A534700CAA684 /* LocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA74A0220A534700CAA684 /* LocationTableViewCell.xib */; };
 		FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD693F21C43BA200CAA684 /* AppDelegate.swift */; };
 		FBFD694221C43BA200CAA684 /* BuildLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */; };
-		FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD694321C43BA200CAA684 /* SecondViewController.swift */; };
 		FBFD694721C43BA200CAA684 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694521C43BA200CAA684 /* Main.storyboard */; };
 		FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694821C43BA400CAA684 /* Assets.xcassets */; };
 		FBFD694C21C43BA400CAA684 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBFD694A21C43BA400CAA684 /* LaunchScreen.storyboard */; };
@@ -46,7 +46,7 @@
 		FBFD693C21C43BA200CAA684 /* KDMCrafter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDMCrafter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFD693F21C43BA200CAA684 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildLocationViewController.swift; sourceTree = "<group>"; };
-		FBFD694321C43BA200CAA684 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageResourcesViewController.swift; sourceTree = "<group>"; };
 		FBFD694621C43BA200CAA684 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FBFD694821C43BA400CAA684 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FBFD694B21C43BA400CAA684 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 				FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */,
 				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
 				FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */,
-				FBFD694321C43BA200CAA684 /* SecondViewController.swift */,
+				FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -218,9 +218,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB5930C02228C13D00CAA684 /* ManageResourcesViewController.swift in Sources */,
 				FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */,
 				FB5930BC2227609F00CAA684 /* Gear.swift in Sources */,
-				FBFD694421C43BA200CAA684 /* SecondViewController.swift in Sources */,
 				FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */,
 				FB1309F621CD687D00CAA684 /* Location.swift in Sources */,
 				FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */,

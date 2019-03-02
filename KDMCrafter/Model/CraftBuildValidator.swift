@@ -11,9 +11,11 @@ import Foundation
 public class CraftBuildValidator {
     
     var settlement: Settlement!
+    var resources: [Resource:Int]!
     
     init(settlement: Settlement) {
         self.settlement = settlement
+        self.resources = settlement.resourceStorage
     }
     
 //    func checkCraftability(resources: [Resource:Int], gear: Gear) -> Int {
@@ -25,7 +27,6 @@ public class CraftBuildValidator {
         var numTypeCraftable = Int()
         var numSpecialCraftable = Int()
         var innovationExists = Bool()
-        //let locationExists =  settlement!.allLocations[gear.locationRequirement.rawValue].isBuilt == true
         let locationExists = settlement!.locationsBuiltDict[gear.locationRequirement!]!
         var maxCraftable = Int()
         var craftableTypes = [Int]()
@@ -55,30 +56,22 @@ public class CraftBuildValidator {
         if innovationRequirement != nil {
             innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
         }
-        if gear.name == "Bone Dagger" {
-            print("For BD, requiredLocation built is \(locationExists)")
-        }
         if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Basic resource only
             maxCraftable = craftableTypes.min()!
-            print("Section 1")
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && gear.resourceTypeRequirements!.count != 0 { // Special and regular resource types required, but no innovation required
             if gear.name == "Skull Helm" { // Special case of either/or
                 maxCraftable = craftableTypes.min()! + craftableSpecials.min()!
             } else {
-                print("Section 2")
                 maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
             }
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count == 0 { //Special resource required, no innovation or regular types required
-            print("Should get here for circlet!")
             maxCraftable = craftableSpecials.min()!
         } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements!.count != 0 { // Innovation required and regular resource types required
             maxCraftable = craftableTypes.min()!
-            print("Section 3")
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count != 0 && gear.resourceSpecialRequirements != nil { //Innovation and regular resource and special required
             maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count == 0 && gear.resourceSpecialRequirements != nil { //Requires special and innovation but not regular
             maxCraftable = craftableSpecials.min()!
-            print("Section 4")
         } else {
             //print(gear.name)
         }
@@ -107,7 +100,7 @@ public class CraftBuildValidator {
             return false
         }
     }
-    func getMissingLocationResourceRequirements(resources: [Resource:Int], location: Location) -> [String:Int] {
+    func getMissingLocationResourceRequirements(location: Location) -> [String:Int] {
         var myDict = [String:Int]()
         let resourceRequirements = location.resourceRequirements
         if resourceRequirements.count != 0 {
@@ -120,7 +113,31 @@ public class CraftBuildValidator {
         }
         return myDict
     }
-    func isBuildable(resources: [Resource:Int], locations: [Location], location: Location) -> Bool {
+    func getMissingGearResourceRequirements(gear: Gear) -> [String:Int] {
+        var myDict = [String:Int]()
+        let resourceTypeRequirements = gear.resourceTypeRequirements
+        let resourceSpecialRequirements = gear.resourceSpecialRequirements
+        if resourceTypeRequirements!.count != 0 {
+            for (type, qty) in resourceTypeRequirements! {
+                let typeCount = getTypeCount(type: type, resources: resources)
+                if gear.name == "Bandages" { print("For Bandages, typecount is: \(typeCount)") }
+                if typeCount < qty {
+                    myDict[type.rawValue] = (qty - typeCount)
+                }
+            }
+        }
+        if resourceSpecialRequirements != nil {
+            for (resource, qty) in resourceSpecialRequirements! {
+                let resourceCount = getSpecialCount(resources: resources, special: resource)
+                if resourceCount < qty {
+                    myDict[resource.name] = (qty - resourceCount)
+                }
+            }
+        }
+        return myDict
+
+    }
+    func isBuildable(locations: [Location], location: Location) -> Bool {
         if location.isBuilt { return false }
         if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) {
             return true
@@ -160,11 +177,6 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
-//    let dataModel = DataModel.sharedInstance
-//    let mySettlement = DataModel.sharedInstance.currentSettlement!
-//    let myStorage = DataModel.sharedInstance.currentSettlement!.resourceStorage
-//    let myAvailableGear = DataModel.sharedInstance.currentSettlement!.availableGear
     let myInnovations = DataModel.sharedInstance.currentSettlement!.innovations
-//    let myLocations = DataModel.sharedInstance.currentSettlement!.allLocations
 
 }
