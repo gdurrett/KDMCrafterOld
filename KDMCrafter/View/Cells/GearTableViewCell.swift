@@ -29,8 +29,8 @@ class GearTableViewCell: UITableViewCell {
                 self.heightConstraint1.constant = 0.0
                 self.heightConstraint2.constant = 0.0
             } else {
-                self.heightConstraint1.constant = 50
-                self.heightConstraint2.constant = 65
+                self.heightConstraint1.constant = 65
+                self.heightConstraint2.constant = 85
             }
         }
     }
