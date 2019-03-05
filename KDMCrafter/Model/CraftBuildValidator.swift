@@ -39,6 +39,20 @@ public class CraftBuildValidator {
                 craftableTypes.append(numTypeCraftable)
             }
         }
+//        if specialRequirements?.count != nil {
+//            for (special, qty) in specialRequirements! {
+//                let specialCount = getSpecialCount(resources: resources, special: special)
+//                numSpecialCraftable = (specialCount/qty)
+//                craftableSpecials.append(numSpecialCraftable)
+//                if numSpecialCraftable == 0 {
+//                    //print("Missing \(special.name) special resource for \(gear.name).")
+//                } else {
+//                    if gear.resourceSpecialRequirements != nil {
+//
+//                    }
+//                }
+//            }
+//        }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
                 let specialCount = getSpecialCount(resources: resources, special: special)
@@ -89,8 +103,12 @@ public class CraftBuildValidator {
         }
         return count
     }
-    func getSpecialCount(resources: [Resource:Int], special: Resource) -> Int {
-        let count = resources[special]!
+//    func getSpecialCount(resources: [Resource:Int], special: resource) -> Int {
+//        let count = resources[special]!
+//        return count
+//    }
+    func getSpecialCount(resources: [Resource:Int], special: resourceType) -> Int {
+        let count = resources.filter { key, value in return key.type.contains(special) }.values.reduce(0, +)
         return count
     }
     func getInnovationExists(innovation: Innovation) -> Bool {
@@ -126,13 +144,20 @@ public class CraftBuildValidator {
                 }
             }
         }
-        if resourceSpecialRequirements != nil {
-            for (resource, qty) in resourceSpecialRequirements! {
-                let resourceCount = getSpecialCount(resources: resources, special: resource)
-                if resourceCount < qty {
-                    myDict[resource.name] = (qty - resourceCount)
+        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
+            for (type, qty) in resourceSpecialRequirements! {
+                let typeCount = getTypeCount(type: type, resources: resources)
+                if typeCount < qty {
+                    myDict[type.rawValue] = (qty - typeCount)
                 }
             }
+
+//            for (resource, qty) in resourceSpecialRequirements! {
+//                let resourceCount = getSpecialCount(resources: resources, special: resource)
+//                if resourceCount < qty {
+//                    myDict[resource.name] = (qty - resourceCount)
+//                }
+//            }
         }
         return myDict
 

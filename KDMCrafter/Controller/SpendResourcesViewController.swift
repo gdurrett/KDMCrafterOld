@@ -161,6 +161,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         label.sizeToFit()
     }
     fileprivate func checkIfRequirementsMet() {
+        print("Temp: \(self.spentResourceTypesTemp), Required: \(requiredResourceTypes)")
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
@@ -182,9 +183,11 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         for type in self.requiredResourceTypes.keys {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
             self.spentResourceTypesTemp[type] = spentAmount
+            print("In setSpent: \(self.spentResourceTypesTemp[type]!)")
             self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
         }
         self.spentTypesLabel.text = self.spentTypesString
+        self.checkIfRequirementsMet()
     }
     @IBAction func showChoices(_ sender: Any) {
         let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)

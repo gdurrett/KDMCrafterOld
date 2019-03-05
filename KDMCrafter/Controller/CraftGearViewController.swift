@@ -18,12 +18,14 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var mySettlement: Settlement?
     var myStorage: [Resource:Int]?
+    var sortedStorage: [(key: Resource, value: Int)]?
     var sortedGear: [Gear]?
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
     var numGearRows: Int?
 
+    var currentGear: Gear?
     var expandedRows = Set<Int>()
 
     override func viewDidLoad() {
@@ -41,7 +43,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         numGearRows = dataModel.currentSettlement!.availableGear.count
         myAvailableGear = mySettlement!.availableGear
         sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
-        
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
+
         tableView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +74,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let craftableStatus = validator.checkCraftability(gear: gear) > 0 ? true:false
         var craftableStatusString = String()
         var missingResourcesString = String()
+        
+        configureGearInfoLabel(for: cell, with: gear.description, with: 3900)
         
         if craftableStatus == true {
             craftableStatusString = "Craft"
@@ -147,6 +152,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         //button.sizeToFit()
         
     }
+    fileprivate func configureGearInfoLabel(for cell: UITableViewCell, with info: String, with tag: Int) {
+        let label = cell.viewWithTag(tag) as! UITextView
+        label.text = info
+        
+    }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UITextView
         label.text = missing.replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
@@ -162,11 +172,49 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         label.backgroundColor = UIColor.clear
     }
     func tappedCraftButton(cell: GearTableViewCell) {
-        //
+        let gear = self.sortedGear![cell.tag]
+        spendResources(for: gear)
     }
-    
+    fileprivate func spendResources(for gear: Gear) {
+        if validator.checkCraftability(gear: gear) > 0 && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
+            mySettlement!.gearCraftedDict[gear]! += 1
+            print("We have crafted \(mySettlement!.gearCraftedDict[gear]!) \(gear.name) of \(gear.qtyAvailable) available.")
+        } else {
+            print("Cannot craft \(gear.name)")
+        }
+        let requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys
+        let requiredResourceTypes = gear.resourceTypeRequirements!.merging(gear.resourceSpecialRequirements!) { (current, _) in current } // Also combined dict
+        var spendableResources = [Resource:Int]()
+        validator.resources = mySettlement!.resourceStorage // Update validator
+        
+        let spendResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "spendResourcesVC") as! SpendResourcesViewController
+        
+        for resource in myStorage!.keys {
+            if myStorage![resource]! > 0 {
+                for type in resource.type {
+                    if requiredTypes.contains(type) {
+                        spendableResources[resource] = myStorage![resource]! //assign value
+                        print("Assigning \(spendableResources[resource]!) to spendable")
+                        break
+                    }
+                }
+            }
+        }
+        spendResourcesVC.spendableResources = spendableResources
+        spendResourcesVC.requiredResourceTypes = requiredResourceTypes
+        self.currentGear = gear
+        spendResourcesVC.delegate = self
+        
+        self.present(spendResourcesVC, animated: true, completion: nil)
+    }
     func updateStorage(with spentResources: [Resource : Int]) {
-        //
+        for (resource, qty) in spentResources {
+            mySettlement!.resourceStorage[resource]! -= qty
+            myStorage![resource]! -= qty
+        }
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
+        validator.resources = mySettlement!.resourceStorage // Update validator here?
+        tableView.reloadData()
     }
 
 }

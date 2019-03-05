@@ -14,20 +14,23 @@ protocol GearTableViewCellDelegate: class {
 
 class GearTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var heightConstraint1: NSLayoutConstraint!
+    @IBOutlet weak var heightConstraint2: NSLayoutConstraint!
     
     @IBOutlet weak var gearName: UILabel!
     @IBOutlet weak var craftButton: UIButton!
     @IBAction func craftAction(_ sender: Any) {
-        
+        cellDelegate?.tappedCraftButton(cell: self)
     }
     
     var isExpanded:Bool = false {
         didSet {
             if !isExpanded {
-                self.heightConstraint.constant = 0.0
+                self.heightConstraint1.constant = 0.0
+                self.heightConstraint2.constant = 0.0
             } else {
-                self.heightConstraint.constant = 60
+                self.heightConstraint1.constant = 50
+                self.heightConstraint2.constant = 65
             }
         }
     }
