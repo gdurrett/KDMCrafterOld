@@ -131,7 +131,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
 
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
             let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            if self.sortedSpentResources![indexPath.row].0.type.count > 1 {
+            if self.sortedSpentResources![indexPath.row].0.type.count > 1 && spentResourceQty > 0  {
                 self.typeChoices = self.sortedSpentResources![indexPath.row].0.type
                 self.showChoices(self)
             } else {
@@ -161,7 +161,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         label.sizeToFit()
     }
     fileprivate func checkIfRequirementsMet() {
-        print("Temp: \(self.spentResourceTypesTemp), Required: \(requiredResourceTypes)")
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)

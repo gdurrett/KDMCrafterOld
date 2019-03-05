@@ -138,7 +138,6 @@ public class CraftBuildValidator {
         if resourceTypeRequirements!.count != 0 {
             for (type, qty) in resourceTypeRequirements! {
                 let typeCount = getTypeCount(type: type, resources: resources)
-                if gear.name == "Bandages" { print("For Bandages, typecount is: \(typeCount)") }
                 if typeCount < qty {
                     myDict[type.rawValue] = (qty - typeCount)
                 }

@@ -41,6 +41,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        sortedStorage = dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
+
         tableView.reloadData()
     }
 
