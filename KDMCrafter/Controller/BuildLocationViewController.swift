@@ -69,57 +69,28 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationTableViewCell", for: indexPath) as! LocationTableViewCell
-            cell.cellDelegate = self
-            cell.selectionStyle = .none
-            cell.tag = indexPath.row
-            
-            let location = myLocations![indexPath.row]
-            let buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
-            let builtLocationNames = mySettlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
-            let isBuilt = mySettlement!.locationsBuiltDict[location]!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationTableViewCell", for: indexPath) as! LocationTableViewCell
+        cell.cellDelegate = self
+        cell.backgroundColor = UIColor.clear
+        cell.selectionStyle = .none
+        cell.tag = indexPath.row
         
-            var buildableStatusString = String()
-            var missingResourcesString = String()
-            //let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
-        
-            if location.name == "Lantern Hoard" {
-                buildableStatusString = ""
-            } else if buildableStatus == true {
-                buildableStatusString = "Build"
-//            } else if location.isBuilt {
-            } else if isBuilt {
-                buildableStatusString = "Destroy"
-            } else {
-                buildableStatusString = "Unbuildable"
-            }
-//            if buildableStatus != true && !location.isBuilt {
-            if buildableStatus != true && !isBuilt {
-                let dict = validator.getMissingLocationResourceRequirements(location: location)
-                if dict == [:] {
-                    missingResourcesString = "Missing: \(location.locationRequirement)"
-                } else if !location.locationRequirement.contains("Special") && builtLocationNames.contains(location.locationRequirement) {
-                    missingResourcesString = "Missing: \(dict)"
-                } else {
-                    missingResourcesString = "Missing: \(location.locationRequirement), \(dict)"
-                }
-            } else {
-                //missingResourcesString = location.locationRequirement.replacingOccurrences(of: "Special: ", with: "")
-                missingResourcesString = location.locationRequirement
-            }
-            cell.backgroundColor = UIColor.clear
+        let location = myLocations![indexPath.row]
+        let buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
+        let isBuilt = mySettlement!.locationsBuiltDict[location]!
+        let buildableStatusString = setBuildableStatusString(location: location, isBuilt: isBuilt, buildableStatus: buildableStatus)
+        let missingResourcesString = setMissingResourcesString(location: location, buildableStatus: buildableStatus, isBuilt: isBuilt)
 
-            configureTitle(for: cell, with: myLocations![indexPath.row].name, with: 3600)
-            configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
-            
-            //if !location.isBuilt {
-            if !validator.isBuildable(locations: myLocations!, location: location) && !isBuilt {
-                configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
-            } else if location.locationRequirement.contains("Special") {
-                configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
-            } else {
-                configureMissingResourceLabel(for: cell, with: "", with: 3700)
-            }
+        configureTitle(for: cell, with: myLocations![indexPath.row].name, with: 3600)
+        configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
+        
+        if !validator.isBuildable(locations: myLocations!, location: location) && !isBuilt {
+            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
+        } else if location.locationRequirement.contains("Special") {
+            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
+        } else {
+            configureMissingResourceLabel(for: cell, with: "", with: 3700)
+        }
 
         return cell
     }
@@ -139,7 +110,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         label.sizeToFit()
     }
     fileprivate func configureBuildLabel(for cell: UITableViewCell, with status: String, with tag: Int, for location: Location) {
-        //let button = cell.subviews.viewWithTag(tag) as! UIButton
         let cell = cell as! LocationTableViewCell
         let button = cell.buildButton!
         
@@ -157,7 +127,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         } else {
             //button.isHidden = true
         }
-        //button.sizeToFit()
         
     }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
@@ -174,6 +143,39 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         }
         label.backgroundColor = UIColor.clear
     }
+    fileprivate func setBuildableStatusString(location: Location, isBuilt: Bool, buildableStatus: Bool) -> String {
+        
+        var buildableStatusString = String()
+        if location.name == "Lantern Hoard" {
+            buildableStatusString = ""
+        } else if buildableStatus == true {
+            buildableStatusString = "Build"
+        } else if isBuilt {
+            buildableStatusString = "Destroy"
+        } else {
+            buildableStatusString = "Unbuildable"
+        }
+        return buildableStatusString
+    }
+    fileprivate func setMissingResourcesString(location: Location, buildableStatus: Bool, isBuilt: Bool) -> String {
+        
+        var missingResourcesString = String()
+        let builtLocationNames = mySettlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
+        if buildableStatus != true && !isBuilt {
+            let dict = validator.getMissingLocationResourceRequirements(location: location)
+            if dict == [:] {
+                missingResourcesString = "Missing: \(location.locationRequirement)"
+            } else if !location.locationRequirement.contains("Special") && builtLocationNames.contains(location.locationRequirement) {
+                missingResourcesString = "Missing: \(dict)"
+            } else {
+                missingResourcesString = "Missing: \(location.locationRequirement), \(dict)"
+            }
+        } else {
+            missingResourcesString = location.locationRequirement
+        }
+        return missingResourcesString
+    }
+    
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
         if location.locationRequirement.contains("Special") {

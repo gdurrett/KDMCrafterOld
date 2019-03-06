@@ -10,8 +10,17 @@ import UIKit
 
 class CraftGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GearTableViewCellDelegate, SpendResourcesVCDelegate {
     
-
+    @IBAction func overrideToggleAction(_ sender: Any) {
+        if self.overrideToggleOutlet.isOn {
+            mySettlement!.overrideEnabled = true
+        } else {
+            mySettlement!.overrideEnabled = false
+        }
+        tableView.reloadData()
+    }
+    
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var overrideToggleOutlet: UISwitch!
     
     let dataModel = DataModel.sharedInstance
     var validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
@@ -45,6 +54,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
+        self.overrideToggleOutlet.isOn = false
+        
         tableView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -67,11 +78,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.cellDelegate = self
         cell.selectionStyle = .none
         cell.tag = indexPath.row
-        
         cell.isExpanded = self.expandedRows.contains(indexPath.row)
         
         let gear = self.sortedGear![indexPath.row]
-        let craftableStatus = validator.checkCraftability(gear: gear) > 0 ? true:false
+        var craftableStatus = Bool()
+        
+        if mySettlement!.overrideEnabled {
+            if mySettlement!.gearCraftedDict[gear] == gear.qtyAvailable {
+                craftableStatus = false
+            } else {
+                craftableStatus = true
+            }
+        } else {
+            craftableStatus = validator.checkCraftability(gear: gear) > 0 ? true:false
+        }
         var craftableStatusString = String()
         var missingResourcesString = String()
         
@@ -81,28 +101,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             craftableStatusString = "Craft"
             configureMissingResourceLabel(for: cell, with: "", with: 3850)
         } else {
-            let resourceRequirements = validator.getMissingGearResourceRequirements(gear: gear)
-            let locationBuiltStatus = mySettlement!.locationsBuiltDict[gear.locationRequirement!]
-            var innovationRequirement = ""
-            if gear.innovationRequirement != nil && mySettlement!.innovationsAddedDict[gear.innovationRequirement!] != true {
-                innovationRequirement = validator.getMissingInnovationRequirement(gear: gear)
-            }
-            if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement != "" {
-                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements), \(innovationRequirement)"
-            } else if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement == "" {
-                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements)"
-            } else if locationBuiltStatus == false && resourceRequirements.isEmpty && innovationRequirement != "" {
-                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(innovationRequirement)"
-            } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement != "" {
-                missingResourcesString = "Missing: \(resourceRequirements), \(innovationRequirement)"
-            } else if locationBuiltStatus == true && resourceRequirements.isEmpty && innovationRequirement != "" {
-                missingResourcesString = "Missing: \(innovationRequirement)"
-            } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement == "" {
-                missingResourcesString = "Missing: \(resourceRequirements)"
-            } else {
-                missingResourcesString = "Missing: \(gear.locationRequirement!.name)"
-            }
-            
+            missingResourcesString = configureMissingResourcesString(for: cell, for: gear)
             craftableStatusString = "Uncraftable"
             configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
         }
@@ -174,11 +173,40 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         label.text = info
         
     }
+    fileprivate func configureMissingResourcesString(for cell: UITableViewCell, for gear: Gear) -> String {
+        var missingResourcesString = String()
+        if mySettlement!.gearCraftedDict[gear] == gear.qtyAvailable {
+            missingResourcesString = "Max number crafted."
+        } else {
+            let resourceRequirements = validator.getMissingGearResourceRequirements(gear: gear)
+            let locationBuiltStatus = mySettlement!.locationsBuiltDict[gear.locationRequirement!]
+            var innovationRequirement = ""
+            if gear.innovationRequirement != nil && mySettlement!.innovationsAddedDict[gear.innovationRequirement!] != true {
+                innovationRequirement = validator.getMissingInnovationRequirement(gear: gear)
+            }
+            if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement != "" {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements), \(innovationRequirement)"
+            } else if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement == "" {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements)"
+            } else if locationBuiltStatus == false && resourceRequirements.isEmpty && innovationRequirement != "" {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(innovationRequirement)"
+            } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement != "" {
+                missingResourcesString = "Missing: \(resourceRequirements), \(innovationRequirement)"
+            } else if locationBuiltStatus == true && resourceRequirements.isEmpty && innovationRequirement != "" {
+                missingResourcesString = "Missing: \(innovationRequirement)"
+            } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement == "" {
+                missingResourcesString = "Missing: \(resourceRequirements)"
+            } else {
+                missingResourcesString = "Missing: \(gear.locationRequirement!.name)"
+            }
+        }
+        return missingResourcesString
+    }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UITextView
         label.text = missing.replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
-        if label.text!.contains("Missing") && label.text != "Lantern Hoard" {
-            label.textColor = UIColor.red
+        if (label.text!.contains("Missing") || label.text!.contains("Max")) && label.text != "Lantern Hoard" {
+            label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         } else {
             label.textColor = UIColor.black
         }
@@ -190,11 +218,14 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func tappedCraftButton(cell: GearTableViewCell) {
         let gear = self.sortedGear![cell.tag]
-        if validator.checkCraftability(gear: gear) > 0 && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
+        if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
+            mySettlement!.gearCraftedDict[gear]! += 1
+        } else if validator.checkCraftability(gear: gear) > 0 && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
             spendResources(for: gear)
         } else {
             // Can't craft!
         }
+        tableView.reloadData()
     }
     fileprivate func spendResources(for gear: Gear) {
         var requiredTypes = [resourceType]()

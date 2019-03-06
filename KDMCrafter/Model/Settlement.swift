@@ -37,6 +37,7 @@ class Settlement {
     var availableGear = [Gear]()
     var availableInnovations = [Innovation]()
     var innovationsAddedDict = [Innovation:Bool]()
+    var overrideEnabled = false
     
     init(name: String) {
         
