@@ -17,7 +17,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" tag="3800" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ws3-hd-uIC">
-                    <rect key="frame" x="274" y="18" width="45" height="30"/>
+                    <rect key="frame" x="290" y="18" width="45" height="30"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="45" id="9vH-dr-Dpn"/>
                     </constraints>
@@ -29,7 +29,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" tag="3750" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dZ3-Lu-NX0">
-                    <rect key="frame" x="16" y="18" width="42" height="30"/>
+                    <rect key="frame" x="0.0" y="18" width="42" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="1s6-2L-K7y"/>
                     </constraints>
@@ -38,27 +38,27 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" tag="3850" contentMode="center" verticalCompressionResistancePriority="749" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="FX3-jF-piv">
-                    <rect key="frame" x="16" y="55" width="343" height="65"/>
+                    <rect key="frame" x="0.0" y="55" width="375" height="65"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" priority="999" constant="65" id="kit-tR-Aqg"/>
                     </constraints>
-                    <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" tag="3900" contentMode="top" scrollEnabled="NO" editable="NO" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h3O-bv-R4s">
-                    <rect key="frame" x="16" y="120" width="343" height="89"/>
+                    <rect key="frame" x="0.0" y="120" width="375" height="89"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" priority="999" constant="85" id="faH-ad-qyO"/>
                     </constraints>
-                    <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <label opaque="NO" userInteractionEnabled="NO" tag="4000" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F1h-RQ-M1z">
-                    <rect key="frame" x="334" y="23" width="25" height="18"/>
+                    <rect key="frame" x="350" y="23" width="25" height="18"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="25" id="zl5-Ii-P5J"/>
                     </constraints>
@@ -77,9 +77,9 @@
                 <constraint firstItem="FX3-jF-piv" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="55" id="CUA-1Y-Vez"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="h3O-bv-R4s" secondAttribute="bottom" constant="10" id="QbQ-xi-Ryf"/>
                 <constraint firstItem="h3O-bv-R4s" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" id="aOs-Jf-o5X"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" constant="16" id="bjs-ql-TzN"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" id="bjs-ql-TzN"/>
                 <constraint firstItem="h3O-bv-R4s" firstAttribute="top" secondItem="FX3-jF-piv" secondAttribute="bottom" id="dXd-dU-KEI"/>
-                <constraint firstItem="dZ3-Lu-NX0" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="fPv-uf-Snw"/>
+                <constraint firstItem="dZ3-Lu-NX0" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="fPv-uf-Snw"/>
                 <constraint firstItem="Ws3-hd-uIC" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="18" id="gQj-BB-yHX"/>
                 <constraint firstItem="F1h-RQ-M1z" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="23" id="hJO-ZS-N0L"/>
                 <constraint firstItem="FX3-jF-piv" firstAttribute="leading" secondItem="dZ3-Lu-NX0" secondAttribute="leading" id="sOR-Ar-VEJ"/>
@@ -93,7 +93,7 @@
                 <outlet property="heightConstraint2" destination="faH-ad-qyO" id="n8S-Nd-cDt"/>
                 <outlet property="qtyAvailableLabel" destination="F1h-RQ-M1z" id="6p8-Pi-baQ"/>
             </connections>
-            <point key="canvasLocation" x="229.59999999999999" y="-81.409295352323838"/>
+            <point key="canvasLocation" x="228.80000000000001" y="-81.859070464767626"/>
         </view>
     </objects>
 </document>

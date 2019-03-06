@@ -33,7 +33,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
     var numGearRows: Int?
-
     var currentGear: Gear?
     var expandedRows = Set<Int>()
 
@@ -45,7 +44,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         tableView.register(GearTableViewCell.nib, forCellReuseIdentifier: GearTableViewCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
-        
+        //tableView.layoutMargins = UIEdgeInsets.zero
+        tableView.separatorInset = UIEdgeInsets.zero
         
         mySettlement = dataModel.currentSettlement!
         myStorage = mySettlement!.resourceStorage
@@ -78,6 +78,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.cellDelegate = self
         cell.selectionStyle = .none
         cell.tag = indexPath.row
+        cell.layoutMargins = UIEdgeInsets.zero
+        
         cell.isExpanded = self.expandedRows.contains(indexPath.row)
         
         let gear = self.sortedGear![indexPath.row]
