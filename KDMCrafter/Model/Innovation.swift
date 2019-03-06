@@ -15,15 +15,5 @@ struct Innovation: Hashable {
     init(name: String) {
         
         self.name = name
-        
     }
 }
-
-// Innovation declarations
-
-let ammonia = Innovation(name: "Ammonia")
-let drums = Innovation(name: "Drums")
-let heat = Innovation(name: "Heat")
-let paint = Innovation(name: "Paint")
-let pictograph = Innovation(name: "Pictograph")
-let pottery = Innovation(name: "Pottery")

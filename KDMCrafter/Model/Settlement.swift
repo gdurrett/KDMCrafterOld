@@ -35,8 +35,8 @@ class Settlement {
     var builtLocations = [Location]()
     var availableLocations = [Location]()
     var availableGear = [Gear]()
-    //var gearStorage = [Gear]()
-    var innovations = [Innovation]()
+    var availableInnovations = [Innovation]()
+    var innovationsAddedDict = [Innovation:Bool]()
     
     init(name: String) {
         
@@ -60,6 +60,25 @@ class Settlement {
         locationsBuiltDict[skinnery] = false
         locationsBuiltDict[stoneCircle] = false
         locationsBuiltDict[weaponCrafter] = false
+        
+        // Innovation declarations
+        let ammonia = Innovation(name: "Ammonia")
+        availableInnovations.append(ammonia)
+        let drums = Innovation(name: "Drums")
+        availableInnovations.append(drums)
+        let heat = Innovation(name: "Heat")
+        availableInnovations.append(heat)
+        let paint = Innovation(name: "Paint")
+        availableInnovations.append(paint)
+        let pictograph = Innovation(name: "Pictograph")
+        availableInnovations.append(pictograph)
+        let pottery = Innovation(name: "Pottery")
+        availableInnovations.append(pottery)
+        
+        // Initialize innovationsAdded dict
+        for innovation in self.availableInnovations {
+            innovationsAddedDict[innovation] = false
+        }
         
         // Initialize available gear
         // Barber Surgeon Gear

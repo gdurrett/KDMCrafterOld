@@ -20,7 +20,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     var myStorage: [Resource:Int]?
     var sortedStorage: [(key: Resource, value: Int)]?
     var myAvailableGear: [Gear]?
-    var myInnovations: [Innovation]?
     var myLocations: [Location]?
     
     var resourceName: String?
@@ -47,22 +46,10 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         mySettlement = dataModel.currentSettlement!
         myStorage = mySettlement!.resourceStorage
         myAvailableGear = mySettlement!.availableGear
-        myInnovations = mySettlement!.innovations
-        //myBuiltLocations = mySettlement!.builtLocations
         myLocations = mySettlement!.allLocations
-        
-//        myInnovations!.append(ammonia)
-//        myStorage![monsterHide] = 3
-//        myStorage![blackLichen] = 2
-//        myStorage![endeavor] = 3
-//        myStorage![monsterOrgan] = 5
-        //myStorage![bladder] = 4
-//        myLocations![9].isBuilt = true
-        //myLocations![10].isBuilt = true // probably index into this by indexPath.row in cellForRowAt:
         
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
         
-        numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
         numLocationRows = dataModel.currentSettlement!.allLocations.count
         numInnovationRows = 1
 
@@ -74,14 +61,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         validator.resources = mySettlement!.resourceStorage // Update validator here?
         myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
-    }
-
-    func getInnovationExists(innovation: Innovation) -> Bool {
-        if myInnovations!.contains(innovation) {
-            return true
-        } else {
-            return false
-        }
     }
     
     // TableViewDelegate stuff
@@ -97,21 +76,25 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             
             let location = myLocations![indexPath.row]
             let buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
+            let builtLocationNames = mySettlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
+            let isBuilt = mySettlement!.locationsBuiltDict[location]!
         
             var buildableStatusString = String()
             var missingResourcesString = String()
-            let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
-            
+            //let builtLocationNames = myLocations!.filter { $0.isBuilt }.map { $0.name }
+        
             if location.name == "Lantern Hoard" {
                 buildableStatusString = ""
             } else if buildableStatus == true {
                 buildableStatusString = "Build"
-            } else if location.isBuilt {
+//            } else if location.isBuilt {
+            } else if isBuilt {
                 buildableStatusString = "Destroy"
             } else {
                 buildableStatusString = "Unbuildable"
             }
-            if buildableStatus != true && !location.isBuilt {
+//            if buildableStatus != true && !location.isBuilt {
+            if buildableStatus != true && !isBuilt {
                 let dict = validator.getMissingLocationResourceRequirements(location: location)
                 if dict == [:] {
                     missingResourcesString = "Missing: \(location.locationRequirement)"
@@ -130,7 +113,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             configureBuildLabel(for: cell, with: buildableStatusString, with: indexPath.row, for: location)
             
             //if !location.isBuilt {
-            if !validator.isBuildable(locations: myLocations!, location: location) && !location.isBuilt {
+            if !validator.isBuildable(locations: myLocations!, location: location) && !isBuilt {
                 configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
             } else if location.locationRequirement.contains("Special") {
                 configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
@@ -143,28 +126,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60
-    }
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let headerView = UITableViewHeaderFooterView()
-//        headerView.textLabel?.textAlignment = .left
-//        headerView.tag = section
-//
-//        if section == 0 {
-//            headerView.textLabel?.text = "Settlement Resource Storage"
-//        } else if section == 1 {
-//            headerView.textLabel?.text = "Settlement Locations"
-//        } else if section == 2 {
-//            headerView.textLabel?.text = "Settlement Innovations"
-//        }
-//
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapExpandSection))
-//        headerView.isUserInteractionEnabled = true
-//        headerView.addGestureRecognizer(tap)
-//        return headerView
-//
-//    }
+
     // Helper functions
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
@@ -212,36 +174,16 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         }
         label.backgroundColor = UIColor.clear
     }
-//    @objc func tapExpandSection(sender:UITapGestureRecognizer) {
-//        let section = sender.view!.tag
-//        var indexPaths = [IndexPath]()
-//        if section == 0 {
-//            indexPaths = (0..<66).map { i in return IndexPath(item: i, section: section)  }
-//        } else if section == 1 {
-//            indexPaths = (0..<13).map { i in return IndexPath(item: i, section: section)  }
-//        } else if section == 2 {
-//            indexPaths = (0..<1).map { i in return IndexPath(item: i, section: section)  }
-//        }
-//        hidden[section] = !hidden[section]
-//
-//        tableView?.beginUpdates()
-//        if hidden[section] {
-//            tableView?.deleteRows(at: indexPaths, with: .fade)
-//        } else {
-//            tableView?.insertRows(at: indexPaths, with: .fade)
-//        }
-//        tableView?.endUpdates()
-//    }
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
         if location.locationRequirement.contains("Special") {
-            myLocations![cell.tag].isBuilt = true
+            //myLocations![cell.tag].isBuilt = true
             //dataModel.currentSettlement!.allLocations[cell.tag].isBuilt = true
             mySettlement!.locationsBuiltDict[location] = true
         } else if validator.isBuildable(locations: myLocations!, location: location) {
             spendResources(for: location)
-        } else if location.isBuilt {
-            myLocations![cell.tag].isBuilt = false // Destroy instead
+        } else if mySettlement!.locationsBuiltDict[location] == true {
+            mySettlement!.locationsBuiltDict[location] = false
         }
         tableView.reloadData()
     }
@@ -278,7 +220,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         }
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         validator.resources = mySettlement!.resourceStorage // Update validator here?
-        self.myLocations![self.myLocations!.lastIndex(of: self.currentLocation!)!].isBuilt = true
         mySettlement!.locationsBuiltDict[currentLocation!] = true
         tableView.reloadData()
     }

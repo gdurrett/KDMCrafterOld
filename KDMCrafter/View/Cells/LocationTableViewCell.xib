@@ -60,7 +60,7 @@
                 <outlet property="buildButton" destination="hls-8v-XDp" id="A4d-ax-TCV"/>
                 <outlet property="locationName" destination="axq-KJ-dug" id="pp2-UP-O35"/>
             </connections>
-            <point key="canvasLocation" x="140" y="-170"/>
+            <point key="canvasLocation" x="140" y="-170.46476761619192"/>
         </view>
     </objects>
 </document>

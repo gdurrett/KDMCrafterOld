@@ -17,9 +17,9 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" tag="3800" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ws3-hd-uIC">
-                    <rect key="frame" x="299" y="18" width="60" height="30"/>
+                    <rect key="frame" x="274" y="18" width="45" height="30"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="60" id="9vH-dr-Dpn"/>
+                        <constraint firstAttribute="width" constant="45" id="9vH-dr-Dpn"/>
                     </constraints>
                     <state key="normal" title="Button">
                         <color key="titleColor" red="0.99607843139999996" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -57,20 +57,31 @@
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <label opaque="NO" userInteractionEnabled="NO" tag="4000" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F1h-RQ-M1z">
+                    <rect key="frame" x="334" y="23" width="25" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="25" id="zl5-Ii-P5J"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="GearTableViewCell"/>
             <constraints>
+                <constraint firstItem="F1h-RQ-M1z" firstAttribute="leading" secondItem="Ws3-hd-uIC" secondAttribute="trailing" constant="15" id="0uA-Db-uLn"/>
                 <constraint firstItem="dZ3-Lu-NX0" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="18" id="2pl-0y-UE9"/>
+                <constraint firstItem="FX3-jF-piv" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" id="6Mn-u8-lYt"/>
                 <constraint firstItem="FX3-jF-piv" firstAttribute="leading" secondItem="h3O-bv-R4s" secondAttribute="leading" id="B36-FZ-1vy"/>
                 <constraint firstItem="FX3-jF-piv" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="55" id="CUA-1Y-Vez"/>
-                <constraint firstItem="FX3-jF-piv" firstAttribute="trailing" secondItem="Ws3-hd-uIC" secondAttribute="trailing" id="JwF-44-YuD"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="h3O-bv-R4s" secondAttribute="bottom" constant="10" id="QbQ-xi-Ryf"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Ws3-hd-uIC" secondAttribute="trailing" constant="16" id="RQq-ps-sWu"/>
-                <constraint firstItem="FX3-jF-piv" firstAttribute="trailing" secondItem="h3O-bv-R4s" secondAttribute="trailing" id="WLP-Ud-Byh"/>
+                <constraint firstItem="h3O-bv-R4s" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" id="aOs-Jf-o5X"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="F1h-RQ-M1z" secondAttribute="trailing" constant="16" id="bjs-ql-TzN"/>
                 <constraint firstItem="h3O-bv-R4s" firstAttribute="top" secondItem="FX3-jF-piv" secondAttribute="bottom" id="dXd-dU-KEI"/>
                 <constraint firstItem="dZ3-Lu-NX0" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="fPv-uf-Snw"/>
                 <constraint firstItem="Ws3-hd-uIC" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="18" id="gQj-BB-yHX"/>
+                <constraint firstItem="F1h-RQ-M1z" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="23" id="hJO-ZS-N0L"/>
                 <constraint firstItem="FX3-jF-piv" firstAttribute="leading" secondItem="dZ3-Lu-NX0" secondAttribute="leading" id="sOR-Ar-VEJ"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -80,6 +91,7 @@
                 <outlet property="gearName" destination="dZ3-Lu-NX0" id="fjd-Xr-Kn0"/>
                 <outlet property="heightConstraint1" destination="kit-tR-Aqg" id="nQf-W9-JwY"/>
                 <outlet property="heightConstraint2" destination="faH-ad-qyO" id="n8S-Nd-cDt"/>
+                <outlet property="qtyAvailableLabel" destination="F1h-RQ-M1z" id="6p8-Pi-baQ"/>
             </connections>
             <point key="canvasLocation" x="229.59999999999999" y="-81.409295352323838"/>
         </view>

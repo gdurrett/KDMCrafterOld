@@ -12,13 +12,12 @@ public class CraftBuildValidator {
     
     var settlement: Settlement!
     var resources: [Resource:Int]!
-    
+
     init(settlement: Settlement) {
         self.settlement = settlement
         self.resources = settlement.resourceStorage
     }
     
-//    func checkCraftability(resources: [Resource:Int], gear: Gear) -> Int {
     func checkCraftability(gear: Gear) -> Int {
         let resources = settlement!.resourceStorage
         let typeRequirements = gear.resourceTypeRequirements
@@ -39,20 +38,6 @@ public class CraftBuildValidator {
                 craftableTypes.append(numTypeCraftable)
             }
         }
-//        if specialRequirements?.count != nil {
-//            for (special, qty) in specialRequirements! {
-//                let specialCount = getSpecialCount(resources: resources, special: special)
-//                numSpecialCraftable = (specialCount/qty)
-//                craftableSpecials.append(numSpecialCraftable)
-//                if numSpecialCraftable == 0 {
-//                    //print("Missing \(special.name) special resource for \(gear.name).")
-//                } else {
-//                    if gear.resourceSpecialRequirements != nil {
-//
-//                    }
-//                }
-//            }
-//        }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
                 let specialCount = getSpecialCount(resources: resources, special: special)
@@ -103,16 +88,12 @@ public class CraftBuildValidator {
         }
         return count
     }
-//    func getSpecialCount(resources: [Resource:Int], special: resource) -> Int {
-//        let count = resources[special]!
-//        return count
-//    }
     func getSpecialCount(resources: [Resource:Int], special: resourceType) -> Int {
         let count = resources.filter { key, value in return key.type.contains(special) }.values.reduce(0, +)
         return count
     }
     func getInnovationExists(innovation: Innovation) -> Bool {
-        if myInnovations.contains(innovation) {
+        if self.settlement!.innovationsAddedDict[innovation] == true {
             return true
         } else {
             return false
@@ -150,19 +131,16 @@ public class CraftBuildValidator {
                     myDict[type.rawValue] = (qty - typeCount)
                 }
             }
-
-//            for (resource, qty) in resourceSpecialRequirements! {
-//                let resourceCount = getSpecialCount(resources: resources, special: resource)
-//                if resourceCount < qty {
-//                    myDict[resource.name] = (qty - resourceCount)
-//                }
-//            }
         }
         return myDict
 
     }
+    func getMissingInnovationRequirement(gear: Gear) -> String {
+        let innovationString = gear.innovationRequirement!.name
+        return innovationString
+    }
     func isBuildable(locations: [Location], location: Location) -> Bool {
-        if location.isBuilt { return false }
+        if settlement!.locationsBuiltDict[location] == true { return false }
         if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) {
             return true
         } else {
@@ -192,7 +170,7 @@ public class CraftBuildValidator {
             //print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
             locationRequirementMet = true
         } else {
-            let builtLocationNames = locations.filter { $0.isBuilt }.map { $0.name }
+            let builtLocationNames = settlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
             if builtLocationNames.contains(location.locationRequirement) {
                 locationRequirementMet = true
             } else {
@@ -201,6 +179,5 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
-    let myInnovations = DataModel.sharedInstance.currentSettlement!.innovations
 
 }

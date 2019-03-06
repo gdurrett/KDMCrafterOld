@@ -53,6 +53,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         cell.backgroundColor = UIColor.clear
+        cell.selectionStyle = .none
         
         let key = sortedStorage![indexPath.row].0
         let value = sortedStorage![indexPath.row].1

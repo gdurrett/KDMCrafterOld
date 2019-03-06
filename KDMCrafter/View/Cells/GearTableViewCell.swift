@@ -22,6 +22,7 @@ class GearTableViewCell: UITableViewCell {
     @IBAction func craftAction(_ sender: Any) {
         cellDelegate?.tappedCraftButton(cell: self)
     }
+    @IBOutlet weak var qtyAvailableLabel: UILabel!
     
     var isExpanded:Bool = false {
         didSet {

@@ -92,6 +92,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         //let cell = makeCell(for: tableView)
         cell.backgroundColor = UIColor.clear
+        cell.selectionStyle = .none
         
         providedTypesString = "Provides: "
         
@@ -182,8 +183,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         for type in self.requiredResourceTypes.keys {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
             self.spentResourceTypesTemp[type] = spentAmount
-            print("In setSpent: \(self.spentResourceTypesTemp[type]!)")
-            self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
+                 self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
         }
         self.spentTypesLabel.text = self.spentTypesString
         self.checkIfRequirementsMet()
