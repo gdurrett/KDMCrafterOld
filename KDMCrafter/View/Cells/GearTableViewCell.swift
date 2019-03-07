@@ -10,6 +10,7 @@ import UIKit
 
 protocol GearTableViewCellDelegate: class {
     func tappedCraftButton(cell: GearTableViewCell)
+    func tappedArchiveButton(cell: GearTableViewCell)
 }
 
 class GearTableViewCell: UITableViewCell {
@@ -21,6 +22,11 @@ class GearTableViewCell: UITableViewCell {
     @IBOutlet weak var craftButton: UIButton!
     @IBAction func craftAction(_ sender: Any) {
         cellDelegate?.tappedCraftButton(cell: self)
+    }
+    @IBOutlet weak var archiveButton: UIButton!
+    
+    @IBAction func archiveAction(_ sender: Any) {
+        cellDelegate?.tappedArchiveButton(cell: self)
     }
     @IBOutlet weak var qtyAvailableLabel: UILabel!
     

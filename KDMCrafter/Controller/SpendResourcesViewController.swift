@@ -90,7 +90,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
-        //let cell = makeCell(for: tableView)
         cell.backgroundColor = UIColor.clear
         cell.selectionStyle = .none
         
@@ -117,7 +116,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         cell.providedTypesLabel.text! = self.providedTypesString
         cell.providedTypesLabel.textColor = UIColor.gray
         
-        
         cell.stepperOutlet.value = Double(value)
         cell.stepperOutlet.maximumValue = Double(value)
         cell.resourceCountLabel.text! = "\(value)"
@@ -134,6 +132,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             if self.sortedSpentResources![indexPath.row].0.type.count > 1 && spentResourceQty > 0  {
                 self.typeChoices = self.sortedSpentResources![indexPath.row].0.type
+                self.selectedType = nil //Reset so we can test for first picker row selection
                 self.showChoices(self)
             } else {
                 cell.resourceCountLabel.text = "\(Int(change.newValue!))"
@@ -201,6 +200,9 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) in
             
+            if self.selectedType == nil {
+                self.selectedType = self.typeChoices[0]
+            }
             self.spentResourceTypes[self.currentResource!] = [self.selectedType!:self.currentQty!]
             self.currentCell!.resourceCountLabel.text = "\(self.stepperVal!)"
             self.setSpentTypes()
@@ -218,6 +220,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         return typeChoices[row].rawValue
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedType = self.typeChoices[row]
+            self.selectedType = self.typeChoices[row]
     }
 }

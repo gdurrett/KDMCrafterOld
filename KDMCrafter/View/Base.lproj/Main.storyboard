@@ -141,13 +141,29 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wax-1E-tLm">
+                                <rect key="frame" x="345" y="84" width="51" height="31"/>
+                                <connections>
+                                    <action selector="filterCraftableAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="N1k-dV-oEU"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Filter Craftable" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QiD-R7-fdq">
+                                <rect key="frame" x="223" y="89" width="114" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="80" id="0Gl-i0-Mff"/>
+                            <constraint firstItem="QiD-R7-fdq" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="45" id="5P7-FW-L6d"/>
                             <constraint firstItem="Ci4-ia-lDK" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="16" id="D9t-a3-Ahi"/>
+                            <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="Wax-1E-tLm" secondAttribute="trailing" constant="20" id="I4z-1W-d9F"/>
                             <constraint firstItem="CWT-gA-59m" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="46" id="Me0-y0-6Cp"/>
+                            <constraint firstItem="Wax-1E-tLm" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="40" id="cnK-Q3-ziO"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="bottom" secondItem="O1u-W8-tvY" secondAttribute="bottom" id="dSq-xZ-ptD"/>
+                            <constraint firstItem="Wax-1E-tLm" firstAttribute="leading" secondItem="QiD-R7-fdq" secondAttribute="trailing" constant="8" id="dkT-Cw-b6o"/>
                             <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="DP0-mO-r1L" secondAttribute="trailing" constant="16" id="esf-hp-r54"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="16" id="fs5-ox-s4S"/>
                             <constraint firstItem="Ci4-ia-lDK" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="41" id="hWu-eu-ZLz"/>
@@ -157,6 +173,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Craft Gear" image="second" id="cPa-gy-q4n"/>
                     <connections>
+                        <outlet property="filterCraftableOutlet" destination="Wax-1E-tLm" id="qzz-H0-8K0"/>
                         <outlet property="overrideToggleOutlet" destination="Ci4-ia-lDK" id="KWx-SR-37e"/>
                         <outlet property="tableView" destination="DP0-mO-r1L" id="cQg-ZS-pVh"/>
                     </connections>

@@ -13,14 +13,28 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBAction func overrideToggleAction(_ sender: Any) {
         if self.overrideToggleOutlet.isOn {
             mySettlement!.overrideEnabled = true
+            self.filterCraftableOutlet.setOn(false, animated: true)
         } else {
             mySettlement!.overrideEnabled = false
         }
         tableView.reloadData()
     }
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBAction func filterCraftableAction(_ sender: Any) {
+        self.sortedCraftableGear = getCraftableGear()
+        if self.filterCraftableOutlet.isOn {
+            self.overrideToggleOutlet.setOn(false, animated: true)
+        }
+        if self.getCraftableGear().count == 0 {
+            self.filterCraftableOutlet.setOn(false, animated: true)
+        }
+
+        tableView.reloadData()
+    }
+    
+    @IBOutlet weak var filterCraftableOutlet: UISwitch!
     @IBOutlet weak var overrideToggleOutlet: UISwitch!
+    @IBOutlet weak var tableView: UITableView!
     
     let dataModel = DataModel.sharedInstance
     var validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
@@ -29,13 +43,14 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var myStorage: [Resource:Int]?
     var sortedStorage: [(key: Resource, value: Int)]?
     var sortedGear: [Gear]?
+    var sortedCraftableGear: [Gear]?
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
     var numGearRows: Int?
     var currentGear: Gear?
     var expandedRows = Set<Int>()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,24 +66,30 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myStorage = mySettlement!.resourceStorage
         numGearRows = dataModel.currentSettlement!.availableGear.count
         myAvailableGear = mySettlement!.availableGear
+        
         sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
         self.overrideToggleOutlet.isOn = false
+        self.filterCraftableOutlet.isOn = false
         
         tableView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
         mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
+        sortedCraftableGear = getCraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
         validator.settlement.builtLocations = mySettlement!.builtLocations
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //
-        return numGearRows!
+        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
+            return self.sortedCraftableGear!.count
+        } else {
+            return (self.sortedGear?.count)!
+        }
     }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
@@ -79,10 +100,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.selectionStyle = .none
         cell.tag = indexPath.row
         cell.layoutMargins = UIEdgeInsets.zero
-        
         cell.isExpanded = self.expandedRows.contains(indexPath.row)
         
-        let gear = self.sortedGear![indexPath.row]
+        var gear: Gear
+        
+        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
+            gear = self.sortedCraftableGear![indexPath.row]
+        } else {
+            gear = self.sortedGear![indexPath.row]
+        }
         var craftableStatus = Bool()
         
         if mySettlement!.overrideEnabled {
@@ -96,6 +122,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         var craftableStatusString = String()
         var missingResourcesString = String()
+        var archiveStatusString = String()
         
         configureGearInfoLabel(for: cell, with: gear.description, with: 3900)
         
@@ -108,8 +135,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
         }
         
+        if mySettlement!.gearCraftedDict[gear]! > 0 {
+            archiveStatusString = "Archivable"
+        } else {
+            archiveStatusString = "Unarchivable"
+        }
+        
         configureTitle(for: cell, with: gear.name, with: 3750)
         configureCraftLabel(for: cell, with: craftableStatusString, with: 3800)
+        configureArchiveLabel(for: cell, with: archiveStatusString, with: 3950)
         configureQtyAvailableLabel(for: cell, with: gear, with: 4000)
         
         return cell
@@ -126,8 +160,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
 
         cell.isExpanded = !cell.isExpanded
-        
-//        self.tableView.reloadData()
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
         
@@ -136,7 +168,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         guard let cell = tableView.cellForRow(at: indexPath) as? GearTableViewCell else { return }
         self.expandedRows.remove(indexPath.row)
         cell.isExpanded = false
-//        self.tableView.reloadData()
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
@@ -146,7 +177,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         label.sizeToFit()
     }
     fileprivate func configureCraftLabel(for cell: UITableViewCell, with status: String, with tag: Int) {
-        //let button = cell.subviews.viewWithTag(tag) as! UIButton
         let cell = cell as! GearTableViewCell
         let button = cell.craftButton!
         
@@ -163,6 +193,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         } else {
             //button.isHidden = true
+        }
+    }
+    fileprivate func configureArchiveLabel(for cell: UITableViewCell, with status: String, with tag: Int) {
+        let cell = cell as! GearTableViewCell
+        let button = cell.archiveButton!
+        
+        button.setTitle("Archive", for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 5
+        
+        if status == "Archivable" {
+            button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+        } else {
+            button.backgroundColor = UIColor.gray
         }
     }
     fileprivate func configureQtyAvailableLabel(for cell: UITableViewCell, with gear: Gear, with tag: Int) {
@@ -218,14 +262,40 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         label.backgroundColor = UIColor.clear
     }
+    fileprivate func getCraftableGear() -> [Gear] {
+        self.sortedCraftableGear = []
+        for gear in mySettlement!.availableGear {
+            if validator.checkCraftability(gear: gear) > 0 {
+                self.sortedCraftableGear!.append(gear)
+            }
+        }
+        return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
+    }
     func tappedCraftButton(cell: GearTableViewCell) {
-        let gear = self.sortedGear![cell.tag]
-        if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
-            mySettlement!.gearCraftedDict[gear]! += 1
-        } else if validator.checkCraftability(gear: gear) > 0 && mySettlement!.gearCraftedDict[gear]! < gear.qtyAvailable {
-            spendResources(for: gear)
+        var gear: Gear?
+        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count > 0 {
+            gear = self.sortedCraftableGear![cell.tag]
+        } else {
+            gear = self.sortedGear![cell.tag]
+        }
+        if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
+            mySettlement!.gearCraftedDict[gear!]! += 1
+        } else if validator.checkCraftability(gear: gear!) > 0 && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
+            spendResources(for: gear!)
         } else {
             // Can't craft!
+        }
+        tableView.reloadData()
+    }
+    func tappedArchiveButton(cell: GearTableViewCell) {
+        var gear: Gear?
+        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count > 0 {
+            gear = self.sortedCraftableGear![cell.tag]
+        } else {
+            gear = self.sortedGear![cell.tag]
+        }
+        if self.mySettlement!.gearCraftedDict[gear!]! > 0 {
+            mySettlement!.gearCraftedDict[gear!]! -= 1
         }
         tableView.reloadData()
     }
