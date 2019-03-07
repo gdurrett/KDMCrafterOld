@@ -64,7 +64,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
-        
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorInset = UIEdgeInsets.zero
         save.isHidden = true
         spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         
@@ -92,7 +93,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         cell.backgroundColor = UIColor.clear
         cell.selectionStyle = .none
-        
+        cell.layoutMargins = UIEdgeInsets.zero
+
         providedTypesString = "Provides: "
         
         let key = sortedSpendableResources![indexPath.row].0

@@ -30,7 +30,9 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
-        
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorInset = UIEdgeInsets.zero
+
         mySettlement = dataModel.currentSettlement!
         myStorage = dataModel.currentSettlement!.resourceStorage
         
@@ -54,7 +56,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         cell.backgroundColor = UIColor.clear
         cell.selectionStyle = .none
-        
+        cell.layoutMargins = UIEdgeInsets.zero
+
         let key = sortedStorage![indexPath.row].0
         let value = sortedStorage![indexPath.row].1
         
@@ -84,6 +87,9 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         //(cell as! LocationTableViewCell).observation = nil
         default: break
         }
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return " Manage Resources"
     }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel

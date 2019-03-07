@@ -25,6 +25,8 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(InnovationTableViewCell.nib, forCellReuseIdentifier: InnovationTableViewCell.identifier)
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorInset = UIEdgeInsets.zero
         
         mySettlement = dataModel.currentSettlement!
         myInnovations = mySettlement!.availableInnovations
@@ -41,6 +43,7 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         cell.cellDelegate = self
         cell.selectionStyle = .none
         cell.tag = indexPath.row
+        cell.layoutMargins = UIEdgeInsets.zero
         
         var innoStatusString = String()
         let innovation = self.myInnovations![indexPath.row]
@@ -56,6 +59,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         configureAddInnovationButton(for: cell, with: innoStatusString, with: 5000, for: innovation)
         return cell
     }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return " Add Innovations"
+    }
+    // Helper functions
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, for tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
         label.text = name

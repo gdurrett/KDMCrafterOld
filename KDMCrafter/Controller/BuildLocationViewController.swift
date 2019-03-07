@@ -42,6 +42,8 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.dataSource = self
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         tableView.register(LocationTableViewCell.nib, forCellReuseIdentifier: LocationTableViewCell.identifier)
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorInset = UIEdgeInsets.zero
         
         mySettlement = dataModel.currentSettlement!
         myStorage = mySettlement!.resourceStorage
@@ -74,6 +76,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         cell.backgroundColor = UIColor.clear
         cell.selectionStyle = .none
         cell.tag = indexPath.row
+        cell.layoutMargins = UIEdgeInsets.zero
         
         let location = myLocations![indexPath.row]
         let buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
@@ -97,7 +100,9 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return " Build Locations"
+    }
     // Helper functions
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel

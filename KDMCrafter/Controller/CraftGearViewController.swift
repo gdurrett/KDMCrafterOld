@@ -59,7 +59,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         tableView.register(GearTableViewCell.nib, forCellReuseIdentifier: GearTableViewCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
-        //tableView.layoutMargins = UIEdgeInsets.zero
         tableView.separatorInset = UIEdgeInsets.zero
         
         mySettlement = dataModel.currentSettlement!
@@ -171,6 +170,10 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return " Craft Gear"
+    }
+    // Helper methods
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
         label.text = name
