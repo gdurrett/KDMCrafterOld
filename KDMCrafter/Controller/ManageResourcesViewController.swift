@@ -103,3 +103,30 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
 }
 
+extension NSMutableAttributedString {
+    @discardableResult func bold(_ text: String) -> NSMutableAttributedString {
+        //let attrs: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Amplitude-Bold", size: 12)!]
+
+        let boldString = NSMutableAttributedString.makeWith(text: text)
+        append(boldString)
+        
+        return self
+    }
+    
+    @discardableResult func normal(_ text: String) -> NSMutableAttributedString {
+        let normal = NSAttributedString(string: text)
+        append(normal)
+        
+        return self
+    }
+}
+extension NSAttributedString {
+    
+    //public static func makeWith(color: UIColor = UIColor.darkText, weight: UIFont.Weight = .regular, ofSize: CGFloat = 14.0, alignment: NSTextAlignment, text: String) -> NSMutableAttributedString {
+    public static func makeWith(text: String) -> NSMutableAttributedString {
+        
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .bold)]
+        return NSMutableAttributedString(string: text, attributes:attrs)
+    }
+}
+

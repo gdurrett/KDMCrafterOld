@@ -15,8 +15,6 @@ protocol GearTableViewCellDelegate: class {
 
 class GearTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var heightConstraint1: NSLayoutConstraint!
-    @IBOutlet weak var heightConstraint2: NSLayoutConstraint!
     
     @IBOutlet weak var gearName: UILabel!
     @IBOutlet weak var craftButton: UIButton!
@@ -30,17 +28,6 @@ class GearTableViewCell: UITableViewCell {
     }
     @IBOutlet weak var qtyAvailableLabel: UILabel!
     
-    var isExpanded:Bool = false {
-        didSet {
-            if !isExpanded {
-                self.heightConstraint1.constant = 0.0
-                self.heightConstraint2.constant = 0.0
-            } else {
-                self.heightConstraint1.constant = 65
-                self.heightConstraint2.constant = 85
-            }
-        }
-    }
     weak var cellDelegate: GearTableViewCellDelegate?
     
     

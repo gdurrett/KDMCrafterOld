@@ -37,6 +37,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var tableView: UITableView!
     
     let dataModel = DataModel.sharedInstance
+    let gearDetailSegueIdentifier = "ShowCraftGearDetailView"
+    
     var validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
     
     var mySettlement: Settlement?
@@ -49,7 +51,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var myLocations: [Location]?
     var numGearRows: Int?
     var currentGear: Gear?
-    var expandedRows = Set<Int>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,11 +97,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
         cell.cellDelegate = self
-        cell.selectionStyle = .none
+//        cell.selectionStyle = .none
         cell.tag = indexPath.row
         cell.layoutMargins = UIEdgeInsets.zero
-        cell.isExpanded = self.expandedRows.contains(indexPath.row)
-        
+        cell.accessoryType = .disclosureIndicator
+
         var gear: Gear
         
         if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
@@ -108,6 +109,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         } else {
             gear = self.sortedGear![indexPath.row]
         }
+        
         var craftableStatus = Bool()
         
         if mySettlement!.overrideEnabled {
@@ -123,15 +125,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         var missingResourcesString = String()
         var archiveStatusString = String()
         
-        configureGearInfoLabel(for: cell, with: gear.description, with: 3900)
+//        configureGearInfoLabel(for: cell, with: gear.description, with: 3900)
         
         if craftableStatus == true {
             craftableStatusString = "Craft"
-            configureMissingResourceLabel(for: cell, with: "", with: 3850)
+//            configureMissingResourceLabel(for: cell, with: "", with: 3850)
         } else {
             missingResourcesString = configureMissingResourcesString(for: cell, for: gear)
             craftableStatusString = "Uncraftable"
-            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
+//            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
         }
         
         if mySettlement!.gearCraftedDict[gear]! > 0 {
@@ -141,38 +143,30 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         configureTitle(for: cell, with: gear.name, with: 3750)
-        configureCraftLabel(for: cell, with: craftableStatusString, with: 3800)
-        configureArchiveLabel(for: cell, with: archiveStatusString, with: 3950)
+//        configureCraftLabel(for: cell, with: craftableStatusString, with: 3800)
+//        configureArchiveLabel(for: cell, with: archiveStatusString, with: 3950)
+        configureNumCraftableLabel(for: cell, with: gear, for: 3975)
         configureQtyAvailableLabel(for: cell, with: gear, with: 4000)
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? GearTableViewCell else { return }
-        
-        switch cell.isExpanded {
-        case true:
-            self.expandedRows.remove(indexPath.row)
-        case false:
-            self.expandedRows.insert(indexPath.row)
-        }
-
-        cell.isExpanded = !cell.isExpanded
-        self.tableView.beginUpdates()
-        self.tableView.endUpdates()
-        
-    }
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? GearTableViewCell else { return }
-        self.expandedRows.remove(indexPath.row)
-        cell.isExpanded = false
-        self.tableView.beginUpdates()
-        self.tableView.endUpdates()
-    }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return " Craft Gear"
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let craftDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "CraftGearDetailViewController") as? CraftGearDetailViewController {
+            let gearIndex = tableView.indexPathForSelectedRow?.row
+            if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
+                craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
+            } else {
+                craftDetailVC.gear = self.sortedGear![gearIndex!]
+            }
+            self.navigationController?.pushViewController(craftDetailVC, animated: true)
+        }
+    }
+    // Segue
+
     // Helper methods
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
@@ -214,8 +208,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     fileprivate func configureQtyAvailableLabel(for cell: UITableViewCell, with gear: Gear, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
-        let labelString = "\(mySettlement!.gearCraftedDict[gear]!)/\(gear.qtyAvailable)"
+        let labelString = "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available"
         label.text! = labelString
+        label.textColor = UIColor.gray
+    }
+    fileprivate func configureNumCraftableLabel(for cell: UITableViewCell, with gear: Gear, for tag: Int) {
+        let numCraftable = self.validator.checkCraftability(gear: gear) > gear.qtyAvailable ? gear.qtyAvailable:self.validator.checkCraftability(gear: gear) // If numCraftable greater than qty available, use qtyAvailable
+        let label = cell.viewWithTag(tag) as! UILabel
+        let labelString = "\(numCraftable) craftable"
+        label.text = labelString
+        if numCraftable == 0 {
+            label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+        } else {
+            label.textColor = UIColor(red: 0.3843, green: 0.8275, blue: 0, alpha: 1.0)
+        }
     }
     fileprivate func configureGearInfoLabel(for cell: UITableViewCell, with info: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UITextView

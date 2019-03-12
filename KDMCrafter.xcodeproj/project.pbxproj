@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB09C5502231CA7A00CAA684 /* GearDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB09C54F2231CA7A00CAA684 /* GearDescription.swift */; };
 		FB1309F621CD687D00CAA684 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F521CD687D00CAA684 /* Location.swift */; };
 		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
 		FB2B42A2221CD5B200CAA684 /* SpendResourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */; };
@@ -19,6 +20,7 @@
 		FB5930C4222F3A4E00CAA684 /* AddInnovationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930C3222F3A4E00CAA684 /* AddInnovationViewController.swift */; };
 		FB5930C6222F401F00CAA684 /* InnovationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930C5222F401F00CAA684 /* InnovationTableViewCell.swift */; };
 		FB5930C8222F404F00CAA684 /* InnovationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB5930C7222F404E00CAA684 /* InnovationTableViewCell.xib */; };
+		FB5D9F18223192CA00CAA684 /* CraftGearDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */; };
 		FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */; };
 		FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */; };
 		FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */; };
@@ -34,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FB09C54F2231CA7A00CAA684 /* GearDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearDescription.swift; sourceTree = "<group>"; };
 		FB1309F321CD66D100CAA684 /* Gear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gear.swift; sourceTree = "<group>"; };
 		FB1309F521CD687D00CAA684 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		FB1309F721CDA5FE00CAA684 /* Innovation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Innovation.swift; sourceTree = "<group>"; };
@@ -45,6 +48,7 @@
 		FB5930C3222F3A4E00CAA684 /* AddInnovationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddInnovationViewController.swift; sourceTree = "<group>"; };
 		FB5930C5222F401F00CAA684 /* InnovationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnovationTableViewCell.swift; sourceTree = "<group>"; };
 		FB5930C7222F404E00CAA684 /* InnovationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InnovationTableViewCell.xib; sourceTree = "<group>"; };
+		FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftGearDetailViewController.swift; sourceTree = "<group>"; };
 		FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTableViewCell.swift; sourceTree = "<group>"; };
 		FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceTableViewCell.xib; sourceTree = "<group>"; };
 		FBEA749E220A533000CAA684 /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
@@ -81,6 +85,7 @@
 				FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */,
 				FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */,
 				FB5930C3222F3A4E00CAA684 /* AddInnovationViewController.swift */,
+				FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -149,6 +154,7 @@
 				FB1309F321CD66D100CAA684 /* Gear.swift */,
 				FB1309F521CD687D00CAA684 /* Location.swift */,
 				FB1309F721CDA5FE00CAA684 /* Innovation.swift */,
+				FB09C54F2231CA7A00CAA684 /* GearDescription.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -233,6 +239,7 @@
 				FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */,
 				FB5930BC2227609F00CAA684 /* Gear.swift in Sources */,
 				FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */,
+				FB09C5502231CA7A00CAA684 /* GearDescription.swift in Sources */,
 				FB1309F621CD687D00CAA684 /* Location.swift in Sources */,
 				FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */,
 				FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */,
@@ -243,6 +250,7 @@
 				FB5930C4222F3A4E00CAA684 /* AddInnovationViewController.swift in Sources */,
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */,
+				FB5D9F18223192CA00CAA684 /* CraftGearDetailViewController.swift in Sources */,
 				FBFD694221C43BA200CAA684 /* BuildLocationViewController.swift in Sources */,
 				FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */,
 			);
