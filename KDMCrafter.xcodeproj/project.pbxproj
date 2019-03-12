@@ -81,11 +81,11 @@
 			isa = PBXGroup;
 			children = (
 				FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */,
+				FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */,
 				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
 				FBFD694121C43BA200CAA684 /* BuildLocationViewController.swift */,
 				FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */,
 				FB5930C3222F3A4E00CAA684 /* AddInnovationViewController.swift */,
-				FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

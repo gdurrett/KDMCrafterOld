@@ -48,7 +48,7 @@ enum statType {
 
         switch self {
         case let .armor(protectionValue, location):
-            return "\(String(protectionValue)) armor to \(location.rawValue)"
+            return "\(String(protectionValue))\n\(location.rawValue)\n"
         default:
             return ("Zero - Nothing")
         }
@@ -58,7 +58,7 @@ enum statType {
         
         switch self {
         case let .weapon(speedValue, accuracyValue, strengthValue):
-            return "Speed: \(speedValue)\nAccuracy: \(accuracyValue)\nStrength: \(strengthValue)"
+            return "Speed: \(speedValue)\nAccuracy: \(accuracyValue)+\nStrength: \(strengthValue)"
         default:
             return("Nada")
         }

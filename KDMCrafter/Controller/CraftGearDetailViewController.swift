@@ -10,6 +10,9 @@ import UIKit
 
 class CraftGearDetailViewController: UIViewController {
     
+    @IBOutlet weak var leftGearStackView: UIStackView!
+    
+    @IBOutlet weak var gearTitleLabel: UILabel!
     @IBOutlet weak var gearTypeLeftLabel: UILabel!
     @IBOutlet weak var gearStatsLeftLabel: UILabel!
     @IBOutlet weak var gearStatsLabel: UILabel!
@@ -20,7 +23,9 @@ class CraftGearDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = gear!.name
+        self.navigationItem.title = "Craft Gear"
+        gearTitleLabel.text = gear!.name
+        gearTitleLabel.sizeToFit()
         
         gearInfoTextView.textContainerInset = UIEdgeInsets.zero
         gearInfoTextView.textContainer.lineFragmentPadding = 0
@@ -37,6 +42,8 @@ class CraftGearDetailViewController: UIViewController {
         }
         gearStatsLabel.text = stats
         gearInfoTextView.attributedText = gear!.description.detailText
+        
+        //leftGearStackView.addHorizontalSeparators(color: UIColor.gray)
     }
     
     /*

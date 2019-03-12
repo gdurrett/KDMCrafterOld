@@ -114,7 +114,7 @@ extension NSMutableAttributedString {
     }
     
     @discardableResult func normal(_ text: String) -> NSMutableAttributedString {
-        let normal = NSAttributedString(string: text)
+        let normal = NSAttributedString.makeWithNormal(text: text)
         append(normal)
         
         return self
@@ -125,8 +125,30 @@ extension NSAttributedString {
     //public static func makeWith(color: UIColor = UIColor.darkText, weight: UIFont.Weight = .regular, ofSize: CGFloat = 14.0, alignment: NSTextAlignment, text: String) -> NSMutableAttributedString {
     public static func makeWith(text: String) -> NSMutableAttributedString {
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .bold)]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold)]
+        return NSMutableAttributedString(string: text, attributes:attrs)
+    }
+    public static func makeWithNormal(text: String) -> NSMutableAttributedString {
+        
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
 }
-
+//extension UIStackView {
+//    func addHorizontalSeparators(color : UIColor) {
+//        var i = self.arrangedSubviews.count
+//        while i >= 0 {
+//            let separator = createSeparator(color: color)
+//            insertArrangedSubview(separator, at: i)
+//            separator.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1).isActive = true
+//            i -= 1
+//        }
+//    }
+//    
+//    private func createSeparator(color : UIColor) -> UIView {
+//        let separator = UIView()
+//        separator.heightAnchor.constraint(equalToConstant: 0.1).isActive = true
+//        separator.backgroundColor = color
+//        return separator
+//    }
+//}
