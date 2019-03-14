@@ -10,23 +10,31 @@ import UIKit
 
 class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    
     @IBOutlet weak var tableView: UITableView!
-    
+
+    @IBOutlet weak var affinityView: UIView!
+    @IBOutlet weak var affinityLeftLabel: UILabel!
+    @IBOutlet weak var affinityTopLabel: UILabel!
+    @IBOutlet weak var affinityRightLabel: UILabel!
+    @IBOutlet weak var affinityBottomLabel: UILabel!
+    @IBOutlet weak var affinityWholeLabel: UILabel!
     @IBOutlet weak var gearNameLabel: UILabel!
-    @IBOutlet weak var gearTypeLeftLabel: UILabel!
-    @IBOutlet weak var gearStatsLeftLabel: UILabel!
-    @IBOutlet weak var gearStatsLabel: UILabel!
     @IBOutlet weak var gearTypeLabel: UILabel!
+    @IBOutlet weak var gearStatsRightLabel: UILabel!
+    @IBOutlet weak var gearStatsLeftLabel: UILabel!
     @IBOutlet weak var gearInfoTextView: UITextView!
     
     let dataModel = DataModel.sharedInstance
     var mySettlement: Settlement?
     let validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
     
-    var gear: Gear?
+    var gear: Gear!
     var missingResourcesArray: [Any]?
     var requiredResourcesArray: [Any]?
+    
+    var affinityBlue = UIColor(red: 0, green: 0.749, blue: 0.9765, alpha: 1.0)
+    var affinityRed = UIColor(red: 0.9686, green: 0.1922, blue: 0, alpha: 1.0)
+    var affinityGreen = UIColor(red: 0.2824, green: 0.7765, blue: 0, alpha: 1.0)
     
     var myGearDict = [String:Int]()
     
@@ -40,23 +48,34 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         tableView.separatorInset = UIEdgeInsets.zero
         
         self.navigationItem.title = "Craft Gear"
-        gearNameLabel.text = gear!.name
         
         gearInfoTextView.textContainerInset = UIEdgeInsets.zero
         gearInfoTextView.textContainer.lineFragmentPadding = 0
-
-        var stats: (String)
-        gearTypeLabel.text = ("\(gear!.description.type.rawValue)")
+        gearNameLabel.text = ("\(gear.name)")
+        gearTypeLabel.text = ("(\(gear.description.type.rawValue))")
+        var leftStats: (String)
+        var rightStats: (String)
         if gear!.description.type == .armor {
-            stats = gear!.description.stats.armorAttributes()
-        } else if gear!.description.type == .weapon {
-            stats = gear!.description.stats.weaponAttributes()
+            rightStats = gear.description.stats.armorAttributes().0
+            leftStats = gear.description.stats.armorAttributes().1
+        } else if gear.description.type == .weapon {
+            rightStats = gear.description.stats.weaponAttributes().1
+            leftStats = gear.description.stats.weaponAttributes().0
         } else {
-            stats = ""
+            rightStats = ""
+            leftStats = ""
         }
-        gearStatsLabel.text = stats
+        gearStatsRightLabel.text = rightStats
+        gearStatsLeftLabel.text = leftStats
+        
         gearInfoTextView.attributedText = gear!.description.detailText
 
+        affinityLeftLabel.isHidden = true
+        affinityTopLabel.isHidden = true
+        affinityRightLabel.isHidden = true
+        affinityBottomLabel.isHidden = true
+        affinityWholeLabel.isHidden = true
+        setAffinities(gear: gear)
         mySettlement = dataModel.currentSettlement!
 
         requiredResourcesArray = [gear!.locationRequirement!]
@@ -101,5 +120,61 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         return cell
     }
     
-
+    // Helper functions
+    fileprivate func setAffinities(gear: Gear) {
+        for affinity in gear.description.affinities {
+            
+            if affinity != .none {
+                if affinity == .redLeft {
+                    affinityLeftLabel.isHidden = false
+                    affinityLeftLabel.backgroundColor = affinityRed
+                } else if affinity == .redUp {
+                    affinityTopLabel.isHidden = false
+                    affinityTopLabel.backgroundColor = affinityRed
+                } else if affinity == .redRight {
+                    affinityRightLabel.isHidden = false
+                    affinityRightLabel.backgroundColor = affinityRed
+                } else if affinity == .redDown {
+                    affinityBottomLabel.isHidden = false
+                    affinityBottomLabel.backgroundColor = affinityRed
+                }
+                if affinity == .blueLeft {
+                    affinityLeftLabel.isHidden = false
+                    affinityLeftLabel.backgroundColor = affinityBlue
+                } else if affinity == .blueUp {
+                    affinityTopLabel.isHidden = false
+                    affinityTopLabel.backgroundColor = affinityBlue
+                } else if affinity == .blueRight {
+                    affinityRightLabel.isHidden = false
+                    affinityRightLabel.backgroundColor = affinityBlue
+                } else if affinity == .blueDown {
+                    affinityBottomLabel.isHidden = false
+                    affinityBottomLabel.backgroundColor = affinityBlue
+                }
+                if affinity == .greenLeft {
+                    affinityLeftLabel.isHidden = false
+                    affinityLeftLabel.backgroundColor = affinityGreen
+                } else if affinity == .greenUp {
+                    affinityTopLabel.isHidden = false
+                    affinityTopLabel.backgroundColor = affinityGreen
+                } else if affinity == .greenRight {
+                    affinityRightLabel.isHidden = false
+                    affinityRightLabel.backgroundColor = affinityGreen
+                } else if affinity == .greenDown {
+                    affinityBottomLabel.isHidden = false
+                    affinityBottomLabel.backgroundColor = affinityGreen
+                }
+                if affinity == .oneRed {
+                    affinityWholeLabel.isHidden = false
+                    affinityWholeLabel.backgroundColor = affinityRed
+                } else if affinity == .oneBlue {
+                    affinityWholeLabel.isHidden = false
+                    affinityWholeLabel.backgroundColor = affinityBlue
+                } else if affinity == .oneGreen {
+                    affinityWholeLabel.isHidden = false
+                    affinityWholeLabel.backgroundColor = affinityGreen
+                }
+            }
+        }
+    }
 }

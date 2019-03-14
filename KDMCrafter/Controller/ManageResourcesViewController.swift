@@ -105,14 +105,17 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
 
 extension NSMutableAttributedString {
     @discardableResult func bold(_ text: String) -> NSMutableAttributedString {
-        //let attrs: [NSAttributedString.Key: Any] = [.font: UIFont(name: "Amplitude-Bold", size: 12)!]
-
-        let boldString = NSMutableAttributedString.makeWith(text: text)
+        let boldString = NSMutableAttributedString.makeWithBold(text: text)
         append(boldString)
         
         return self
     }
-    
+    @discardableResult func boldCenter(_ text: String) -> NSMutableAttributedString {
+        let boldCenterString = NSMutableAttributedString.makeWithBoldCenter(text: text)
+        append(boldCenterString)
+        
+        return self
+    }
     @discardableResult func normal(_ text: String) -> NSMutableAttributedString {
         let normal = NSAttributedString.makeWithNormal(text: text)
         append(normal)
@@ -122,8 +125,7 @@ extension NSMutableAttributedString {
 }
 extension NSAttributedString {
     
-    //public static func makeWith(color: UIColor = UIColor.darkText, weight: UIFont.Weight = .regular, ofSize: CGFloat = 14.0, alignment: NSTextAlignment, text: String) -> NSMutableAttributedString {
-    public static func makeWith(text: String) -> NSMutableAttributedString {
+    public static func makeWithBold(text: String) -> NSMutableAttributedString {
         
         let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold)]
         return NSMutableAttributedString(string: text, attributes:attrs)
@@ -133,22 +135,13 @@ extension NSAttributedString {
         let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
+    public static func makeWithBoldCenter(text: String) -> NSMutableAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold), NSAttributedString.Key.paragraphStyle: paragraphStyle]
+        return NSMutableAttributedString(string: text, attributes:attrs)
+
+    }
 }
-//extension UIStackView {
-//    func addHorizontalSeparators(color : UIColor) {
-//        var i = self.arrangedSubviews.count
-//        while i >= 0 {
-//            let separator = createSeparator(color: color)
-//            insertArrangedSubview(separator, at: i)
-//            separator.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1).isActive = true
-//            i -= 1
-//        }
-//    }
-//    
-//    private func createSeparator(color : UIColor) -> UIView {
-//        let separator = UIView()
-//        separator.heightAnchor.constraint(equalToConstant: 0.1).isActive = true
-//        separator.backgroundColor = color
-//        return separator
-//    }
-//}
+

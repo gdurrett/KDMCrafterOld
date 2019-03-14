@@ -44,23 +44,23 @@ enum statType {
     case weapon(_ speedValue: Int, _ accuracyValue: Int, _ strengthValue: Int)
     case item(String)
     
-    func armorAttributes() -> (String) {
+    func armorAttributes() -> (String, String) {
 
         switch self {
         case let .armor(protectionValue, location):
-            return "\(String(protectionValue))\n\(location.rawValue)\n"
+            return ("\(String(protectionValue))", "\(location.rawValue):")
         default:
-            return ("Zero - Nothing")
+            return ("Zero", "Nothing")
         }
     }
     
-    func weaponAttributes() -> (String) {
+    func weaponAttributes() -> (String, String) {
         
         switch self {
         case let .weapon(speedValue, accuracyValue, strengthValue):
-            return "Speed: \(speedValue)\nAccuracy: \(accuracyValue)+\nStrength: \(strengthValue)"
+            return ("Speed:\nAccuracy:\nStrength:", "\(speedValue)\n\(accuracyValue)\n\(strengthValue)")
         default:
-            return("Nada")
+            return("Nada", "Nothing")
         }
     }
     
