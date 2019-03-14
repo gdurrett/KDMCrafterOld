@@ -52,6 +52,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var numGearRows: Int?
     var currentGear: Gear?
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -131,7 +132,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             craftableStatusString = "Craft"
 //            configureMissingResourceLabel(for: cell, with: "", with: 3850)
         } else {
-            missingResourcesString = configureMissingResourcesString(for: cell, for: gear)
+//            missingResourcesString = configureMissingResourcesString(for: cell, for: gear)
             craftableStatusString = "Uncraftable"
 //            configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3850)
         }
@@ -155,13 +156,17 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         return " Craft Gear"
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
         if let craftDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "CraftGearDetailViewController") as? CraftGearDetailViewController {
             let gearIndex = tableView.indexPathForSelectedRow?.row
             if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
                 craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
+                craftDetailVC.missingResourcesArray = configureMissingResourcesString(for: cell, for: self.sortedCraftableGear![gearIndex!])
             } else {
                 craftDetailVC.gear = self.sortedGear![gearIndex!]
+                craftDetailVC.missingResourcesArray = configureMissingResourcesString(for: cell, for: self.sortedGear![gearIndex!])
             }
+
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
         }
     }
@@ -228,8 +233,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         label.text = info
         
     }
-    fileprivate func configureMissingResourcesString(for cell: UITableViewCell, for gear: Gear) -> String {
+    fileprivate func configureMissingResourcesString(for cell: UITableViewCell, for gear: Gear) -> [Any] {
         var missingResourcesString = String()
+        var missingResourcesArray = [Any]()
+        var requiredResourceTypes = [String:Int]()
+        
         if mySettlement!.gearCraftedDict[gear] == gear.qtyAvailable {
             missingResourcesString = "Max number crafted."
         } else {
@@ -241,21 +249,29 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement != "" {
                 missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements), \(innovationRequirement)"
+                missingResourcesArray += [gear.locationRequirement!, resourceRequirements, innovationRequirement]
             } else if locationBuiltStatus == false && !resourceRequirements.isEmpty && innovationRequirement == "" {
                 missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(resourceRequirements)"
+                missingResourcesArray += [gear.locationRequirement!, resourceRequirements]
             } else if locationBuiltStatus == false && resourceRequirements.isEmpty && innovationRequirement != "" {
                 missingResourcesString = "Missing: \(gear.locationRequirement!.name), \(innovationRequirement)"
+                missingResourcesArray += [gear.locationRequirement!, requiredResourceTypes, innovationRequirement]
             } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement != "" {
                 missingResourcesString = "Missing: \(resourceRequirements), \(innovationRequirement)"
+                missingResourcesArray += [resourceRequirements, gear.locationRequirement!, innovationRequirement]
             } else if locationBuiltStatus == true && resourceRequirements.isEmpty && innovationRequirement != "" {
                 missingResourcesString = "Missing: \(innovationRequirement)"
+                missingResourcesArray += [gear.locationRequirement!, requiredResourceTypes, innovationRequirement]
             } else if locationBuiltStatus == true && !resourceRequirements.isEmpty && innovationRequirement == "" {
                 missingResourcesString = "Missing: \(resourceRequirements)"
+                missingResourcesArray += [gear.locationRequirement!, resourceRequirements]
             } else {
                 missingResourcesString = "Missing: \(gear.locationRequirement!.name)"
+                missingResourcesArray += [gear.locationRequirement!, requiredResourceTypes]
             }
         }
-        return missingResourcesString
+        
+        return missingResourcesArray
     }
     fileprivate func configureMissingResourceLabel(for cell: UITableViewCell, with missing: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UITextView

@@ -113,7 +113,7 @@ let monsterBone = Resource(name: "Monster Bone", kind: .basic, type: [.bone])
 let monsterHide = Resource(name: "Monster Hide", kind: .basic, type: [.hide])
 let monsterOrgan = Resource(name: "Monster Organ", kind: .basic, type: [.organ])
 let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
-let skull = Resource(name: "Skull", kind: .basic, type: [.bone])
+let skull = Resource(name: "Skull", kind: .basic, type: [.bone, .skull])
 
 // Gear Resource declarations
 let beaconShieldResource = Resource(name: "Beacon Shield", kind: .gear, type: [.beaconShieldResource])

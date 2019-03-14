@@ -82,7 +82,8 @@ public class CraftBuildValidator {
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
         var count = Int()
         if type == .any { // e.g. for Musk Bomb
-            count = resources.count
+            //count = resources.count
+            count = resources.filter { $0.value > 0 }.count
         } else {
             count = resources.filter { key, value in return key.type.contains(type) }.values.reduce(0, +)
         }
@@ -134,6 +135,22 @@ public class CraftBuildValidator {
         }
         return myDict
 
+    }
+    func getGearResourceRequirements(gear: Gear) -> [[String:Int]] {
+        var myArray = [[String:Int]]()
+        let resourceTypeRequirements = gear.resourceTypeRequirements
+        let resourceSpecialRequirements = gear.resourceSpecialRequirements
+        if resourceTypeRequirements!.count != 0 {
+            for pair in resourceTypeRequirements! {
+                myArray.append([pair.key.rawValue:pair.value])
+            }
+        }
+        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
+            for pair in resourceSpecialRequirements! {
+                myArray.append([pair.key.rawValue:pair.value])
+            }
+        }
+        return myArray
     }
     func getMissingInnovationRequirement(gear: Gear) -> String {
         let innovationString = gear.innovationRequirement!.name
