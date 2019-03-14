@@ -44,8 +44,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         
         gearInfoTextView.textContainerInset = UIEdgeInsets.zero
         gearInfoTextView.textContainer.lineFragmentPadding = 0
-        gearStatsLeftLabel.text = "Stats\n\n"
-        gearTypeLeftLabel.text = "Type"
+
         var stats: (String)
         gearTypeLabel.text = ("\(gear!.description.type.rawValue)")
         if gear!.description.type == .armor {
@@ -53,7 +52,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         } else if gear!.description.type == .weapon {
             stats = gear!.description.stats.weaponAttributes()
         } else {
-            stats = "N/A\n\n"
+            stats = ""
         }
         gearStatsLabel.text = stats
         gearInfoTextView.attributedText = gear!.description.detailText

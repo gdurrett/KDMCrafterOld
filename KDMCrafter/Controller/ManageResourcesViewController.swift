@@ -125,12 +125,12 @@ extension NSAttributedString {
     //public static func makeWith(color: UIColor = UIColor.darkText, weight: UIFont.Weight = .regular, ofSize: CGFloat = 14.0, alignment: NSTextAlignment, text: String) -> NSMutableAttributedString {
     public static func makeWith(text: String) -> NSMutableAttributedString {
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold)]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold)]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
     public static func makeWithNormal(text: String) -> NSMutableAttributedString {
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .regular)]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
 }
