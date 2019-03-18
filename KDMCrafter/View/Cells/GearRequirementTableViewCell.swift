@@ -13,6 +13,7 @@ class GearRequirementTableViewCell: UITableViewCell {
     @IBOutlet weak var requiredTypeLabel: UILabel!
     @IBOutlet weak var requiredQtyLabel: UILabel!
     @IBOutlet weak var qtyAvailableLabel: UILabel!
+    @IBOutlet weak var statusLabel: UILabel!
     
     
     static var nib:UINib {

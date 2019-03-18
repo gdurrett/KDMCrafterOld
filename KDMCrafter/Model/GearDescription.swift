@@ -58,7 +58,7 @@ enum statType {
         
         switch self {
         case let .weapon(speedValue, accuracyValue, strengthValue):
-            return ("Speed:\nAccuracy:\nStrength:", "\(speedValue)\n\(accuracyValue)\n\(strengthValue)")
+            return ("Speed:\nAccuracy:\nStrength:", "\(speedValue)\n\(accuracyValue)+\n\(strengthValue)")
         default:
             return("Nada", "Nothing")
         }

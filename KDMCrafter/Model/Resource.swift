@@ -19,6 +19,7 @@ enum resourceKind {
     case whiteLion
 }
 enum resourceType: String {
+    case none = "None"
     case any = "Any Type"
     case beaconShieldResource = "Beacon Shield"
     case beastSteak = "Beast Steak"

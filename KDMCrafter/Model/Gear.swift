@@ -21,13 +21,14 @@ struct Gear: Hashable {
     var resourceSpecialRequirements: [resourceType:Int]? = nil
     var innovationRequirement: Innovation? = nil
     var locationRequirement: Location?
+    var overlappingResources: (Bool, [resourceType])
     
     var hashValue: Int {
         return name.hashValue
     }
     
     // Full init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], innovationRequirement: Innovation, locationRequirement: Location) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], innovationRequirement: Innovation, locationRequirement: Location, overlappingResources: (Bool, [resourceType])) {
         
         self.name = name
         self.description = description
@@ -36,10 +37,10 @@ struct Gear: Hashable {
         self.resourceSpecialRequirements = resourceSpecialRequirements
         self.innovationRequirement = innovationRequirement
         self.locationRequirement = locationRequirement
-        
+        self.overlappingResources = overlappingResources
     }
     // Non Innovation init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], locationRequirement: Location) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], locationRequirement: Location, overlappingResources: (Bool, [resourceType])) {
         
         self.name = name
         self.description = description
@@ -47,10 +48,10 @@ struct Gear: Hashable {
         self.resourceTypeRequirements = resourceTypeRequirements
         self.resourceSpecialRequirements = resourceSpecialRequirements
         self.locationRequirement = locationRequirement
-        
+        self.overlappingResources = overlappingResources
     }
     // Non Special Resource requirement Has Innovation requirement init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], innovationRequirement: Innovation, locationRequirement: Location) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], innovationRequirement: Innovation, locationRequirement: Location, overlappingResources: (Bool, [resourceType])) {
         
         self.name = name
         self.description = description
@@ -58,17 +59,18 @@ struct Gear: Hashable {
         self.resourceTypeRequirements = resourceTypeRequirements
         self.innovationRequirement = innovationRequirement
         self.locationRequirement = locationRequirement
+        self.overlappingResources = overlappingResources
         
     }
     // Non Special Resource requirement Non Innovation requirement init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], locationRequirement: Location) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], locationRequirement: Location, overlappingResources: (Bool, [resourceType])) {
         
         self.name = name
         self.description = description
         self.qtyAvailable = qtyAvailable
         self.resourceTypeRequirements = resourceTypeRequirements
         self.locationRequirement = locationRequirement
-        
+        self.overlappingResources = overlappingResources
     }
     
 }

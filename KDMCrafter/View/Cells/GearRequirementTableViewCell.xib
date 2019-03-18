@@ -16,37 +16,50 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="68"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="KzH-sW-VRl">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="68"/>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="KzH-sW-VRl">
+                    <rect key="frame" x="150" y="0.0" width="225" height="68"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWZ-ZK-xqn">
-                            <rect key="frame" x="0.0" y="0.0" width="125" height="68"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mtG-ld-tEg">
+                            <rect key="frame" x="0.0" y="0.0" width="73.5" height="68"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mtG-ld-tEg">
-                            <rect key="frame" x="125" y="0.0" width="125" height="68"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rep-sF-ZO6">
+                            <rect key="frame" x="75.5" y="0.0" width="74" height="68"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rep-sF-ZO6">
-                            <rect key="frame" x="250" y="0.0" width="125" height="68"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5O7-EW-Hdp">
+                            <rect key="frame" x="151.5" y="0.0" width="73.5" height="68"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                 </stackView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWZ-ZK-xqn">
+                    <rect key="frame" x="0.0" y="0.0" width="151" height="68"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="151" id="swj-bN-cnQ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="GearRequirementTableViewCell"/>
             <constraints>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="2cg-K5-Vog"/>
                 <constraint firstAttribute="trailing" secondItem="KzH-sW-VRl" secondAttribute="trailing" id="7Ix-Zs-pk4"/>
-                <constraint firstItem="KzH-sW-VRl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="8tX-a1-4JS"/>
+                <constraint firstItem="KzH-sW-VRl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="150" id="8tX-a1-4JS"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="Fvj-hU-pJb"/>
                 <constraint firstItem="KzH-sW-VRl" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="J7R-rE-b5B"/>
+                <constraint firstItem="mtG-ld-tEg" firstAttribute="leading" secondItem="kWZ-ZK-xqn" secondAttribute="trailing" constant="-1" id="Xgh-Vt-GVA"/>
                 <constraint firstItem="KzH-sW-VRl" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="vQQ-nc-nuC"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="z9N-8I-xae"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
@@ -54,6 +67,7 @@
                 <outlet property="qtyAvailableLabel" destination="rep-sF-ZO6" id="Q5f-EJ-7JG"/>
                 <outlet property="requiredQtyLabel" destination="mtG-ld-tEg" id="OtE-yC-yaY"/>
                 <outlet property="requiredTypeLabel" destination="kWZ-ZK-xqn" id="gOX-gS-GpH"/>
+                <outlet property="statusLabel" destination="5O7-EW-Hdp" id="SNs-Xb-fu2"/>
             </connections>
             <point key="canvasLocation" x="220" y="-114.24287856071965"/>
         </view>

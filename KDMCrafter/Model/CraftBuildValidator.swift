@@ -86,6 +86,7 @@ public class CraftBuildValidator {
             count = resources.filter { $0.value > 0 }.count
         } else {
             count = resources.filter { key, value in return key.type.contains(type) }.values.reduce(0, +)
+            //print("GetTypeCt returning: \(type)")
         }
         return count
     }
@@ -140,15 +141,22 @@ public class CraftBuildValidator {
         var myArray = [[String:Int]]()
         let resourceTypeRequirements = gear.resourceTypeRequirements
         let resourceSpecialRequirements = gear.resourceSpecialRequirements
+        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
+            for pair in resourceSpecialRequirements! {
+                myArray.append([pair.key.rawValue:pair.value])
+            }
+        }
         if resourceTypeRequirements!.count != 0 {
             for pair in resourceTypeRequirements! {
                 myArray.append([pair.key.rawValue:pair.value])
             }
         }
-        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
-            for pair in resourceSpecialRequirements! {
-                myArray.append([pair.key.rawValue:pair.value])
-            }
+        return myArray
+    }
+    func getSpecialStrings(resourceTypes: [resourceType:Int]) -> [String] {
+        var myArray = [String]()
+        for (type, _) in resourceTypes {
+            myArray.append(type.rawValue)
         }
         return myArray
     }
