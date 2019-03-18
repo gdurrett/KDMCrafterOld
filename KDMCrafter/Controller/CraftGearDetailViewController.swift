@@ -40,8 +40,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     var affinityGreen = UIColor(red: 0.2824, green: 0.7765, blue: 0, alpha: 1.0)
     
     var myGearDict = [String:Int]()
-    var reducedTypes = [resourceType:Int]()
-    var newReducedTypes = [String:[resourceType:Int]]()
+    var reducedTypes = [String:[resourceType:Int]]()
+    var flaggedTypes = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,8 +102,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     
     override func viewWillAppear(_ animated: Bool) {
         //self.mySettlement = dataModel.currentSettlement!
-        self.reducedTypes = [resourceType:Int]()
-        //self.newReducedTypes = [String:[resourceType:Int]]()
+        //self.reducedTypes = [String:[resourceType:Int]]()
         tableView.reloadData()
     }
 
@@ -114,58 +113,35 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearRequirementTableViewCell", for: indexPath) as! GearRequirementTableViewCell
         cell.layoutMargins = UIEdgeInsets.zero
-        //print(requiredResourcesArray)
-//        for resource in gear!.overlappingResources.1 {
-//            for temp in requiredResourcesArray! {
-//                if let res = temp as? [String:Int] {
-//                    let match = res.map { $0.key }[0]
-//                    if match == resource.rawValue { print("\(match) from required equals \(resource.rawValue) from overlap.")}
-//                }
-//            }
-//            //print(resource.rawValue)
-//        }
-        if let obj = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
-            let qtyReq = obj.map { $0.value }[0]
-            let requestedTypeRawValue = obj.map { $0.key }[0]!
+        if let requiredResource = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
+            let qtyReq = requiredResource.map { $0.value }[0]
+            let requestedTypeRawValue = requiredResource.map { $0.key }[0]!
             let specialReqAmt = gear.resourceSpecialRequirements
             
-            for special in specialTypesStringArray! {
+            for special in specialTypesStringArray! { // Initialize dictionary
                 if requestedTypeRawValue == special {
-                    newReducedTypes[requestedTypeRawValue] = [:]
-                    print("Added \(newReducedTypes[requestedTypeRawValue]) to newReducedTypes")
+                    reducedTypes[requestedTypeRawValue] = [:]
                 }
             }
             var qtyAvail = validator.getTypeCount(type: resourceType(rawValue: requestedTypeRawValue)!, resources: mySettlement!.resourceStorage)
-            //print("Requesting \(resourceType(rawValue: obj.map { $0.key }[0])!.rawValue)" )
             if gear.overlappingResources.0 == true { // If this gear has overlapping resources
                 for special in specialTypesStringArray! { // Loop through array of strings of Special resource names
                     if requestedTypeRawValue == special { // If this particular resource is a Special
                         for (type, qtyRequired ) in specialReqAmt! { // Break out type and qty required for this Special
                             if type.rawValue == requestedTypeRawValue {
-                                print("We require \(qtyRequired) of \(requestedTypeRawValue) and we have \(qtyAvail)")
                                 for res in mySettlement!.resourceStorage {
                                     if res.key.name == requestedTypeRawValue {
-                                        //print("\(requestedTypeRawValue) provides \(res.key)")
                                         for type in res.key.type {
                                             if gear.overlappingResources.1.contains(type) {
-                                                print("\(qtyAvail) of \(requestedTypeRawValue) available vs \(qtyRequired) required")
-//                                                newReducedTypes[requestedTypeRawValue]?[type] = 0
                                                 if qtyAvail > 0 && qtyAvail <= qtyRequired {
-                                                    //print("For \(type), we're setting \(reducedTypes[type]) to \(qtyAvail)")
-                                                    reducedTypes[type] = qtyAvail
-                                                    if newReducedTypes[requestedTypeRawValue]?[type] == nil {
-                                                        print("Adding \([type:qtyAvail]) to \(newReducedTypes[requestedTypeRawValue])")
-                                                        newReducedTypes[requestedTypeRawValue]![type] = qtyAvail
-                                                        //print(newReducedTypes)
+                                                    if reducedTypes[requestedTypeRawValue]?[type] == nil {
+                                                        reducedTypes[requestedTypeRawValue]![type] = qtyAvail
                                                     }
-                                                    //print("NewReducedTypes!: \(newReducedTypes)")
                                                 } else if qtyAvail > qtyRequired {
-//                                                    if reducedTypes[type] != nil {
-                                                    if newReducedTypes[requestedTypeRawValue]![type] != nil {
-                                                        print("For \(requestedTypeRawValue), we're adding \(qtyRequired) to \(type.rawValue) dictionary entry")
-                                                        newReducedTypes[requestedTypeRawValue]![type]! += qtyRequired
+                                                    if reducedTypes[requestedTypeRawValue]![type] != nil {
+                                                        reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
                                                     } else {
-                                                        newReducedTypes[requestedTypeRawValue]![type] = qtyRequired
+                                                        reducedTypes[requestedTypeRawValue]![type] = qtyRequired
                                                     }
                                                 }
                                             }
@@ -174,56 +150,44 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                 }
                             }
                         }
-                        //print("We're requesting a special, which provides: \(obj.map { $0.key })")
-                        for (type, qty) in reducedTypes {
-                            //print("Reducing \(type) by \(qty)")
-                        }
                     }
                 }
                 if !specialTypesStringArray!.contains(requestedTypeRawValue) {
-                    //print("Non-special: \(requestedTypeRawValue)")
-                    print("NewReducedTypes Final: \(newReducedTypes)")
-//                    for (type, qty) in reducedTypes {
-//                        //print("\(type) found in reducedTypes")
-//                        if type.rawValue == requestedTypeRawValue {
-//                            print("Should be reducing \(type) by \(qty)")
-//                            qtyAvail -= qty
-//                        }
-//                    }
-                    for resource in newReducedTypes {
-                        print("Resource is: \(resource.key) and qty is \(resource.value)")
-                        for pair in newReducedTypes[resource.key]! {
+                    for resource in reducedTypes {
+                        for pair in reducedTypes[resource.key]! {
                             if pair.key.rawValue == requestedTypeRawValue {
-                                print("Reducing \(obj.map { $0.key }[0]) by \(pair.value)" )
                                 qtyAvail -= pair.value
+                                flaggedTypes.append(pair.key.rawValue)
                             }
                         }
                     }
                 }
             } // If this is a special resource and gear also requires a regular type provided by the special resource, reduce available count
-            
-            cell.requiredTypeLabel.text! = obj.map { $0.key }[0]
+            cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
             cell.requiredQtyLabel.text! = String(qtyReq)
             cell.qtyAvailableLabel.text! = String(qtyAvail)
-            if qtyReq > qtyAvail {
+            if flaggedTypes.contains(cell.requiredTypeLabel.text!) && qtyAvail <= qtyReq && qtyAvail > 0 {
+                print("Flagging \(cell.requiredTypeLabel.text!)")
+                cell.statusLabel.text! = "⚠️"
+            } else if qtyReq > qtyAvail {
                 cell.statusLabel.text! = "❌"
             } else {
                 cell.statusLabel.text! = "✅"
             }
-        } else if let obj = self.requiredResourcesArray![indexPath.row] as? Location {
-            cell.requiredTypeLabel.text! = "\(obj.name)"
+        } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
+            cell.requiredTypeLabel.text! = "\(requiredResource.name)"
             cell.requiredQtyLabel.text! = "1"
-            if mySettlement!.locationsBuiltDict[obj] == true {
+            if mySettlement!.locationsBuiltDict[requiredResource] == true {
                 cell.qtyAvailableLabel.text! = "1"
                 cell.statusLabel.text! = "✅"
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
             }
-        } else if let obj = self.requiredResourcesArray![indexPath.row] as? Innovation {
+        } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Innovation {
             cell.requiredQtyLabel.text! = "1"
-            cell.requiredTypeLabel.text! = "\(obj.name) Innovation"
-            if validator.getInnovationExists(innovation: obj) {
+            cell.requiredTypeLabel.text! = "\(requiredResource.name) Innovation"
+            if validator.getInnovationExists(innovation: requiredResource) {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "✅"
             } else {
@@ -231,8 +195,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 cell.statusLabel.text! = "❌"
             }
         }
-
-        
         return cell
     }
     
