@@ -41,7 +41,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     
     var myGearDict = [String:Int]()
     var reducedTypes = [String:[resourceType:Int]]()
-    var flaggedTypes = [String]()
+    var flaggedTypes = [String:Int]() // For flagging basic types with yellow exclamation
+    var specialMet = ["Temp":false] // Test if special requirements have been met for flagging purposes
+    var currentSpecial = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,9 +120,11 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             let requestedTypeRawValue = requiredResource.map { $0.key }[0]!
             let specialReqAmt = gear.resourceSpecialRequirements
             
-            for special in specialTypesStringArray! { // Initialize dictionary
-                if requestedTypeRawValue == special {
-                    reducedTypes[requestedTypeRawValue] = [:]
+            if specialTypesStringArray != nil {
+                for special in specialTypesStringArray! { // Initialize dictionaries
+                    if requestedTypeRawValue == special {
+                        reducedTypes[requestedTypeRawValue] = [:]
+                    }
                 }
             }
             var qtyAvail = validator.getTypeCount(type: resourceType(rawValue: requestedTypeRawValue)!, resources: mySettlement!.resourceStorage)
@@ -133,11 +137,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                     if res.key.name == requestedTypeRawValue {
                                         for type in res.key.type {
                                             if gear.overlappingResources.1.contains(type) {
-                                                if qtyAvail > 0 && qtyAvail <= qtyRequired {
+                                                if qtyAvail > 0 && qtyAvail < qtyRequired {
                                                     if reducedTypes[requestedTypeRawValue]?[type] == nil {
                                                         reducedTypes[requestedTypeRawValue]![type] = qtyAvail
                                                     }
+                                                } else if qtyAvail == qtyRequired {
+                                                    currentSpecial = requestedTypeRawValue
+                                                    reducedTypes[requestedTypeRawValue]![type] = qtyAvail
+                                                    specialMet[requestedTypeRawValue] = true
                                                 } else if qtyAvail > qtyRequired {
+                                                    currentSpecial = requestedTypeRawValue
+                                                    specialMet[requestedTypeRawValue] = false
                                                     if reducedTypes[requestedTypeRawValue]![type] != nil {
                                                         reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
                                                     } else {
@@ -157,17 +167,21 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                         for pair in reducedTypes[resource.key]! {
                             if pair.key.rawValue == requestedTypeRawValue {
                                 qtyAvail -= pair.value
-                                flaggedTypes.append(pair.key.rawValue)
+                                flaggedTypes[pair.key.rawValue] = 1
                             }
                         }
                     }
                 }
             } // If this is a special resource and gear also requires a regular type provided by the special resource, reduce available count
+            if specialMet[currentSpecial] != nil && specialMet[currentSpecial]! == true {
+                print("Unflagging \(requiredResource.map { $0.key }[0])")
+                flaggedTypes[requiredResource.map { $0.key }[0]] = nil
+            }
             cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
             cell.requiredQtyLabel.text! = String(qtyReq)
             cell.qtyAvailableLabel.text! = String(qtyAvail)
-            if flaggedTypes.contains(cell.requiredTypeLabel.text!) && qtyAvail <= qtyReq && qtyAvail > 0 {
-                print("Flagging \(cell.requiredTypeLabel.text!)")
+
+            if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
                 cell.statusLabel.text! = "⚠️"
             } else if qtyReq > qtyAvail {
                 cell.statusLabel.text! = "❌"
@@ -188,10 +202,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             cell.requiredQtyLabel.text! = "1"
             cell.requiredTypeLabel.text! = "\(requiredResource.name) Innovation"
             if validator.getInnovationExists(innovation: requiredResource) {
-                cell.qtyAvailableLabel.text! = "0"
+                cell.qtyAvailableLabel.text! = "1"
                 cell.statusLabel.text! = "✅"
             } else {
-                cell.qtyAvailableLabel.text! = "1"
+                cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
             }
         }
