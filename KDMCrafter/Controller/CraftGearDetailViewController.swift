@@ -145,9 +145,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                                     currentSpecial = requestedTypeRawValue
                                                     reducedTypes[requestedTypeRawValue]![type] = qtyAvail
                                                     specialMet[requestedTypeRawValue] = true
-                                                } else if qtyAvail > qtyRequired {
+                                                } else if qtyAvail > qtyRequired && gear.overlappingResources.1.count > 1 { // e.g. Skull Helm only has one overlapping type so cascades to next else if
                                                     currentSpecial = requestedTypeRawValue
                                                     specialMet[requestedTypeRawValue] = false
+                                                    if reducedTypes[requestedTypeRawValue]![type] != nil {
+                                                        reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
+                                                    } else {
+                                                        reducedTypes[requestedTypeRawValue]![type] = qtyRequired
+                                                    }
+                                                } else if qtyAvail > qtyRequired {
+                                                    currentSpecial = requestedTypeRawValue
+                                                    specialMet[requestedTypeRawValue] = true
                                                     if reducedTypes[requestedTypeRawValue]![type] != nil {
                                                         reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
                                                     } else {

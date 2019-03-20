@@ -58,8 +58,9 @@ public class CraftBuildValidator {
         if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Basic resource only
             maxCraftable = craftableTypes.min()!
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && gear.resourceTypeRequirements!.count != 0 { // Special and regular resource types required, but no innovation required
-            if gear.name == "Skull Helm" { // Special case of either/or
+            if gear.name == "Skull Helmet" { // Special case of either/or
                 maxCraftable = craftableTypes.min()! + craftableSpecials.min()!
+                print("Types: \(craftableTypes.min()!), Specials: \(craftableSpecials.min()!)")
             } else {
                 maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
             }

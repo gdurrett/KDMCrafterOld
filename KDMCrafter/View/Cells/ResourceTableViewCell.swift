@@ -11,10 +11,10 @@ import UIKit
 class ResourceTableViewCell: UITableViewCell {
 
     @IBOutlet weak var resourceLabel: UILabel!
+        
+    @IBOutlet weak var resourceCountLabel: UILabel!
     
     @IBOutlet weak var providedTypesLabel: UILabel!
-    
-    @IBOutlet weak var resourceCountLabel: UILabel!
     
     @IBOutlet weak var stepperOutlet: UIStepper!
     

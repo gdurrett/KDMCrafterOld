@@ -38,7 +38,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         sortedStorage = dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
-        
+                
         tableView.reloadData()
     }
 
@@ -66,8 +66,10 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         configureTitle(for: cell, with: resourceName!, with: 3500)
         configureValue(for: cell, with: resourceValue!)
+        configureTypes(for: cell, with: key.type, with: 3575)
         
         cell.stepperOutlet.value = Double(value)
+        cell.stepperOutlet.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         cell.resourceCountLabel.text! = "\(value)"
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
             cell.resourceCountLabel.text = "\(Int(change.newValue!))"
@@ -100,6 +102,18 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         let label = cell.viewWithTag(3550) as! UILabel
         label.text = String(value)
         label.sizeToFit()
+    }
+    fileprivate func configureTypes(for cell: UITableViewCell, with types: [resourceType], with tag: Int) {
+        var typesString = String()
+        let label = cell.viewWithTag(3575) as! UILabel
+        for type in types {
+            if type == types.last! {
+                typesString.append("\(type.rawValue)")
+            } else {
+                typesString.append("\(type.rawValue), ")
+            }
+        }
+        label.text! = typesString
     }
 }
 
