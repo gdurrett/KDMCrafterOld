@@ -26,14 +26,21 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     @IBOutlet weak var gearStatsLeftLabel: UILabel!
     @IBOutlet weak var gearInfoTextView: UITextView!
     
+    @IBAction func craftGearButtonAction(_ sender: Any) {
+    }
+    @IBOutlet weak var craftGearButtonOutlet: UIButton!
+    
     let dataModel = DataModel.sharedInstance
     var mySettlement: Settlement?
     let validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
     
     var gear: Gear!
-    var missingResourcesArray: [Any]?
+    var craftability: Bool!
+    
+    //var missingResourcesArray: [Any]?
     var requiredResourcesArray: [Any]?
     var specialTypesStringArray: [String]?
+    var requestedTypeRawValue = String()
     
     var affinityBlue = UIColor(red: 0, green: 0.749, blue: 0.9765, alpha: 1.0)
     var affinityRed = UIColor(red: 0.9686, green: 0.1922, blue: 0, alpha: 1.0)
@@ -44,6 +51,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     var flaggedTypes = [String:Int]() // For flagging basic types with yellow exclamation
     var specialMet = ["Temp":false] // Test if special requirements have been met for flagging purposes
     var currentSpecial = ""
+    var skullDict = [String:Bool]()
+    var currentCell = GearRequirementTableViewCell()
+    var craftStatusDict = [String:Bool]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,26 +108,38 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         if gear!.innovationRequirement != nil {
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
+        
         tableView.tableFooterView = UIView()
+        tableView.reloadData()
+        self.craftGearButtonOutlet.setTitle(self.craftability! == true ? "Craft":"Uncraftable", for: .normal)
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //self.mySettlement = dataModel.currentSettlement!
         //self.reducedTypes = [String:[resourceType:Int]]()
+        self.craftGearButtonOutlet.setTitle(self.craftability! == true ? "Craft":"Uncraftable", for: .normal)
         tableView.reloadData()
+
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return requiredResourcesArray!.count
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if currentCell.isHidden {
+            return 0.0
+        } else {
+            return 30
+        }
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearRequirementTableViewCell", for: indexPath) as! GearRequirementTableViewCell
         cell.layoutMargins = UIEdgeInsets.zero
         if let requiredResource = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
             let qtyReq = requiredResource.map { $0.value }[0]
-            let requestedTypeRawValue = requiredResource.map { $0.key }[0]!
+            requestedTypeRawValue = requiredResource.map { $0.key }[0]!
             let specialReqAmt = gear.resourceSpecialRequirements
             
             if specialTypesStringArray != nil {
@@ -145,6 +167,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                                     currentSpecial = requestedTypeRawValue
                                                     reducedTypes[requestedTypeRawValue]![type] = qtyAvail
                                                     specialMet[requestedTypeRawValue] = true
+                                                    if requestedTypeRawValue == "Skull" {
+                                                        skullDict["Skull"] = true
+                                                    }
                                                 } else if qtyAvail > qtyRequired && gear.overlappingResources.1.count > 1 { // e.g. Skull Helm only has one overlapping type so cascades to next else if
                                                     currentSpecial = requestedTypeRawValue
                                                     specialMet[requestedTypeRawValue] = false
@@ -160,6 +185,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                                         reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
                                                     } else {
                                                         reducedTypes[requestedTypeRawValue]![type] = qtyRequired
+                                                    }
+                                                    if requestedTypeRawValue == "Skull" {
+                                                        skullDict["Skull"] = true
                                                     }
                                                 }
                                             }
@@ -182,7 +210,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 }
             } // If this is a special resource and gear also requires a regular type provided by the special resource, reduce available count
             if specialMet[currentSpecial] != nil && specialMet[currentSpecial]! == true {
-                print("Unflagging \(requiredResource.map { $0.key }[0])")
+                //print("Unflagging \(requiredResource.map { $0.key }[0])")
                 flaggedTypes[requiredResource.map { $0.key }[0]] = nil
             }
             cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
@@ -191,30 +219,67 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
 
             if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
                 cell.statusLabel.text! = "⚠️"
+                self.craftability = false
             } else if qtyReq > qtyAvail {
+                if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
+                    skullDict["Bone"] = false
+                    if skullDict["Skull"] == true {
+                        currentCell = cell
+                        cell.isHidden = true
+                    } else {
+                        cell.isHidden = false
+                    }
+                } else if gear.name == "Skull Helm" && requestedTypeRawValue == "Skull" {
+                    skullDict["Skull"] = false
+                    if skullDict["Bone"] == true {
+                        currentCell = cell
+                        cell.isHidden = true
+                    } else {
+                        cell.isHidden = false
+                    }
+                }
                 cell.statusLabel.text! = "❌"
+                self.craftability = false
             } else {
+                if gear.name == "Skull Helm" {
+                    currentCell = cell
+                    cell.isHidden = false
+                    if requestedTypeRawValue == "Bone" {
+                        skullDict["Bone"] = true
+                    } else if requestedTypeRawValue == "Skull" {
+                        skullDict["Skull"] = true
+                    }
+                }
                 cell.statusLabel.text! = "✅"
+                self.craftability = true
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
+            currentCell = cell
+            cell.isHidden = false
             cell.requiredTypeLabel.text! = "\(requiredResource.name)"
             cell.requiredQtyLabel.text! = "1"
             if mySettlement!.locationsBuiltDict[requiredResource] == true {
                 cell.qtyAvailableLabel.text! = "1"
                 cell.statusLabel.text! = "✅"
+                craftStatusDict[requiredResource.name] = true
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
+                self.craftability = false
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Innovation {
+            currentCell = cell
+            cell.isHidden = false
             cell.requiredQtyLabel.text! = "1"
             cell.requiredTypeLabel.text! = "\(requiredResource.name) Innovation"
             if validator.getInnovationExists(innovation: requiredResource) {
                 cell.qtyAvailableLabel.text! = "1"
                 cell.statusLabel.text! = "✅"
+                craftStatusDict[requiredResource.name] = true
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
+                craftStatusDict[requiredResource.name] = false
             }
         }
         return cell

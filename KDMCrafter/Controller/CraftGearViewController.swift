@@ -52,6 +52,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var numGearRows: Int?
     var currentGear: Gear?
     
+    var craftability = Bool()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -156,17 +157,17 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         return " Craft Gear"
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
         if let craftDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "CraftGearDetailViewController") as? CraftGearDetailViewController {
             let gearIndex = tableView.indexPathForSelectedRow?.row
             if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
                 craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
-                craftDetailVC.missingResourcesArray = configureMissingResourcesString(for: cell, for: self.sortedCraftableGear![gearIndex!])
             } else {
                 craftDetailVC.gear = self.sortedGear![gearIndex!]
-                craftDetailVC.missingResourcesArray = configureMissingResourcesString(for: cell, for: self.sortedGear![gearIndex!])
-            }
 
+            }
+            craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear) > 0 ? true:false
+            print("Sending \(craftDetailVC.craftability)" )
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
         }
     }
@@ -220,7 +221,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     fileprivate func configureNumCraftableLabel(for cell: UITableViewCell, with gear: Gear, for tag: Int) {
         let numCraftable = self.validator.checkCraftability(gear: gear) > gear.qtyAvailable ? gear.qtyAvailable:self.validator.checkCraftability(gear: gear) // If numCraftable greater than qty available, use qtyAvailable
         let label = cell.viewWithTag(tag) as! UILabel
-        let labelString = "\(numCraftable) craftable"
+        var labelString = String()
+        //let labelString = "\(numCraftable) craftable"
+        if numCraftable > 0 {
+            labelString = "Craftable"
+            self.craftability = true
+        } else {
+            labelString = "Uncraftable"
+            self.craftability = false
+        }
         label.text = labelString
         if numCraftable == 0 {
             label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
