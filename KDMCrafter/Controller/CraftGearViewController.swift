@@ -166,8 +166,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
                 craftDetailVC.gear = self.sortedGear![gearIndex!]
 
             }
-            craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear) > 0 ? true:false
-            print("Sending \(craftDetailVC.craftability)" )
+            //craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear) > 0 ? true:false
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
         }
     }

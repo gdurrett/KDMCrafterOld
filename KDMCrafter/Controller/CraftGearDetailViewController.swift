@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, SpendResourcesVCDelegate {
     
     @IBOutlet weak var tableView: UITableView!
 
@@ -27,15 +27,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     @IBOutlet weak var gearInfoTextView: UITextView!
     
     @IBAction func craftGearButtonAction(_ sender: Any) {
+        spendResources(for: gear)
     }
     @IBOutlet weak var craftGearButtonOutlet: UIButton!
     
     let dataModel = DataModel.sharedInstance
     var mySettlement: Settlement?
+    var myStorage: [Resource:Int]?
     let validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
     
     var gear: Gear!
-    var craftability: Bool!
+    var craftability: Bool?
     
     //var missingResourcesArray: [Any]?
     var requiredResourcesArray: [Any]?
@@ -96,6 +98,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         setAffinities(gear: gear)
         
         mySettlement = dataModel.currentSettlement!
+        myStorage = mySettlement!.resourceStorage
 
         requiredResourcesArray = [gear!.locationRequirement!]
         let gearRequiredPairs = validator.getGearResourceRequirements(gear: gear!)
@@ -108,19 +111,18 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         if gear!.innovationRequirement != nil {
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
-        
+        configureCraftButton()
+
         tableView.tableFooterView = UIView()
         tableView.reloadData()
-        self.craftGearButtonOutlet.setTitle(self.craftability! == true ? "Craft":"Uncraftable", for: .normal)
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //self.mySettlement = dataModel.currentSettlement!
         //self.reducedTypes = [String:[resourceType:Int]]()
-        self.craftGearButtonOutlet.setTitle(self.craftability! == true ? "Craft":"Uncraftable", for: .normal)
+        myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
-
+        configureCraftButton()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -219,7 +221,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
 
             if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
                 cell.statusLabel.text! = "⚠️"
-                self.craftability = false
             } else if qtyReq > qtyAvail {
                 if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
                     skullDict["Bone"] = false
@@ -239,7 +240,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                     }
                 }
                 cell.statusLabel.text! = "❌"
-                self.craftability = false
             } else {
                 if gear.name == "Skull Helm" {
                     currentCell = cell
@@ -251,7 +251,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                     }
                 }
                 cell.statusLabel.text! = "✅"
-                self.craftability = true
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
             currentCell = cell
@@ -265,7 +264,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
-                self.craftability = false
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Innovation {
             currentCell = cell
@@ -275,11 +273,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             if validator.getInnovationExists(innovation: requiredResource) {
                 cell.qtyAvailableLabel.text! = "1"
                 cell.statusLabel.text! = "✅"
-                craftStatusDict[requiredResource.name] = true
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 cell.statusLabel.text! = "❌"
-                craftStatusDict[requiredResource.name] = false
             }
         }
         return cell
@@ -340,7 +336,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                     affinityWholeLabel.backgroundColor = affinityGreen
                 }
             } else {
-                
                 affinityView.backgroundColor = UIColor.clear
                 let label = UILabel(frame: CGRect(x: 289, y: 47, width: 80, height: 21))
                 label.font = UIFont(descriptor: .preferredFontDescriptor(withTextStyle: .body), size: 12)
@@ -348,5 +343,91 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 self.mainView.addSubview(label)
             }
         }
+    }
+    fileprivate func configureCraftButton() {
+        checkCraftableStatus()
+        let button = self.craftGearButtonOutlet!
+        
+        button.setTitle("Craft", for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 5
+        
+        if self.craftability == true {
+            button.isEnabled = true
+            button.setTitleColor(UIColor(red: 0.9686, green: 0.9647, blue: 0.8314, alpha: 1.0), for: .normal)
+            button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
+        } else {
+            button.isEnabled = false
+            button.setTitleColor(UIColor.darkGray, for: .normal)
+            button.backgroundColor = UIColor.clear
+        }
+    }
+    fileprivate func tappedCraftButton() {
+        if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
+            mySettlement!.gearCraftedDict[gear!]! += 1
+        } else if validator.checkCraftability(gear: gear!) > 0 && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
+            spendResources(for: gear!)
+        } else {
+            // Can't craft!
+        }
+        tableView.reloadData()
+    }
+    fileprivate func spendResources(for gear: Gear) {
+        var requiredTypes = [resourceType]()
+        var requiredResourceTypes = [resourceType:Int]()
+        if gear.resourceSpecialRequirements == nil {
+            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 }
+            requiredResourceTypes = gear.resourceTypeRequirements!
+        } else {
+            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys
+            requiredResourceTypes = gear.resourceTypeRequirements!.merging(gear.resourceSpecialRequirements!) { (current, _) in current } // Also combined dict
+        }
+        
+        var spendableResources = [Resource:Int]()
+        validator.resources = mySettlement!.resourceStorage // Update validator
+        
+        let spendResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "spendResourcesVC") as! SpendResourcesViewController
+        
+        for resource in myStorage!.keys {
+            if myStorage![resource]! > 0 {
+                for type in resource.type {
+                    if requiredTypes.contains(type) {
+                        spendableResources[resource] = myStorage![resource]! //assign value
+                        print("Assigning \(spendableResources.keys)")
+                        break
+                    }
+                }
+            }
+        }
+        spendResourcesVC.spendableResources = spendableResources
+        spendResourcesVC.requiredResourceTypes = requiredResourceTypes
+        //self.currentGear = gear
+        spendResourcesVC.delegate = self
+        
+        self.present(spendResourcesVC, animated: true, completion: nil)
+    }
+    func updateStorage(with spentResources: [Resource : Int]) {
+        for (resource, qty) in spentResources {
+            mySettlement!.resourceStorage[resource]! -= qty
+            myStorage![resource]! -= qty
+        }
+        //sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
+        validator.resources = mySettlement!.resourceStorage // Update validator here?
+        mySettlement!.gearCraftedDict[self.gear!]! += 1
+        tableView.reloadData()
+    }
+    func checkCraftableStatus() {
+        let cells = self.tableView.visibleCells
+        var status = Bool()
+        
+        for cell in cells {
+            if let myCell = cell as? GearRequirementTableViewCell {
+                status = myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️" ? false:true
+                if status == false { break }
+            }
+        }
+        if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }
+        self.craftability = status
+        tableView.reloadData()
     }
 }

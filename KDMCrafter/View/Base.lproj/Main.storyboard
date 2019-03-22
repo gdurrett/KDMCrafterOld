@@ -210,8 +210,15 @@
                                         <rect key="frame" x="0.0" y="258" width="414" height="23"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ep-J3-VwA">
-                                                <rect key="frame" x="16" y="-3.5" width="98" height="30"/>
-                                                <state key="normal" title="Button"/>
+                                                <rect key="frame" x="16" y="3" width="43" height="17"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="43" id="FK7-Fe-we6"/>
+                                                    <constraint firstAttribute="height" constant="17" id="vVb-t9-T2m"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <state key="normal" title="Button">
+                                                    <color key="titleColor" red="1" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                </state>
                                                 <connections>
                                                     <action selector="craftGearButtonAction:" destination="8K6-zk-Oin" eventType="touchUpInside" id="bgg-nR-aCq"/>
                                                 </connections>
@@ -221,7 +228,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="23" id="1iB-g9-6HB"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerY" secondItem="Ove-nK-N4J" secondAttribute="centerY" id="GH7-Np-69s"/>
-                                            <constraint firstAttribute="trailing" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="300" id="nxH-O0-bqV"/>
+                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="20" symbolic="YES" id="nxH-O0-bqV"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="leading" secondItem="Ove-nK-N4J" secondAttribute="leading" constant="16" id="q9r-zS-i3w"/>
                                         </constraints>
                                     </view>
