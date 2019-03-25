@@ -39,6 +39,7 @@ class Settlement {
     var innovationsAddedDict = [Innovation:Bool]()
     var overrideEnabled = false
     
+    
     init(name: String) {
         
         // Gotta have a name!

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4F02A9C8DC0F14B4DC2C3DF /* Pods_KDMCrafter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B409FD5E70A0412F246B420 /* Pods_KDMCrafter.framework */; };
 		FB09C5502231CA7A00CAA684 /* GearDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB09C54F2231CA7A00CAA684 /* GearDescription.swift */; };
 		FB1309F621CD687D00CAA684 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F521CD687D00CAA684 /* Location.swift */; };
 		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
@@ -38,6 +39,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		72FDB7CEED6ADF0B478D360C /* Pods-KDMCrafter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KDMCrafter.release.xcconfig"; path = "Target Support Files/Pods-KDMCrafter/Pods-KDMCrafter.release.xcconfig"; sourceTree = "<group>"; };
+		7B409FD5E70A0412F246B420 /* Pods_KDMCrafter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KDMCrafter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAC0EB6AAED83A0379B98337 /* Pods-KDMCrafter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KDMCrafter.debug.xcconfig"; path = "Target Support Files/Pods-KDMCrafter/Pods-KDMCrafter.debug.xcconfig"; sourceTree = "<group>"; };
 		FB09C54F2231CA7A00CAA684 /* GearDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearDescription.swift; sourceTree = "<group>"; };
 		FB1309F321CD66D100CAA684 /* Gear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gear.swift; sourceTree = "<group>"; };
 		FB1309F521CD687D00CAA684 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
@@ -75,12 +79,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4F02A9C8DC0F14B4DC2C3DF /* Pods_KDMCrafter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F3F83CBA499F2465B3F064D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AAC0EB6AAED83A0379B98337 /* Pods-KDMCrafter.debug.xcconfig */,
+				72FDB7CEED6ADF0B478D360C /* Pods-KDMCrafter.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		B48F28CE457397C49CE0A8DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7B409FD5E70A0412F246B420 /* Pods_KDMCrafter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FB3D9A8421F649E200CAA684 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +147,8 @@
 			children = (
 				FBFD693E21C43BA200CAA684 /* KDMCrafter */,
 				FBFD693D21C43BA200CAA684 /* Products */,
+				6F3F83CBA499F2465B3F064D /* Pods */,
+				B48F28CE457397C49CE0A8DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -172,9 +196,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FBFD695021C43BA400CAA684 /* Build configuration list for PBXNativeTarget "KDMCrafter" */;
 			buildPhases = (
+				8FD7E16C727AC9205B464D03 /* [CP] Check Pods Manifest.lock */,
 				FBFD693821C43BA200CAA684 /* Sources */,
 				FBFD693921C43BA200CAA684 /* Frameworks */,
 				FBFD693A21C43BA200CAA684 /* Resources */,
+				68247C81BCD607F4FC1DE411 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -197,6 +223,7 @@
 				TargetAttributes = {
 					FBFD693B21C43BA200CAA684 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -235,6 +262,55 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		68247C81BCD607F4FC1DE411 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-KDMCrafter/Pods-KDMCrafter-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-KDMCrafter/Pods-KDMCrafter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8FD7E16C727AC9205B464D03 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-KDMCrafter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FBFD693821C43BA200CAA684 /* Sources */ = {
@@ -404,6 +480,7 @@
 		};
 		FBFD695121C43BA400CAA684 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAC0EB6AAED83A0379B98337 /* Pods-KDMCrafter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -415,13 +492,14 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apphazard.KDMCrafter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		FBFD695221C43BA400CAA684 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 72FDB7CEED6ADF0B478D360C /* Pods-KDMCrafter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -433,7 +511,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.apphazard.KDMCrafter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

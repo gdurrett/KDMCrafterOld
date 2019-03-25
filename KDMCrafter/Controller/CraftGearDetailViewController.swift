@@ -141,7 +141,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         cell.layoutMargins = UIEdgeInsets.zero
         if let requiredResource = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
             let qtyReq = requiredResource.map { $0.value }[0]
-            requestedTypeRawValue = requiredResource.map { $0.key }[0]!
+            requestedTypeRawValue = requiredResource.map { $0.key }[0]
             let specialReqAmt = gear.resourceSpecialRequirements
             
             if specialTypesStringArray != nil {

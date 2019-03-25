@@ -23,8 +23,11 @@ struct Gear: Hashable {
     var locationRequirement: Location?
     var overlappingResources: (Bool, [resourceType])
     
-    var hashValue: Int {
-        return name.hashValue
+//    var hashValue: Int {
+//        return name.hashValue
+//    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
     }
     
     // Full init
