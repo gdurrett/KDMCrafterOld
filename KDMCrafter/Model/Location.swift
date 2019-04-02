@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Location: Hashable {
+struct Location: Hashable, Codable {
     
     let name: String
     let locationRequirement: String

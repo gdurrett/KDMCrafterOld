@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Innovation: Hashable {
+struct Innovation: Hashable, Codable {
     
     let name: String
     

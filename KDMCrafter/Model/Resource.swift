@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum resourceKind {
+enum resourceKind: String, Codable {
     case basic
     case endeavor
     case phoenix
@@ -18,7 +18,7 @@ enum resourceKind {
     case gear
     case whiteLion
 }
-enum resourceType: String {
+enum resourceType: String, Codable {
     case none = "None"
     case any = "Any Type"
     case beaconShieldResource = "Beacon Shield"
@@ -89,7 +89,7 @@ enum resourceType: String {
     case wishBone = "Wishbone"
 }
 
-struct Resource: Hashable {
+struct Resource: Hashable, Codable {
     
     let name: String
     let kind: resourceKind
@@ -184,3 +184,4 @@ let lionTestes = Resource(name: "Lion Testes", kind: .whiteLion, type: [.consuma
 let shimmeringMane = Resource(name: "Shimmering Mane", kind: .whiteLion, type: [.hide, .shimmeringMane])
 let sinew = Resource(name: "Sinew", kind: .whiteLion, type: [.organ, .sinew])
 let whiteFur = Resource(name: "White Fur", kind: .whiteLion, type: [.hide, .whiteFur])
+

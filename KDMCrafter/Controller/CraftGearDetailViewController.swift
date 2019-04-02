@@ -75,11 +75,12 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         var leftStats: (String)
         var rightStats: (String)
         if gear!.description.type == .armor {
-            rightStats = gear.description.stats.armorAttributes().0
-            leftStats = gear.description.stats.armorAttributes().1
+            //rightStats = gear.description.stats.armorAttributes().0
+            rightStats = gear.description.statsRight
+            leftStats = gear.description.statsLeft
         } else if gear.description.type == .weapon {
-            rightStats = gear.description.stats.weaponAttributes().1
-            leftStats = gear.description.stats.weaponAttributes().0
+            rightStats = gear.description.statsRight
+            leftStats = gear.description.statsLeft
         } else {
             rightStats = ""
             leftStats = ""
@@ -87,7 +88,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         gearStatsRightLabel.text = rightStats
         gearStatsLeftLabel.text = leftStats
         
-        gearInfoTextView.attributedText = gear!.description.detailText
+        gearInfoTextView.attributedText = gear!.description.detailText.attributedString
 
         affinityLeftLabel.isHidden = true
         affinityTopLabel.isHidden = true
@@ -152,7 +153,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 }
             }
             var qtyAvail = validator.getTypeCount(type: resourceType(rawValue: requestedTypeRawValue)!, resources: mySettlement!.resourceStorage)
-            if gear.overlappingResources.0 == true { // If this gear has overlapping resources
+            if gear.overlappingResources != [.none] { // If this gear has overlapping resources
                 for special in specialTypesStringArray! { // Loop through array of strings of Special resource names
                     if requestedTypeRawValue == special { // If this particular resource is a Special
                         for (type, qtyRequired ) in specialReqAmt! { // Break out type and qty required for this Special
@@ -160,7 +161,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                 for res in mySettlement!.resourceStorage {
                                     if res.key.name == requestedTypeRawValue {
                                         for type in res.key.type {
-                                            if gear.overlappingResources.1.contains(type) {
+                                            if gear.overlappingResources.contains(type) {
                                                 if qtyAvail > 0 && qtyAvail < qtyRequired {
                                                     if reducedTypes[requestedTypeRawValue]?[type] == nil {
                                                         reducedTypes[requestedTypeRawValue]![type] = qtyAvail
@@ -172,7 +173,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                                                     if requestedTypeRawValue == "Skull" {
                                                         skullDict["Skull"] = true
                                                     }
-                                                } else if qtyAvail > qtyRequired && gear.overlappingResources.1.count > 1 { // e.g. Skull Helm only has one overlapping type so cascades to next else if
+                                                } else if qtyAvail > qtyRequired && gear.overlappingResources.count > 1 { // e.g. Skull Helm only has one overlapping type so cascades to next else if
                                                     currentSpecial = requestedTypeRawValue
                                                     specialMet[requestedTypeRawValue] = false
                                                     if reducedTypes[requestedTypeRawValue]![type] != nil {
