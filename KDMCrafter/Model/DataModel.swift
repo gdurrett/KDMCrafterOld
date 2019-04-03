@@ -12,19 +12,18 @@ import UIKit // For extensions to NSMutableAttributedString
 class DataModel {
     
     static var sharedInstance = DataModel()
-    var currentSettlement: Settlement?
+    var currentSettlement: Settlement!
     var observation: NSKeyValueObservation?
 
     var saveData = Data()
     
     private init() {
-        print(Bundle.main)
         let pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
         let xml = FileManager.default.contents(atPath: pathURL.path)
-        if let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)
-        {
-            currentSettlement = _currentSettlement
-            print(_currentSettlement.name)
+        if xml != nil {
+            let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)
+            currentSettlement = _currentSettlement!
+            print(currentSettlement.name)
         } else {
             print("Couldn't get this path: \(Bundle.main.path(forResource: "Settlement", ofType: "plist").debugDescription)")
             currentSettlement = Settlement(name: "Death's Respite")
