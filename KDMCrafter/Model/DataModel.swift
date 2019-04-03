@@ -15,23 +15,33 @@ class DataModel {
     var currentSettlement: Settlement?
     var observation: NSKeyValueObservation?
 
+    var saveData = Data()
     
     private init() {
-        
-        // FileManager stuff
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
-        let url = NSURL(fileURLWithPath: path)
-        let filePath = url.appendingPathComponent("Settlements.plist")?.path
-        let fileManager = FileManager.default
-        
-        // If we have a save file, us it, otherwise create a new storage
-        if fileManager.fileExists(atPath: filePath!) {
-            // Load code
+        print(Bundle.main)
+        let pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
+        let xml = FileManager.default.contents(atPath: pathURL.path)
+        if let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)
+        {
+            currentSettlement = _currentSettlement
+            print(_currentSettlement.name)
         } else {
-            // Set currentSettlement to loaded file (later!)
-            // Create new settlement
+            print("Couldn't get this path: \(Bundle.main.path(forResource: "Settlement", ofType: "plist").debugDescription)")
             currentSettlement = Settlement(name: "Death's Respite")
+        }
+    }
 
+    func writeData() {
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
+        
+        do {
+            let data = try encoder.encode(currentSettlement)
+            try data.write(to: path)
+            dump(path)
+        } catch {
+            print(error)
         }
     }
 }

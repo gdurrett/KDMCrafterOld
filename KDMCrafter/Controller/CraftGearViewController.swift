@@ -83,7 +83,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedCraftableGear = getCraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
-        validator.settlement.builtLocations = mySettlement!.builtLocations
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

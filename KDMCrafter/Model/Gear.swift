@@ -11,7 +11,6 @@ import Foundation
 struct Gear: Hashable, Codable {
     
     enum CodingKeys: String, CodingKey {
-        
         case name = "Name"
         case description = "Gear"
         case qtyAvailable = "Qty Available"
@@ -28,7 +27,13 @@ struct Gear: Hashable, Codable {
         qtyAvailable = try gear.decode(Int.self, forKey: .qtyAvailable)
         resourceTypeRequirements = try gear.decode([resourceType:Int]?.self, forKey: .resourceTypeRequirements)
         resourceSpecialRequirements = try gear.decode([resourceType:Int]?.self, forKey: .resourceSpecialRequirements)
-        innovationRequirement = try gear.decode(Innovation.self, forKey: .innovationRequirement)
+        
+        do {
+            innovationRequirement = try gear.decode(Innovation.self, forKey: .innovationRequirement)
+        } catch {
+            innovationRequirement = nil
+        }
+        
         locationRequirement = try gear.decode(Location.self, forKey: .locationRequirement)
         overlappingResources = try gear.decode([resourceType].self, forKey: .overlappingResources)
     }

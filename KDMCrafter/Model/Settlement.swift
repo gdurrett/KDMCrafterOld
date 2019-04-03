@@ -24,7 +24,50 @@ enum locationIndex: Int {
     case weaponCrafter = 12
 }
 
-class Settlement {
+class Settlement: Codable, Equatable {
+    static func == (lhs: Settlement, rhs: Settlement) -> Bool {
+        return lhs.name == rhs.name
+    }
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case name = "Name"
+        case resourceStorage = "Resource Storage"
+        case allLocations = "All Locations"
+        case locationsBuiltDict = "Locations Built Dict"
+        case gearCraftedDict = "Gear Crafted Dict"
+        case availableLocations = "Available Locations"
+        case availableGear = "Available Gear"
+        case availableInnovations = "Available Innovations"
+        case innovationsAddedDict = "Innovations Added Dict"
+        case overrideEnabled = "Override Enabled"
+    }
+    required public init(from decoder: Decoder) throws {
+        let settlement = try decoder.container(keyedBy: CodingKeys.self)
+        name = try settlement.decode(String.self, forKey: .name)
+        resourceStorage = try settlement.decode([Resource:Int].self, forKey: .resourceStorage)
+        allLocations = try settlement.decode([Location].self, forKey: .allLocations)
+        locationsBuiltDict = try settlement.decode([Location:Bool].self, forKey: .locationsBuiltDict)
+        gearCraftedDict = try settlement.decode([Gear:Int].self, forKey: .gearCraftedDict)
+        availableLocations = try settlement.decode([Location].self, forKey: .availableLocations)
+        availableGear = try settlement.decode([Gear].self, forKey: .availableGear)
+        availableInnovations = try settlement.decode([Innovation].self, forKey: .availableInnovations)
+        innovationsAddedDict = try settlement.decode([Innovation:Bool].self, forKey: .innovationsAddedDict)
+        overrideEnabled = try settlement.decode(Bool.self, forKey: .overrideEnabled)
+    }
+    func encode(to encoder: Encoder) throws {
+        var settlement = encoder.container(keyedBy: CodingKeys.self)
+        try settlement.encode(name, forKey: .name)
+        try settlement.encode(resourceStorage, forKey: .resourceStorage)
+        try settlement.encode(allLocations, forKey: .allLocations)
+        try settlement.encode(locationsBuiltDict, forKey: .locationsBuiltDict)
+        try settlement.encode(gearCraftedDict, forKey: .gearCraftedDict)
+        try settlement.encode(availableLocations, forKey: .availableLocations)
+        try settlement.encode(availableGear, forKey: .availableGear)
+        try settlement.encode(availableInnovations, forKey: .availableInnovations)
+        try settlement.encode(innovationsAddedDict, forKey: .innovationsAddedDict)
+        try settlement.encode(overrideEnabled, forKey: .overrideEnabled)
+    }
     
     // For the settlement object
     let name: String
@@ -32,13 +75,11 @@ class Settlement {
     var allLocations = [barberSurgeon, blackSmith, boneSmith, catarium, exhaustedLanternHoard, lanternHoard, leatherWorker, maskMaker, organGrinder, plumery, skinnery, stoneCircle, weaponCrafter]
     var locationsBuiltDict = [Location:Bool]()
     var gearCraftedDict = [Gear:Int]()
-    var builtLocations = [Location]()
     var availableLocations = [Location]()
     var availableGear = [Gear]()
     var availableInnovations = [Innovation]()
     var innovationsAddedDict = [Innovation:Bool]()
     var overrideEnabled = false
-    
     
     init(name: String) {
         
@@ -330,6 +371,27 @@ class Settlement {
         for gear in availableGear {
             gearCraftedDict[gear] = 0
         }
-        
     }
+    
+    // Testing only
+    enum TestError: Error {
+        case notEqual
+        case dataCorrupt
+    }
+    public func roundTripTest<T: Codable & Equatable>(item: T) throws {
+        let encoder = PropertyListEncoder()
+        let data = try encoder.encode(item)
+        let decoder = PropertyListDecoder()
+        let restored = try decoder.decode(T.self, from: data)
+        if item != restored {
+            NSLog("Expected")
+            dump(item)
+            NSLog("Actual")
+            dump(restored)
+            throw TestError.notEqual
+        }
+        let printable = restored as! Settlement
+        dump(printable.locationsBuiltDict)
+    }
+    // Testing only end
 }

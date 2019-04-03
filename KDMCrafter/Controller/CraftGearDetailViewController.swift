@@ -394,7 +394,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 for type in resource.type {
                     if requiredTypes.contains(type) {
                         spendableResources[resource] = myStorage![resource]! //assign value
-                        print("Assigning \(spendableResources.keys)")
                         break
                     }
                 }
@@ -412,9 +411,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             mySettlement!.resourceStorage[resource]! -= qty
             myStorage![resource]! -= qty
         }
-        //sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         validator.resources = mySettlement!.resourceStorage // Update validator here?
         mySettlement!.gearCraftedDict[self.gear!]! += 1
+        dataModel.writeData()
         tableView.reloadData()
     }
     func checkCraftableStatus() {
