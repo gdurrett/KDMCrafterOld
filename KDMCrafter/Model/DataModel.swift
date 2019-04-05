@@ -23,9 +23,9 @@ class DataModel {
         if xml != nil {
             let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)
             currentSettlement = _currentSettlement!
-            print(currentSettlement.name)
+            print(pathURL)
         } else {
-            print("Couldn't get this path: \(Bundle.main.path(forResource: "Settlement", ofType: "plist").debugDescription)")
+            print("Couldn't find \(pathURL)")
             currentSettlement = Settlement(name: "Death's Respite")
         }
     }

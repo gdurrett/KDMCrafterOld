@@ -75,7 +75,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         var leftStats: (String)
         var rightStats: (String)
         if gear!.description.type == .armor {
-            //rightStats = gear.description.stats.armorAttributes().0
             rightStats = gear.description.statsRight
             leftStats = gear.description.statsLeft
         } else if gear.description.type == .weapon {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina6_1" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -232,8 +232,8 @@
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="leading" secondItem="Ove-nK-N4J" secondAttribute="leading" constant="16" id="q9r-zS-i3w"/>
                                         </constraints>
                                     </view>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="m5B-g0-Opf" userLabel="GearStatsStack">
-                                        <rect key="frame" x="16" y="35" width="66" height="16"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="m5B-g0-Opf" userLabel="GearStatsStack">
+                                        <rect key="frame" x="16" y="35" width="69" height="16"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ryg-Ur-0yQ">
                                                 <rect key="frame" x="0.0" y="0.0" width="33" height="16"/>
@@ -242,7 +242,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GIF-II-fb8">
-                                                <rect key="frame" x="33" y="0.0" width="33" height="16"/>
+                                                <rect key="frame" x="36" y="0.0" width="33" height="16"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -476,6 +476,37 @@
             </objects>
             <point key="canvasLocation" x="749.60000000000002" y="1830.1349325337333"/>
         </scene>
+        <!--Settings-->
+        <scene sceneID="eb8-0F-DQZ">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" id="9F0-JP-h7c" customClass="SettingsViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="BTT-dO-3sN">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="HIm-ly-3hZ">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="HIm-ly-3hZ" firstAttribute="trailing" secondItem="Udm-P2-j7v" secondAttribute="trailing" id="DuG-dX-VLW"/>
+                            <constraint firstItem="HIm-ly-3hZ" firstAttribute="bottom" secondItem="Udm-P2-j7v" secondAttribute="bottom" id="MsA-N4-SCk"/>
+                            <constraint firstItem="HIm-ly-3hZ" firstAttribute="top" secondItem="Udm-P2-j7v" secondAttribute="top" constant="44" id="Q3G-na-FK3"/>
+                            <constraint firstItem="HIm-ly-3hZ" firstAttribute="leading" secondItem="Udm-P2-j7v" secondAttribute="leading" id="wtV-AN-4dW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Udm-P2-j7v"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Settings" selectedImage="second" id="G13-Ik-ET1"/>
+                    <connections>
+                        <outlet property="tableView" destination="HIm-ly-3hZ" id="IxD-uw-na6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lSJ-zl-i2E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="754" y="2592"/>
+        </scene>
         <!--Build Locations-->
         <scene sceneID="R60-OV-K6Y">
             <objects>
@@ -521,6 +552,7 @@
                         <segue destination="5Rp-28-66k" kind="relationship" relationship="viewControllers" id="euT-jO-SYL"/>
                         <segue destination="30M-tm-Aru" kind="relationship" relationship="viewControllers" id="Moi-SG-4Ht"/>
                         <segue destination="ppt-Yj-Ftm" kind="relationship" relationship="viewControllers" id="8af-i4-FAP"/>
+                        <segue destination="9F0-JP-h7c" kind="relationship" relationship="viewControllers" id="gGz-o3-FBE"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
