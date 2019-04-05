@@ -218,6 +218,7 @@
                                         <color key="backgroundColor" red="0.88244238450442469" green="0.88244238450442469" blue="0.88244238450442469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="23" id="1iB-g9-6HB"/>
+                                            <constraint firstAttribute="trailing" secondItem="toD-er-GB4" secondAttribute="trailing" constant="314" id="2sp-k3-KGr"/>
                                             <constraint firstItem="toD-er-GB4" firstAttribute="leading" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="8" id="Ddf-fd-6zc"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerY" secondItem="Ove-nK-N4J" secondAttribute="centerY" id="GH7-Np-69s"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="20" symbolic="YES" id="nxH-O0-bqV"/>
@@ -448,7 +449,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iIw-BS-Jx3">
-                                <rect key="frame" x="0.0" y="184" width="414" height="629"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
@@ -456,7 +457,7 @@
                         <constraints>
                             <constraint firstItem="AFr-cE-vDT" firstAttribute="bottom" secondItem="iIw-BS-Jx3" secondAttribute="bottom" id="79U-SL-k22"/>
                             <constraint firstItem="AFr-cE-vDT" firstAttribute="trailing" secondItem="iIw-BS-Jx3" secondAttribute="trailing" id="Obm-lK-dSn"/>
-                            <constraint firstItem="iIw-BS-Jx3" firstAttribute="top" secondItem="AFr-cE-vDT" secondAttribute="top" constant="140" id="nXI-4R-fgW"/>
+                            <constraint firstItem="iIw-BS-Jx3" firstAttribute="top" secondItem="AFr-cE-vDT" secondAttribute="top" constant="44" id="nXI-4R-fgW"/>
                             <constraint firstItem="iIw-BS-Jx3" firstAttribute="leading" secondItem="AFr-cE-vDT" secondAttribute="leading" id="ojo-eX-P9l"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="AFr-cE-vDT"/>
@@ -510,15 +511,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zq9-7I-wJO">
-                                <rect key="frame" x="0.0" y="184" width="414" height="629"/>
+                                <rect key="frame" x="0.0" y="86" width="414" height="725"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="XqU-cj-ECq" firstAttribute="trailing" secondItem="zq9-7I-wJO" secondAttribute="trailing" id="EVx-cL-sCC"/>
-                            <constraint firstItem="zq9-7I-wJO" firstAttribute="bottom" secondItem="XqU-cj-ECq" secondAttribute="bottom" id="HIU-Tu-xyJ"/>
-                            <constraint firstItem="zq9-7I-wJO" firstAttribute="top" secondItem="XqU-cj-ECq" secondAttribute="top" constant="140" id="Hfw-nt-g7w"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="bottom" secondItem="XqU-cj-ECq" secondAttribute="bottom" constant="-2" id="HIU-Tu-xyJ"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="top" secondItem="XqU-cj-ECq" secondAttribute="top" constant="42" id="Hfw-nt-g7w"/>
+                            <constraint firstItem="XqU-cj-ECq" firstAttribute="bottom" secondItem="zq9-7I-wJO" secondAttribute="bottom" constant="2" id="l4P-qO-gkK"/>
                             <constraint firstItem="zq9-7I-wJO" firstAttribute="leading" secondItem="XqU-cj-ECq" secondAttribute="leading" id="yOg-g0-jTb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="XqU-cj-ECq"/>
@@ -530,7 +532,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F4D-iO-DDw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="744.79999999999995" y="1078.1109445277361"/>
+            <point key="canvasLocation" x="743.47826086956525" y="1077.4553571428571"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">

@@ -103,6 +103,9 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return " Build Locations"
     }
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
     // Helper functions
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel

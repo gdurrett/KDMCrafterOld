@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,19 +17,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" tag="3600" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="axq-KJ-dug">
-                    <rect key="frame" x="16" y="30" width="66" height="27"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" userInteractionEnabled="NO" tag="3700" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUT-EA-oJ0">
-                    <rect key="frame" x="16" y="78" width="340" height="0.0"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <rect key="frame" x="16" y="5" width="59" height="52"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hls-8v-XDp">
-                    <rect key="frame" x="296" y="31" width="60" height="25"/>
+                    <rect key="frame" x="296" y="20" width="60" height="47"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="60" id="TaL-XQ-Bi8"/>
                     </constraints>
@@ -40,18 +34,27 @@
                         <action selector="buildButtonTapped:" destination="iN0-l3-epB" eventType="touchUpInside" id="ie8-K7-7dl"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" tag="3700" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUT-EA-oJ0">
+                    <rect key="frame" x="16" y="62" width="280" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="280" id="pqi-pu-tcz"/>
+                        <constraint firstAttribute="height" constant="20" id="xLm-9V-lSx"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="LocationTableViewCell"/>
             <constraints>
-                <constraint firstItem="eUT-EA-oJ0" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="0sL-Xh-l2U"/>
-                <constraint firstItem="hls-8v-XDp" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="8nx-WN-AmN"/>
-                <constraint firstItem="axq-KJ-dug" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="Du9-ro-OeN"/>
-                <constraint firstItem="hls-8v-XDp" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="31" id="Pf5-zY-2hN"/>
-                <constraint firstItem="axq-KJ-dug" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="30" id="WS5-4G-Orc"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="axq-KJ-dug" secondAttribute="bottom" constant="30" id="85l-Ej-xXg"/>
+                <constraint firstItem="eUT-EA-oJ0" firstAttribute="leading" secondItem="axq-KJ-dug" secondAttribute="leading" id="BwL-fp-oQC"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="hls-8v-XDp" secondAttribute="bottom" constant="20" id="D9a-6P-RdY"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="eUT-EA-oJ0" secondAttribute="bottom" constant="5" id="OnX-2G-Y3u"/>
+                <constraint firstItem="hls-8v-XDp" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="Pf5-zY-2hN"/>
+                <constraint firstItem="axq-KJ-dug" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="5" id="WS5-4G-Orc"/>
                 <constraint firstItem="axq-KJ-dug" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="aSP-KI-e45"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="eUT-EA-oJ0" secondAttribute="bottom" constant="9" id="h1n-Ov-o7V"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="eUT-EA-oJ0" secondAttribute="trailing" constant="19" id="kUt-Ac-t4v"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="hls-8v-XDp" secondAttribute="trailing" constant="19" id="nhM-jF-HFS"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -60,7 +63,7 @@
                 <outlet property="buildButton" destination="hls-8v-XDp" id="A4d-ax-TCV"/>
                 <outlet property="locationName" destination="axq-KJ-dug" id="pp2-UP-O35"/>
             </connections>
-            <point key="canvasLocation" x="140" y="-170.46476761619192"/>
+            <point key="canvasLocation" x="-271" y="-169"/>
         </view>
     </objects>
 </document>
