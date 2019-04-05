@@ -26,8 +26,11 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     @IBOutlet weak var gearStatsLeftLabel: UILabel!
     @IBOutlet weak var gearInfoTextView: UITextView!
     
+    @IBOutlet weak var overrideStatusLabel: UILabel!
+    
     @IBAction func craftGearButtonAction(_ sender: Any) {
-        spendResources(for: gear)
+        tappedCraftButton()
+        //spendResources(for: gear)
     }
     @IBOutlet weak var craftGearButtonOutlet: UIButton!
     
@@ -112,7 +115,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
         configureCraftButton()
-
+        configureOverrideStatusLabel()
+        
         tableView.tableFooterView = UIView()
         tableView.reloadData()
     }
@@ -123,6 +127,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
         configureCraftButton()
+        configureOverrideStatusLabel()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -139,6 +144,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearRequirementTableViewCell", for: indexPath) as! GearRequirementTableViewCell
         cell.layoutMargins = UIEdgeInsets.zero
+        
         if let requiredResource = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
             let qtyReq = requiredResource.map { $0.value }[0]
             requestedTypeRawValue = requiredResource.map { $0.key }[0]
@@ -212,7 +218,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 }
             } // If this is a special resource and gear also requires a regular type provided by the special resource, reduce available count
             if specialMet[currentSpecial] != nil && specialMet[currentSpecial]! == true {
-                //print("Unflagging \(requiredResource.map { $0.key }[0])")
                 flaggedTypes[requiredResource.map { $0.key }[0]] = nil
             }
             cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
@@ -220,7 +225,11 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             cell.qtyAvailableLabel.text! = String(qtyAvail)
 
             if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
-                cell.statusLabel.text! = "⚠️"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "⚠️"
+                }
             } else if qtyReq > qtyAvail {
                 if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
                     skullDict["Bone"] = false
@@ -239,7 +248,11 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                         cell.isHidden = false
                     }
                 }
-                cell.statusLabel.text! = "❌"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "❌"
+                }
             } else {
                 if gear.name == "Skull Helm" {
                     currentCell = cell
@@ -250,7 +263,11 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                         skullDict["Skull"] = true
                     }
                 }
-                cell.statusLabel.text! = "✅"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "✅"
+                }
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
             currentCell = cell
@@ -259,11 +276,19 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             cell.requiredQtyLabel.text! = "1"
             if mySettlement!.locationsBuiltDict[requiredResource] == true {
                 cell.qtyAvailableLabel.text! = "1"
-                cell.statusLabel.text! = "✅"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "✅"
+                }
                 craftStatusDict[requiredResource.name] = true
             } else {
                 cell.qtyAvailableLabel.text! = "0"
-                cell.statusLabel.text! = "❌"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "❌"
+                }
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Innovation {
             currentCell = cell
@@ -272,10 +297,18 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             cell.requiredTypeLabel.text! = "\(requiredResource.name) Innovation"
             if validator.getInnovationExists(innovation: requiredResource) {
                 cell.qtyAvailableLabel.text! = "1"
-                cell.statusLabel.text! = "✅"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "✅"
+                }
             } else {
                 cell.qtyAvailableLabel.text! = "0"
-                cell.statusLabel.text! = "❌"
+                if mySettlement!.overrideEnabled {
+                    cell.statusLabel.text! = "❎"
+                } else {
+                    cell.statusLabel.text! = "❌"
+                }
             }
         }
         return cell
@@ -362,6 +395,14 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             button.backgroundColor = UIColor.clear
         }
     }
+    fileprivate func configureOverrideStatusLabel() {
+        overrideStatusLabel.text = "Override Enabled"
+        if mySettlement!.overrideEnabled == true {
+            overrideStatusLabel.isHidden = false
+        } else {
+            overrideStatusLabel.isHidden = true
+        }
+    }
     fileprivate func tappedCraftButton() {
         if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
             mySettlement!.gearCraftedDict[gear!]! += 1
@@ -419,10 +460,14 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         let cells = self.tableView.visibleCells
         var status = Bool()
         
-        for cell in cells {
-            if let myCell = cell as? GearRequirementTableViewCell {
-                status = myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️" ? false:true
-                if status == false { break }
+        if mySettlement!.overrideEnabled {
+            status = true
+        } else {
+            for cell in cells {
+                if let myCell = cell as? GearRequirementTableViewCell {
+                    status = myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️" ? false:true
+                    if status == false { break }
+                }
             }
         }
         if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }

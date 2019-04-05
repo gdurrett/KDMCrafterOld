@@ -31,6 +31,7 @@ class Settlement: Codable, Equatable {
     
     enum CodingKeys: String, CodingKey {
         case name = "Name"
+        case allResources = "All Resources"
         case resourceStorage = "Resource Storage"
         case allLocations = "All Locations"
         case locationsBuiltDict = "Locations Built Dict"
@@ -44,6 +45,7 @@ class Settlement: Codable, Equatable {
     required public init(from decoder: Decoder) throws {
         let settlement = try decoder.container(keyedBy: CodingKeys.self)
         name = try settlement.decode(String.self, forKey: .name)
+        allResources = try settlement.decode([Resource].self, forKey: .allResources)
         resourceStorage = try settlement.decode([Resource:Int].self, forKey: .resourceStorage)
         allLocations = try settlement.decode([Location].self, forKey: .allLocations)
         locationsBuiltDict = try settlement.decode([Location:Bool].self, forKey: .locationsBuiltDict)
@@ -57,6 +59,7 @@ class Settlement: Codable, Equatable {
     func encode(to encoder: Encoder) throws {
         var settlement = encoder.container(keyedBy: CodingKeys.self)
         try settlement.encode(name, forKey: .name)
+        try settlement.encode(allResources, forKey: .allResources)
         try settlement.encode(resourceStorage, forKey: .resourceStorage)
         try settlement.encode(allLocations, forKey: .allLocations)
         try settlement.encode(locationsBuiltDict, forKey: .locationsBuiltDict)
@@ -70,8 +73,9 @@ class Settlement: Codable, Equatable {
     
     // For the settlement object
     let name: String
+    var allResources = [Resource]()
     var resourceStorage = [Resource:Int]()
-    var allLocations = [barberSurgeon, blackSmith, boneSmith, catarium, exhaustedLanternHoard, lanternHoard, leatherWorker, maskMaker, organGrinder, plumery, skinnery, stoneCircle, weaponCrafter]
+    var allLocations = [Location]()
     var locationsBuiltDict = [Location:Bool]()
     var gearCraftedDict = [Gear:Int]()
     var availableLocations = [Location]()
@@ -85,23 +89,32 @@ class Settlement: Codable, Equatable {
         // Gotta have a name!
         self.name = name
         
-        // Initialize storage with zero of everything
-        self.resourceStorage = [endeavor:0, multi:0, brokenLantern:0, loveJuice:0, monsterBone:0, monsterHide:0, monsterOrgan:0, scrap:0, skull:0, beaconShieldResource:0, birdBeak:0, blackSkull:0, hollowWingBones:0, lanternDaggerResource:0, lanternGlaiveResource:0, lanternHelmResource:0, lanternSwordResource:0, finalLanternResource:0, foundingStoneResource:0, ringWhipResource:0, muculentDroppings:0, phoenixEye:0, phoenixFinger:0, phoenixWhisker:0, pustules:0, rainbowDroppings:0, shimmeringHalo:0, smallFeathers:0, smallHandParasites:0, tailFeathers:0, wishbone:0, beastSteak:0, bladder:0, largeFlatTooth:0, musclyGums:0, pelt:0, screamingBrain:0, shankBone:0, spiralHorn:0, blackLichen:0, cocoonMembrane:0, elderCatTeeth:0, freshAcanthus:0, iron:0, lanternTube:0, leather:0, legendaryHorns:0, perfectCrucible:0, phoenixCrest:0, secondHeart:0, crabSpider:0, cyclopsFly:0, hissingCockroach:0, lonelyAnt:0, nightmareTick:0, swordBeetle:0, curiousHand:0, eyeOfCat:0, goldenWhiskers:0, greatCatBone:0, lionClaw:0, lionTail:0, lionTestes:0, shimmeringMane:0, sinew:0, whiteFur:0]
-
-        // Initialize locations with the starter Lantern Hoard
-        locationsBuiltDict[barberSurgeon] = false
-        locationsBuiltDict[blackSmith] = false
-        locationsBuiltDict[boneSmith] = false
-        locationsBuiltDict[catarium] = false
-        locationsBuiltDict[exhaustedLanternHoard] = false
-        locationsBuiltDict[lanternHoard] = true
-        locationsBuiltDict[leatherWorker] = false
-        locationsBuiltDict[maskMaker] = false
-        locationsBuiltDict[organGrinder] = false
-        locationsBuiltDict[plumery] = false
-        locationsBuiltDict[skinnery] = false
-        locationsBuiltDict[stoneCircle] = false
-        locationsBuiltDict[weaponCrafter] = false
+        let barberSurgeon = Location(name: "Barber Surgeon", locationRequirement: "Special: Defeat L2 Screaming Antelope with Pottery innovated", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(barberSurgeon)
+        let blackSmith = Location(name: "Blacksmith", locationRequirement: "Special: Innovate Scrap Smelting", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(blackSmith)
+        let boneSmith = Location(name: "Bone Smith", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])
+        allLocations.append(boneSmith)
+        let catarium = Location(name: "Catarium", locationRequirement: "Special: Defeat White Lion", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(catarium)
+        let exhaustedLanternHoard = Location(name: "Exhausted Lantern Hoard", locationRequirement: "Special: Archive Lantern Hoard at endgame", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(exhaustedLanternHoard)
+        let lanternHoard = Location(name: "Lantern Hoard", locationRequirement: "Special: Enabled by default", resourceRequirement: [:]) // Enabled by default
+        allLocations.append(lanternHoard)
+        let leatherWorker = Location(name: "Leather Worker", locationRequirement: "Skinnery", resourceRequirement: [.hide:3, .organ:1])
+        allLocations.append(leatherWorker)
+        let maskMaker = Location(name: "Mask Maker", locationRequirement: "Special: Acquire Forsaker Mask", resourceRequirement: [:]    ) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(maskMaker)
+        let organGrinder = Location(name: "Organ Grinder", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])
+        allLocations.append(organGrinder)
+        let plumery = Location(name: "Plumery", locationRequirement: "Special: Defeat Phoenix", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        allLocations.append(plumery)
+        let skinnery = Location(name: "Skinnery", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])
+        allLocations.append(skinnery)
+        let stoneCircle = Location(name: "Stone Circle", locationRequirement: "Organ Grinder", resourceRequirement: [.organ:3, .hide:1])
+        allLocations.append(stoneCircle)
+        let weaponCrafter = Location(name: "Weapon Crafter", locationRequirement: "Bone Smith", resourceRequirement: [.bone:3, .hide:1])
+        allLocations.append(weaponCrafter)
         
         // Innovation declarations
         let ammonia = Innovation(name: "Ammonia")
@@ -117,10 +130,152 @@ class Settlement: Codable, Equatable {
         let pottery = Innovation(name: "Pottery")
         availableInnovations.append(pottery)
         
-        // Initialize innovationsAdded dict
-        for innovation in self.availableInnovations {
-            innovationsAddedDict[innovation] = false
-        }
+        // Initialize resources
+        // Basic Resource declarations
+        let endeavor = Resource(name: "Endeavor", kind: .basic, type: [.endeavor])
+        allResources.append(endeavor)
+        let multi = Resource(name: "???", kind: .basic, type: [.bone, .consumable, .hide, .organ])
+        allResources.append(multi)
+        let brokenLantern = Resource(name: "Broken Lantern", kind: .basic, type: [.scrap])
+        allResources.append(brokenLantern)
+        let loveJuice = Resource(name: "Love Juice", kind: .basic, type: [.organ])
+        allResources.append(loveJuice)
+        let monsterBone = Resource(name: "Monster Bone", kind: .basic, type: [.bone])
+        allResources.append(monsterBone)
+        let monsterHide = Resource(name: "Monster Hide", kind: .basic, type: [.hide])
+        allResources.append(monsterHide)
+        let monsterOrgan = Resource(name: "Monster Organ", kind: .basic, type: [.organ])
+        allResources.append(monsterOrgan)
+        let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
+        allResources.append(scrap)
+        let skull = Resource(name: "Skull", kind: .basic, type: [.bone, .skull])
+        allResources.append(skull)
+        
+        // Gear Resource declarations
+        let beaconShieldResource = Resource(name: "Beacon Shield", kind: .gear, type: [.beaconShieldResource])
+        allResources.append(beaconShieldResource)
+        let finalLanternResource = Resource(name: "Final Lantern", kind: .gear, type: [.finalLanternResource])
+        allResources.append(finalLanternResource)
+        let foundingStoneResource = Resource(name: "Founding Stone", kind: .gear, type: [.foundingStoneResource])
+        allResources.append(foundingStoneResource)
+        let lanternDaggerResource = Resource(name: "Lantern Dagger", kind: .gear, type: [.lanternDaggerResource])
+        allResources.append(lanternDaggerResource)
+        let lanternGlaiveResource = Resource(name: "Lantern Glaive", kind: .gear, type: [.lanternGlaiveResource])
+        allResources.append(lanternGlaiveResource)
+        let lanternHelmResource = Resource(name: "Lantern Helm", kind: .gear, type: [.lanternHelmResource])
+        allResources.append(lanternHelmResource)
+        let lanternSwordResource = Resource(name: "Lantern Sword", kind: .gear, type: [.lanternSwordResource])
+        allResources.append(lanternSwordResource)
+        let ringWhipResource = Resource(name: "Ring Whip", kind: .gear, type: [.ringWhipResource])
+        allResources.append(ringWhipResource)
+        
+        // Phoenix Resource declarations
+        let birdBeak = Resource(name: "Bird Beak", kind: .phoenix, type: [.birdBeak, .bone])
+        allResources.append(birdBeak)
+        let blackSkull = Resource(name: "Black Skull", kind: .phoenix, type: [.bone, .iron, .skull])
+        allResources.append(blackSkull)
+        let hollowWingBones = Resource(name: "Hollow Wing Bones", kind: .phoenix, type: [.bone, .hollowWingBones])
+        allResources.append(hollowWingBones)
+        let muculentDroppings = Resource(name: "Muculent Droppings", kind: .phoenix, type: [.muculentDroppings, .organ])
+        allResources.append(muculentDroppings)
+        let phoenixEye = Resource(name: "Phoenix Eye", kind: .phoenix, type: [.organ, .phoenixEye, .scrap])
+        allResources.append(phoenixEye)
+        let phoenixFinger = Resource(name: "Phoenix Finger", kind: .phoenix, type: [.bone, .phoenixFinger])
+        allResources.append(phoenixFinger)
+        let phoenixWhisker = Resource(name: "Phoenix Whisker", kind: .phoenix, type: [.phoenixWhisker, .hide])
+        allResources.append(phoenixWhisker)
+        let pustules = Resource(name: "Pustules", kind: .phoenix, type: [.consumable, .organ, .pustules])
+        allResources.append(pustules)
+        let rainbowDroppings = Resource(name: "Rainbow Droppings", kind: .phoenix, type: [.consumable, .organ, .rainbowDroppings])
+        allResources.append(rainbowDroppings)
+        let shimmeringHalo = Resource(name: "Shimmering Halo", kind: .phoenix, type: [.organ, .shimmeringHalo])
+        allResources.append(shimmeringHalo)
+        let smallFeathers = Resource(name: "Small Feathers", kind: .phoenix, type: [.hide, .smallFeathers])
+        allResources.append(smallFeathers)
+        let smallHandParasites = Resource(name: "Small Hand Parasites", kind: .phoenix, type: [.organ, .smallHandParasites])
+        allResources.append(smallHandParasites)
+        let tailFeathers = Resource(name: "Tail Feathers", kind: .phoenix, type: [.hide, .tailFeathers])
+        allResources.append(tailFeathers)
+        let wishbone = Resource(name: "Wishbone", kind: .phoenix, type: [.bone, .wishBone])
+        allResources.append(wishbone)
+        
+        // Screaming Antelope Resource declarations
+        let beastSteak = Resource(name: "Beast Steak", kind: .screamingAntelope, type: [.beastSteak, .consumable, .organ])
+        allResources.append(beastSteak)
+        let bladder = Resource(name: "Bladder", kind: .screamingAntelope, type: [.bladder, .consumable, .organ])
+        allResources.append(bladder)
+        let largeFlatTooth = Resource(name: "Large Flat Tooth", kind: .screamingAntelope, type: [.bone, .largeFlatTooth])
+        allResources.append(largeFlatTooth)
+        let musclyGums = Resource(name: "Muscly Gums", kind: .screamingAntelope, type: [.consumable, .musclyGums, .organ])
+        allResources.append(musclyGums)
+        let pelt = Resource(name: "Pelt", kind: .screamingAntelope, type: [.hide, .pelt])
+        allResources.append(pelt)
+        let screamingBrain = Resource(name: "Screaming Brain", kind: .screamingAntelope, type: [.consumable, .organ, .screamingBrain])
+        allResources.append(screamingBrain)
+        let shankBone = Resource(name: "Shank Bone", kind: .screamingAntelope, type: [.bone, .shankBone])
+        allResources.append(shankBone)
+        let spiralHorn = Resource(name: "Spiral Horn", kind: .screamingAntelope, type: [.bone, .spiralHorn])
+        allResources.append(spiralHorn)
+        
+        // Strange Resource declarations
+        let blackLichen = Resource(name: "Black Lichen", kind: .strange, type: [.blackLichen, .bone, .consumable, .hide, .organ, .other])
+        allResources.append(blackLichen)
+        let cocoonMembrane = Resource(name: "Cocoon Membrane", kind: .strange, type: [.cocoonMembrane, .organ, .other])
+        allResources.append(cocoonMembrane)
+        let elderCatTeeth = Resource(name: "Elder Cat Teeth", kind: .strange, type: [.bone, .elderCatTeeth])
+        allResources.append(elderCatTeeth)
+        let freshAcanthus = Resource(name: "Fresh Acanthus", kind: .strange, type: [.freshAcanthus, .herb])
+        allResources.append(freshAcanthus)
+        let iron = Resource(name: "Iron", kind: .strange, type: [.iron, .scrap])
+        allResources.append(iron)
+        let lanternTube = Resource(name: "Lantern Tube", kind: .strange, type: [.lanternTube, .organ, .scrap])
+        allResources.append(lanternTube)
+        let leather = Resource(name: "Leather", kind: .strange, type: [.hide, .leather])
+        allResources.append(leather)
+        let legendaryHorns = Resource(name: "Legendary Horns", kind: .strange, type: [.bone, .legendaryHorns, .scrap])
+        allResources.append(legendaryHorns)
+        let perfectCrucible = Resource(name: "Perfect Crucible", kind: .strange, type: [.iron, .perfectCrucible])
+        allResources.append(perfectCrucible)
+        let phoenixCrest = Resource(name: "Phoenix Crest", kind: .strange, type: [.organ, .phoenixCrest])
+        allResources.append(phoenixCrest)
+        let secondHeart = Resource(name: "Second Heart", kind: .strange, type: [.bone, .organ, .secondHeart])
+        allResources.append(secondHeart)
+        
+        // Vermin Resource declarations
+        let crabSpider = Resource(name: "Crab Spider", kind: .vermin, type: [.consumable, .crabSpider, .hide, .vermin])
+        allResources.append(crabSpider)
+        let cyclopsFly = Resource(name: "Cyclops Fly", kind: .vermin, type: [.consumable, .cyclopsFly, .vermin])
+        allResources.append(cyclopsFly)
+        let hissingCockroach = Resource(name: "Hissing Cockroach", kind: .vermin, type: [.consumable, .hissingCockroach, .vermin])
+        allResources.append(hissingCockroach)
+        let lonelyAnt = Resource(name: "Lonely Ant", kind: .vermin, type: [.consumable, .lonelyAnt, .vermin])
+        allResources.append(lonelyAnt)
+        let nightmareTick = Resource(name: "Nightmare Tick", kind: .vermin, type: [.consumable, .nightmareTick, .vermin])
+        allResources.append(nightmareTick)
+        let swordBeetle = Resource(name: "Sword Beetle", kind: .vermin, type: [.consumable, .swordBeetle, .vermin])
+        allResources.append(swordBeetle)
+        
+        // White Lion Resource declarations
+        let curiousHand = Resource(name: "Curious Hand", kind: .whiteLion, type: [.curiousHand, .hide])
+        allResources.append(curiousHand)
+        let eyeOfCat = Resource(name: "Eye of Cat", kind: .whiteLion, type: [.consumable, .eyeOfCat, .organ])
+        allResources.append(eyeOfCat)
+        let goldenWhiskers = Resource(name: "Golden Whiskers", kind: .whiteLion, type: [.goldenWhiskers, .organ])
+        allResources.append(goldenWhiskers)
+        let greatCatBone = Resource(name: "Great Cat Bone", kind: .whiteLion, type: [.bone, .greatCatBone])
+        allResources.append(greatCatBone)
+        let lionClaw = Resource(name: "Lion Claw", kind: .whiteLion, type: [.bone, .lionClaw])
+        allResources.append(lionClaw)
+        let lionTail = Resource(name: "Lion Tail", kind: .whiteLion, type: [.hide, .lionTail])
+        allResources.append(lionTail)
+        let lionTestes = Resource(name: "Lion Testes", kind: .whiteLion, type: [.consumable, .lionTestes, .organ])
+        allResources.append(lionTestes)
+        let shimmeringMane = Resource(name: "Shimmering Mane", kind: .whiteLion, type: [.hide, .shimmeringMane])
+        allResources.append(shimmeringMane)
+        let sinew = Resource(name: "Sinew", kind: .whiteLion, type: [.organ, .sinew])
+        allResources.append(sinew)
+        let whiteFur = Resource(name: "White Fur", kind: .whiteLion, type: [.hide, .whiteFur])
+        allResources.append(whiteFur)
         
         // Initialize available gear
         // Barber Surgeon Gear
@@ -366,13 +521,27 @@ class Settlement: Codable, Equatable {
         let zanbato = Gear(name: "Zanbato", description: GearDescription(type: .weapon, statsLeft: "Speed:\nAccuracy:\nPower:", statsRight: "1\n6+\n6", affinities: [.redUp, .greenRight], detailText: WrappedString(nsAttributedString: NSMutableAttributedString().bold("Slow, Frail, Deadly").normal("\n\nWith one red puzzle affinity and one green affinity - Gains Devastating 1: Whenever you wound, inflict one additional wound."))), qtyAvailable: 3, resourceTypeRequirements: [.hide:2], resourceSpecialRequirements: [.greatCatBone:1], locationRequirement: weaponCrafter, overlappingResources: [.none])
         availableGear.append(zanbato)
         
-        // Initialize Crafted Gear tracking
+        // Initialize settlement libraries
+        initializeDictionaries()
+
+    }
+    
+    func initializeDictionaries() {
         for gear in availableGear {
             gearCraftedDict[gear] = 0
         }
-    }
-    
-    func resetSettlement() {
-        
+        for resource in allResources {
+            resourceStorage[resource] = 0
+        }
+        for innovation in self.availableInnovations {
+            innovationsAddedDict[innovation] = false
+        }
+        for location in self.allLocations {
+            if location.name == "Lantern Hoard" {
+                locationsBuiltDict[location] = true
+            } else {
+                locationsBuiltDict[location] = false
+            }
+        }
     }
 }

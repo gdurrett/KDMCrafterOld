@@ -141,23 +141,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="cmW-09-tL3">
                         <leftBarButtonItems>
-                            <barButtonItem id="Xqq-uv-uwu">
-                                <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Ci4-ia-lDK">
-                                    <rect key="frame" x="20" y="6.5" width="51" height="31"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <connections>
-                                        <action selector="overrideToggleAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="oy9-f9-xzS"/>
-                                    </connections>
-                                </switch>
-                            </barButtonItem>
-                            <barButtonItem title="Override" id="kLB-id-3hx">
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </barButtonItem>
-                        </leftBarButtonItems>
-                        <rightBarButtonItems>
                             <barButtonItem id="XqE-u2-rwk">
                                 <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Wax-1E-tLm">
-                                    <rect key="frame" x="343" y="6.5" width="51" height="31"/>
+                                    <rect key="frame" x="20" y="6.5" width="51" height="31"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <connections>
                                         <action selector="filterCraftableAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="N1k-dV-oEU"/>
@@ -167,11 +153,10 @@
                             <barButtonItem title="Filter Craftable" id="PWg-Hh-hrC">
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </barButtonItem>
-                        </rightBarButtonItems>
+                        </leftBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="filterCraftableOutlet" destination="Wax-1E-tLm" id="qzz-H0-8K0"/>
-                        <outlet property="overrideToggleOutlet" destination="Ci4-ia-lDK" id="KWx-SR-37e"/>
                         <outlet property="tableView" destination="DP0-mO-r1L" id="cQg-ZS-pVh"/>
                         <segue destination="cBP-Jk-lxg" kind="show" identifier="ShowCraftGearDetailView" id="1YK-5v-37f"/>
                     </connections>
@@ -223,13 +208,21 @@
                                                     <action selector="craftGearButtonAction:" destination="8K6-zk-Oin" eventType="touchUpInside" id="bgg-nR-aCq"/>
                                                 </connections>
                                             </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="toD-er-GB4">
+                                                <rect key="frame" x="67" y="4" width="33" height="16"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" red="0.88244238450442469" green="0.88244238450442469" blue="0.88244238450442469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="23" id="1iB-g9-6HB"/>
+                                            <constraint firstItem="toD-er-GB4" firstAttribute="leading" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="8" id="Ddf-fd-6zc"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerY" secondItem="Ove-nK-N4J" secondAttribute="centerY" id="GH7-Np-69s"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="20" symbolic="YES" id="nxH-O0-bqV"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="leading" secondItem="Ove-nK-N4J" secondAttribute="leading" constant="16" id="q9r-zS-i3w"/>
+                                            <constraint firstItem="toD-er-GB4" firstAttribute="top" secondItem="Ove-nK-N4J" secondAttribute="top" constant="4" id="svY-TR-2jF"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="m5B-g0-Opf" userLabel="GearStatsStack">
@@ -438,6 +431,7 @@
                         <outlet property="gearStatsRightLabel" destination="GIF-II-fb8" id="sZP-hU-f9v"/>
                         <outlet property="gearTypeLabel" destination="eyW-1n-Lmz" id="pXv-Le-f0c"/>
                         <outlet property="mainView" destination="Itm-vK-3L8" id="1Uh-Ie-fSp"/>
+                        <outlet property="overrideStatusLabel" destination="toD-er-GB4" id="wAn-4M-n1r"/>
                         <outlet property="tableView" destination="t0K-EB-jyD" id="vbV-gw-7Re"/>
                     </connections>
                 </viewController>

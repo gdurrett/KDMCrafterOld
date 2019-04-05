@@ -38,33 +38,7 @@ enum affinity: String, Codable {
     case oneGreen = "One Green"
     case none = "None"
 }
-//enum statType {
-//
-//    case armor(_ protectionValue: Int, _ location: armorLocation)
-//    case weapon(_ speedValue: Int, _ accuracyValue: Int, _ strengthValue: Int)
-//    case item(String)
-//
-//    func armorAttributes() -> (String, String) {
-//
-//        switch self {
-//        case let .armor(protectionValue, location):
-//            return ("\(String(protectionValue))", "\(location.rawValue):")
-//        default:
-//            return ("Zero", "Nothing")
-//        }
-//    }
-//
-//    func weaponAttributes() -> (String, String) {
-//
-//        switch self {
-//        case let .weapon(speedValue, accuracyValue, strengthValue):
-//            return ("Speed:\nAccuracy:\nStrength:", "\(speedValue)\n\(accuracyValue)+\n\(strengthValue)")
-//        default:
-//            return("Nada", "Nothing")
-//        }
-//    }
-//
-//}
+
 struct GearDescription: Codable {
     
     enum CodingKeys: String, CodingKey {

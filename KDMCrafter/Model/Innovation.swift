@@ -12,15 +12,6 @@ struct Innovation: Hashable, Codable {
     
     let name: String
     
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        if let name = try container.decodeIfPresent(String.self, forKey: .name) {
-//            self.name = name
-//        } else {
-//            self.name = "None"
-//        }
-//    }
-    
     init(name: String) {
         self.name = name
     }
