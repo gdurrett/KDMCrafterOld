@@ -114,29 +114,29 @@ public class CraftBuildValidator {
         }
         return myDict
     }
-    func getMissingGearResourceRequirements(gear: Gear) -> [String:Int] {
-        var myDict = [String:Int]()
-        let resourceTypeRequirements = gear.resourceTypeRequirements
-        let resourceSpecialRequirements = gear.resourceSpecialRequirements
-        if resourceTypeRequirements!.count != 0 {
-            for (type, qty) in resourceTypeRequirements! {
-                let typeCount = getTypeCount(type: type, resources: resources)
-                if typeCount < qty {
-                    myDict[type.rawValue] = (qty - typeCount)
-                }
-            }
-        }
-        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
-            for (type, qty) in resourceSpecialRequirements! {
-                let typeCount = getTypeCount(type: type, resources: resources)
-                if typeCount < qty {
-                    myDict[type.rawValue] = (qty - typeCount)
-                }
-            }
-        }
-        return myDict
-
-    }
+//    func getMissingGearResourceRequirements(gear: Gear) -> [String:Int] {
+//        var myDict = [String:Int]()
+//        let resourceTypeRequirements = gear.resourceTypeRequirements
+//        let resourceSpecialRequirements = gear.resourceSpecialRequirements
+//        if resourceTypeRequirements!.count != 0 {
+//            for (type, qty) in resourceTypeRequirements! {
+//                let typeCount = getTypeCount(type: type, resources: resources)
+//                if typeCount < qty {
+//                    myDict[type.rawValue] = (qty - typeCount)
+//                }
+//            }
+//        }
+//        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
+//            for (type, qty) in resourceSpecialRequirements! {
+//                let typeCount = getTypeCount(type: type, resources: resources)
+//                if typeCount < qty {
+//                    myDict[type.rawValue] = (qty - typeCount)
+//                }
+//            }
+//        }
+//        return myDict
+//
+//    }
     func getGearResourceRequirements(gear: Gear) -> [[String:Int]] {
         var myArray = [[String:Int]]()
         let resourceTypeRequirements = gear.resourceTypeRequirements

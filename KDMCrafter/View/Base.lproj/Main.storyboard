@@ -209,7 +209,10 @@
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="toD-er-GB4">
-                                                <rect key="frame" x="67" y="4" width="33" height="16"/>
+                                                <rect key="frame" x="74" y="4" width="100" height="16"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="hZH-u7-ndP"/>
+                                                </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -218,8 +221,7 @@
                                         <color key="backgroundColor" red="0.88244238450442469" green="0.88244238450442469" blue="0.88244238450442469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="23" id="1iB-g9-6HB"/>
-                                            <constraint firstAttribute="trailing" secondItem="toD-er-GB4" secondAttribute="trailing" constant="314" id="2sp-k3-KGr"/>
-                                            <constraint firstItem="toD-er-GB4" firstAttribute="leading" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="8" id="Ddf-fd-6zc"/>
+                                            <constraint firstAttribute="trailing" secondItem="toD-er-GB4" secondAttribute="trailing" constant="240" id="2sp-k3-KGr"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerY" secondItem="Ove-nK-N4J" secondAttribute="centerY" id="GH7-Np-69s"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="20" symbolic="YES" id="nxH-O0-bqV"/>
                                             <constraint firstItem="8Ep-J3-VwA" firstAttribute="leading" secondItem="Ove-nK-N4J" secondAttribute="leading" constant="16" id="q9r-zS-i3w"/>
