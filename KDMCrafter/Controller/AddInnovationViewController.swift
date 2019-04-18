@@ -90,6 +90,7 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         } else {
             mySettlement!.innovationsAddedDict[innovation] = false
         }
+        dataModel.writeData()
         tableView.reloadData()
     }
     

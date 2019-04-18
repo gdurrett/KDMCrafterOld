@@ -114,29 +114,6 @@ public class CraftBuildValidator {
         }
         return myDict
     }
-//    func getMissingGearResourceRequirements(gear: Gear) -> [String:Int] {
-//        var myDict = [String:Int]()
-//        let resourceTypeRequirements = gear.resourceTypeRequirements
-//        let resourceSpecialRequirements = gear.resourceSpecialRequirements
-//        if resourceTypeRequirements!.count != 0 {
-//            for (type, qty) in resourceTypeRequirements! {
-//                let typeCount = getTypeCount(type: type, resources: resources)
-//                if typeCount < qty {
-//                    myDict[type.rawValue] = (qty - typeCount)
-//                }
-//            }
-//        }
-//        if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
-//            for (type, qty) in resourceSpecialRequirements! {
-//                let typeCount = getTypeCount(type: type, resources: resources)
-//                if typeCount < qty {
-//                    myDict[type.rawValue] = (qty - typeCount)
-//                }
-//            }
-//        }
-//        return myDict
-//
-//    }
     func getGearResourceRequirements(gear: Gear) -> [[String:Int]] {
         var myArray = [[String:Int]]()
         let resourceTypeRequirements = gear.resourceTypeRequirements
@@ -160,15 +137,13 @@ public class CraftBuildValidator {
         }
         return myArray
     }
-    func getMissingInnovationRequirement(gear: Gear) -> String {
-        let innovationString = gear.innovationRequirement!.name
-        return innovationString
-    }
     func isBuildable(locations: [Location], location: Location) -> Bool {
-        if settlement!.locationsBuiltDict[location] == true { return false }
-        if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) {
+        if settlement!.locationsBuiltDict[location] == true { print("Returning false for \(location.name)");return false }
+        if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) || settlement!.overrideEnabled == true {
+            print("Returning true for \(location.name)")
             return true
         } else {
+            print("Returning false for \(location.name)")
             return false
         }
     }
@@ -192,7 +167,6 @@ public class CraftBuildValidator {
     func isLocationRequirementMet(locations: [Location], location: Location) -> Bool {
         var locationRequirementMet = Bool()
         if location.locationRequirement.contains("Special") {
-            //print("We can build \(location.name) if we have met this condition: \(location.locationRequirement)")
             locationRequirementMet = true
         } else {
             let builtLocationNames = settlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }

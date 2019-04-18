@@ -35,6 +35,8 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     var numLocationRows: Int?
     var numInnovationRows: Int?
     
+    var buildableStatus = Bool()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -79,7 +81,15 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         cell.layoutMargins = UIEdgeInsets.zero
         
         let location = myLocations![indexPath.row]
-        let buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
+        
+        if mySettlement!.overrideEnabled && mySettlement!.locationsBuiltDict[location] == false {
+            if location.name == "Bone Smith" { print("Here in first part bone.") }
+            buildableStatus = true
+        } else {
+            if location.name == "Bone Smith" { print("Here in first part bone.") }
+            buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
+        }
+        print("Buildable status for \(location.name): \(buildableStatus)")
         let isBuilt = mySettlement!.locationsBuiltDict[location]!
         let buildableStatusString = setBuildableStatusString(location: location, isBuilt: isBuilt, buildableStatus: buildableStatus)
         let missingResourcesString = setMissingResourcesString(location: location, buildableStatus: buildableStatus, isBuilt: isBuilt)
@@ -186,7 +196,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
-        if location.locationRequirement.contains("Special") {
+        if location.locationRequirement.contains("Special") || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
             //myLocations![cell.tag].isBuilt = true
             //dataModel.currentSettlement!.allLocations[cell.tag].isBuilt = true
             mySettlement!.locationsBuiltDict[location] = true
@@ -231,6 +241,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         validator.resources = mySettlement!.resourceStorage // Update validator here?
         mySettlement!.locationsBuiltDict[currentLocation!] = true
+        dataModel.writeData()
         tableView.reloadData()
     }
 }
