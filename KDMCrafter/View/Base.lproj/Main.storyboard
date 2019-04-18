@@ -194,22 +194,8 @@
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ove-nK-N4J" userLabel="Info-Craft Separator">
                                         <rect key="frame" x="0.0" y="258" width="414" height="23"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ep-J3-VwA">
-                                                <rect key="frame" x="16" y="3" width="43" height="17"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="43" id="FK7-Fe-we6"/>
-                                                    <constraint firstAttribute="height" constant="17" id="vVb-t9-T2m"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                <state key="normal" title="Button">
-                                                    <color key="titleColor" red="1" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="craftGearButtonAction:" destination="8K6-zk-Oin" eventType="touchUpInside" id="bgg-nR-aCq"/>
-                                                </connections>
-                                            </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="toD-er-GB4">
-                                                <rect key="frame" x="74" y="4" width="100" height="16"/>
+                                                <rect key="frame" x="157" y="4" width="100" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="hZH-u7-ndP"/>
                                                 </constraints>
@@ -221,10 +207,7 @@
                                         <color key="backgroundColor" red="0.88244238450442469" green="0.88244238450442469" blue="0.88244238450442469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="23" id="1iB-g9-6HB"/>
-                                            <constraint firstAttribute="trailing" secondItem="toD-er-GB4" secondAttribute="trailing" constant="240" id="2sp-k3-KGr"/>
-                                            <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerY" secondItem="Ove-nK-N4J" secondAttribute="centerY" id="GH7-Np-69s"/>
-                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Ep-J3-VwA" secondAttribute="trailing" constant="20" symbolic="YES" id="nxH-O0-bqV"/>
-                                            <constraint firstItem="8Ep-J3-VwA" firstAttribute="leading" secondItem="Ove-nK-N4J" secondAttribute="leading" constant="16" id="q9r-zS-i3w"/>
+                                            <constraint firstItem="toD-er-GB4" firstAttribute="centerX" secondItem="Ove-nK-N4J" secondAttribute="centerX" id="OOs-Ng-BE1"/>
                                             <constraint firstItem="toD-er-GB4" firstAttribute="top" secondItem="Ove-nK-N4J" secondAttribute="top" constant="4" id="svY-TR-2jF"/>
                                         </constraints>
                                     </view>
@@ -376,10 +359,39 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ep-J3-VwA">
+                                        <rect key="frame" x="167" y="595" width="80" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="Oxz-32-0VH"/>
+                                            <constraint firstAttribute="height" constant="30" id="d3p-Wo-hO9"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <state key="normal" title="Button">
+                                            <color key="titleColor" red="1" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="craftGearButtonAction:" destination="8K6-zk-Oin" eventType="touchUpInside" id="bgg-nR-aCq"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tqi-VT-pp2">
+                                        <rect key="frame" x="167" y="654" width="80" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="MEp-dT-F93"/>
+                                            <constraint firstAttribute="height" constant="30" id="ftw-ud-Hkt"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <state key="normal" title="Button">
+                                            <color key="titleColor" red="1" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="archiveGearButtonAction:" destination="8K6-zk-Oin" eventType="touchUpInside" id="ZWj-Ib-Cvy"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="m5B-g0-Opf" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" constant="16" id="03b-cC-bme"/>
+                                    <constraint firstAttribute="bottom" secondItem="8Ep-J3-VwA" secondAttribute="bottom" constant="100" id="0Xu-Vf-77U"/>
                                     <constraint firstItem="xZI-Pr-K4b" firstAttribute="top" secondItem="Itm-vK-3L8" secondAttribute="top" constant="25" id="4Je-80-Hzd"/>
                                     <constraint firstItem="iwL-dm-gGB" firstAttribute="top" secondItem="xZI-Pr-K4b" secondAttribute="bottom" constant="23" id="7MG-s5-cKS"/>
                                     <constraint firstItem="leW-Qs-aLJ" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" constant="16" id="7wU-5g-xNc"/>
@@ -389,15 +401,18 @@
                                     <constraint firstItem="vC7-oh-Wgd" firstAttribute="top" secondItem="6ha-bq-7IP" secondAttribute="bottom" constant="5" id="DlK-Pn-sjU"/>
                                     <constraint firstItem="Ove-nK-N4J" firstAttribute="top" secondItem="iwL-dm-gGB" secondAttribute="bottom" constant="7" id="GsH-RA-nV3"/>
                                     <constraint firstItem="t0K-EB-jyD" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" constant="16" id="JjU-TX-IuK"/>
+                                    <constraint firstItem="8Ep-J3-VwA" firstAttribute="centerX" secondItem="Itm-vK-3L8" secondAttribute="centerX" id="MN5-xa-Rxf"/>
                                     <constraint firstAttribute="trailing" secondItem="eyW-1n-Lmz" secondAttribute="trailing" constant="160" id="N8I-bM-zyA"/>
                                     <constraint firstItem="caN-nA-xqW" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" constant="16" id="OxL-4O-Vjs"/>
                                     <constraint firstItem="6ha-bq-7IP" firstAttribute="leading" secondItem="leW-Qs-aLJ" secondAttribute="trailing" constant="8" id="QCB-ap-1eA"/>
+                                    <constraint firstItem="Tqi-VT-pp2" firstAttribute="top" secondItem="8Ep-J3-VwA" secondAttribute="bottom" constant="29" id="QQz-7O-nCA"/>
                                     <constraint firstItem="t0K-EB-jyD" firstAttribute="top" secondItem="vC7-oh-Wgd" secondAttribute="bottom" constant="5" id="VUk-30-eqK"/>
                                     <constraint firstItem="vC7-oh-Wgd" firstAttribute="top" secondItem="leW-Qs-aLJ" secondAttribute="bottom" constant="5" id="XJO-8u-a6k"/>
                                     <constraint firstAttribute="trailing" secondItem="vC7-oh-Wgd" secondAttribute="trailing" constant="16" id="Y4H-a8-apx"/>
                                     <constraint firstAttribute="trailing" secondItem="Ove-nK-N4J" secondAttribute="trailing" id="Ytr-xR-J0n"/>
                                     <constraint firstItem="Ove-nK-N4J" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" id="ZbV-wf-GGn"/>
                                     <constraint firstItem="iwL-dm-gGB" firstAttribute="leading" secondItem="Itm-vK-3L8" secondAttribute="leading" constant="16" id="bUY-ie-0sd"/>
+                                    <constraint firstItem="Tqi-VT-pp2" firstAttribute="centerX" secondItem="Itm-vK-3L8" secondAttribute="centerX" id="bnd-C7-7gw"/>
                                     <constraint firstAttribute="trailing" secondItem="iwL-dm-gGB" secondAttribute="trailing" constant="16" id="csC-ri-H87"/>
                                     <constraint firstItem="eyW-1n-Lmz" firstAttribute="leading" secondItem="caN-nA-xqW" secondAttribute="trailing" constant="7.5" id="eD9-Ms-GrK"/>
                                     <constraint firstAttribute="trailing" secondItem="xZI-Pr-K4b" secondAttribute="trailing" constant="55" id="ktW-iq-dej"/>
@@ -427,6 +442,7 @@
                         <outlet property="affinityTopLabel" destination="aXJ-mQ-Dny" id="XEL-QQ-tQm"/>
                         <outlet property="affinityView" destination="xZI-Pr-K4b" id="Wlp-gj-rli"/>
                         <outlet property="affinityWholeLabel" destination="Lba-1m-HdD" id="IBb-nz-YuI"/>
+                        <outlet property="archiveGearButtonOutlet" destination="Tqi-VT-pp2" id="aLZ-DL-s2e"/>
                         <outlet property="craftGearButtonOutlet" destination="8Ep-J3-VwA" id="GAK-Eg-2PP"/>
                         <outlet property="gearInfoTextView" destination="iwL-dm-gGB" id="wjI-MU-Iig"/>
                         <outlet property="gearNameLabel" destination="caN-nA-xqW" id="ATd-IP-Z5I"/>
@@ -434,7 +450,7 @@
                         <outlet property="gearStatsRightLabel" destination="GIF-II-fb8" id="sZP-hU-f9v"/>
                         <outlet property="gearTypeLabel" destination="eyW-1n-Lmz" id="pXv-Le-f0c"/>
                         <outlet property="mainView" destination="Itm-vK-3L8" id="1Uh-Ie-fSp"/>
-                        <outlet property="overrideStatusLabel" destination="toD-er-GB4" id="wAn-4M-n1r"/>
+                        <outlet property="numAvailableLabel" destination="toD-er-GB4" id="ODI-XJ-sXg"/>
                         <outlet property="tableView" destination="t0K-EB-jyD" id="vbV-gw-7Re"/>
                     </connections>
                 </viewController>

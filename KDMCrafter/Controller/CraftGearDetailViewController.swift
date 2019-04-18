@@ -26,13 +26,18 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     @IBOutlet weak var gearStatsLeftLabel: UILabel!
     @IBOutlet weak var gearInfoTextView: UITextView!
     
-    @IBOutlet weak var overrideStatusLabel: UILabel!
+    @IBOutlet weak var numAvailableLabel: UILabel!
     
     @IBAction func craftGearButtonAction(_ sender: Any) {
         tappedCraftButton()
         //spendResources(for: gear)
     }
     @IBOutlet weak var craftGearButtonOutlet: UIButton!
+    
+    @IBAction func archiveGearButtonAction(_ sender: Any) {
+        tappedArchiveButton()
+    }
+    @IBOutlet weak var archiveGearButtonOutlet: UIButton!
     
     let dataModel = DataModel.sharedInstance
     var mySettlement: Settlement?
@@ -115,7 +120,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
         configureCraftButton()
-        configureOverrideStatusLabel()
+        configureArchiveButton()
+        //configureOverrideStatusLabel()
+        configureNumAvailableLabel()
         
         tableView.tableFooterView = UIView()
         tableView.reloadData()
@@ -127,7 +134,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
         configureCraftButton()
-        configureOverrideStatusLabel()
+        configureArchiveButton()
+        //configureOverrideStatusLabel()
+        configureNumAvailableLabel()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -391,27 +400,52 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
         } else {
             button.isEnabled = false
-            button.setTitleColor(UIColor.darkGray, for: .normal)
-            button.backgroundColor = UIColor.clear
+            button.setTitleColor(UIColor.lightGray, for: .normal)
+            button.backgroundColor = UIColor.darkGray
+        }
+    }
+    fileprivate func configureArchiveButton() {
+        let button = self.archiveGearButtonOutlet!
+        
+        button.setTitle("Archive", for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 5
+        
+        if mySettlement!.gearCraftedDict[gear]! < 1 {
+            button.isEnabled = false
+            button.setTitleColor(UIColor.lightGray, for: .normal)
+            button.backgroundColor = UIColor.darkGray
+        } else {
+            button.isHidden = false
+            button.isEnabled = true
+            button.setTitleColor(UIColor(red: 0.9686, green: 0.9647, blue: 0.8314, alpha: 1.0), for: .normal)
+            button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         }
     }
     fileprivate func configureOverrideStatusLabel() {
-        overrideStatusLabel.text = "Override Enabled"
-        if mySettlement!.overrideEnabled == true {
-            overrideStatusLabel.isHidden = false
-        } else {
-            overrideStatusLabel.isHidden = true
-        }
+//        overrideStatusLabel.text = "Override Enabled"
+//        if mySettlement!.overrideEnabled == true {
+//            overrideStatusLabel.isHidden = false
+//        } else {
+//            overrideStatusLabel.isHidden = true
+//        }
+    }
+    fileprivate func configureNumAvailableLabel() {
+        numAvailableLabel.text = ("\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available")
     }
     fileprivate func tappedCraftButton() {
         if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
-            mySettlement!.gearCraftedDict[gear!]! += 1
+            //mySettlement!.gearCraftedDict[gear!]! += 1
+            showCraftedAlert(for: gear)
         } else if validator.checkCraftability(gear: gear!) > 0 && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
-            spendResources(for: gear!)
+            showCraftedAlert(for: gear!)
         } else {
             // Can't craft!
         }
         tableView.reloadData()
+    }
+    fileprivate func tappedArchiveButton() {
+        showArchivedAlert(for: gear)
     }
     fileprivate func spendResources(for gear: Gear) {
         var requiredTypes = [resourceType]()
@@ -441,7 +475,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
-        //self.currentGear = gear
         spendResourcesVC.delegate = self
         
         self.present(spendResourcesVC, animated: true, completion: nil)
@@ -453,6 +486,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         validator.resources = mySettlement!.resourceStorage // Update validator here?
         mySettlement!.gearCraftedDict[self.gear!]! += 1
+        configureCraftButton()
+        configureArchiveButton()
         dataModel.writeData()
         tableView.reloadData()
     }
@@ -473,5 +508,36 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }
         self.craftability = status
         tableView.reloadData()
+    }
+    func showCraftedAlert(for gear: Gear) {
+        //let alert = UIAlertController(title: "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Craft one \(gear.name)?", message: "", preferredStyle: .alert)
+        alert.isModalInPopover = true
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { (UIAlertAction) in
+            if self.mySettlement!.overrideEnabled == false {
+                self.spendResources(for: gear)
+            } else {
+                self.mySettlement!.gearCraftedDict[gear]! += 1
+            }
+            self.configureCraftButton()
+            self.configureArchiveButton()
+            self.configureNumAvailableLabel()
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    func showArchivedAlert(for gear: Gear) {
+        let alert = UIAlertController(title: "Archive \(gear.name)?", message: "", preferredStyle: .alert)
+        alert.isModalInPopover = true
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
+            self.mySettlement!.gearCraftedDict[gear]! -= 1
+            self.configureCraftButton()
+            self.configureArchiveButton()
+            self.configureNumAvailableLabel()
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }
