@@ -121,9 +121,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         configureCraftButton()
         configureArchiveButton()
-        //configureOverrideStatusLabel()
         configureNumAvailableLabel()
         
+        navigationItem.title = "Craft Gear"
+        configureTopLine() //Not showing!
         tableView.tableFooterView = UIView()
         tableView.reloadData()
     }
@@ -142,7 +143,14 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return requiredResourcesArray!.count
     }
-    
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let px = 1/UIScreen.main.scale
+//        let frame = CGRect(x: 0, y: 0, width: self.tableView.frame.size.width, height: px)
+//        let line = UIView(frame: frame)
+//        self.tableView.tableHeaderView = line
+//        line.backgroundColor = self.tableView.separatorColor
+//        return line
+//    }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if currentCell.isHidden {
             return 0.0
@@ -229,7 +237,12 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             if specialMet[currentSpecial] != nil && specialMet[currentSpecial]! == true {
                 flaggedTypes[requiredResource.map { $0.key }[0]] = nil
             }
-            cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
+            if gear.name == "Skull Helm" && (requiredResource.map { $0.key }[0]) != "Bone" {
+                cell.requiredTypeLabel.text! = ("\(requiredResource.map { $0.key }[0]) or")
+            } else {
+                cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
+            }
+//            cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
             cell.requiredQtyLabel.text! = String(qtyReq)
             cell.qtyAvailableLabel.text! = String(qtyAvail)
 
@@ -240,38 +253,38 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                     cell.statusLabel.text! = "⚠️"
                 }
             } else if qtyReq > qtyAvail {
-                if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
-                    skullDict["Bone"] = false
-                    if skullDict["Skull"] == true {
-                        currentCell = cell
-                        cell.isHidden = true
-                    } else {
-                        cell.isHidden = false
-                    }
-                } else if gear.name == "Skull Helm" && requestedTypeRawValue == "Skull" {
-                    skullDict["Skull"] = false
-                    if skullDict["Bone"] == true {
-                        currentCell = cell
-                        cell.isHidden = true
-                    } else {
-                        cell.isHidden = false
-                    }
-                }
+//                if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
+//                    skullDict["Bone"] = false
+//                    if skullDict["Skull"] == true {
+//                        currentCell = cell
+//                        cell.isHidden = true
+//                    } else {
+//                        cell.isHidden = false
+//                    }
+//                } else if gear.name == "Skull Helm" && requestedTypeRawValue == "Skull" {
+//                    skullDict["Skull"] = false
+//                    if skullDict["Bone"] == true {
+//                        currentCell = cell
+//                        cell.isHidden = true
+//                    } else {
+//                        cell.isHidden = false
+//                    }
+//                }
                 if mySettlement!.overrideEnabled {
                     cell.statusLabel.text! = "❎"
                 } else {
                     cell.statusLabel.text! = "❌"
                 }
             } else {
-                if gear.name == "Skull Helm" {
-                    currentCell = cell
-                    cell.isHidden = false
-                    if requestedTypeRawValue == "Bone" {
-                        skullDict["Bone"] = true
-                    } else if requestedTypeRawValue == "Skull" {
-                        skullDict["Skull"] = true
-                    }
-                }
+//                if gear.name == "Skull Helm" {
+//                    currentCell = cell
+//                    cell.isHidden = false
+//                    if requestedTypeRawValue == "Bone" {
+//                        skullDict["Bone"] = true
+//                    } else if requestedTypeRawValue == "Skull" {
+//                        skullDict["Skull"] = true
+//                    }
+//                }
                 if mySettlement!.overrideEnabled {
                     cell.statusLabel.text! = "❎"
                 } else {
@@ -491,21 +504,34 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         dataModel.writeData()
         tableView.reloadData()
     }
+//    func checkCraftableStatus() {
+//        let cells = self.tableView.visibleCells
+//        var status = Bool()
+//
+//        if mySettlement!.overrideEnabled {
+//            status = true
+//        } else {
+//            for cell in cells {
+//                if let myCell = cell as? GearRequirementTableViewCell {
+//                    status = (myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️") && myCell.isHidden == true ? false:true
+//                    if gear.name == "Skull Helm" {
+//                        print("Skull status: \(status)")
+//                    }
+//                    if status == false { break }
+//                }
+//            }
+//        }
+//        if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }
+//        self.craftability = status
+//        tableView.reloadData()
+//    }
     func checkCraftableStatus() {
-        let cells = self.tableView.visibleCells
         var status = Bool()
-        
         if mySettlement!.overrideEnabled {
             status = true
         } else {
-            for cell in cells {
-                if let myCell = cell as? GearRequirementTableViewCell {
-                    status = myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️" ? false:true
-                    if status == false { break }
-                }
-            }
+            status = self.validator.checkCraftability(gear: gear) > 0 ? true:false
         }
-        if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }
         self.craftability = status
         tableView.reloadData()
     }
@@ -539,5 +565,12 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }))
         
         self.present(alert, animated: true, completion: nil)
+    }
+    func configureTopLine() {
+        let px = 1/UIScreen.main.scale
+        let frame = CGRect(x: 0, y: 0, width: self.tableView.frame.size.width, height: px)
+        let line = UIView(frame: frame)
+        self.tableView.tableHeaderView = line
+        line.backgroundColor = self.tableView.separatorColor
     }
 }

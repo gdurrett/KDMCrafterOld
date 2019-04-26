@@ -8,19 +8,13 @@
 
 import UIKit
 
-class CraftGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GearTableViewCellDelegate, SpendResourcesVCDelegate {
+class CraftGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBAction func filterCraftableAction(_ sender: Any) {
-        self.sortedCraftableGear = getCraftableGear()
-        if self.getCraftableGear().count == 0 {
-            self.filterCraftableOutlet.setOn(false, animated: true)
-        }
-
+    @IBOutlet weak var tableView: UITableView!
+    @IBAction func segmentedControlAction(_ sender: Any) {
         tableView.reloadData()
     }
-    
-    @IBOutlet weak var filterCraftableOutlet: UISwitch!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     
     let dataModel = DataModel.sharedInstance
     let gearDetailSegueIdentifier = "ShowCraftGearDetailView"
@@ -32,6 +26,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var sortedStorage: [(key: Resource, value: Int)]?
     var sortedGear: [Gear]?
     var sortedCraftableGear: [Gear]?
+    var sortedUncraftableGear: [Gear]?
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
@@ -56,10 +51,10 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myAvailableGear = mySettlement!.availableGear
         
         sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
+        sortedCraftableGear = getUncraftableGear()
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
-        setFilterCraftableOutlet()
-        self.filterCraftableOutlet.isOn = false
+        navigationItem.title = "Craft Gear"
         
         tableView.reloadData()
     }
@@ -67,15 +62,21 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
         sortedCraftableGear = getCraftableGear()
+        sortedUncraftableGear = getUncraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
-        setFilterCraftableOutlet()
+        //setFilterCraftableOutlet()
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
+        switch(segmentedControlOutlet.selectedSegmentIndex) {
+        case 0:
+            return (self.sortedGear?.count)!
+        case 1:
             return self.sortedCraftableGear!.count
-        } else {
+        case 2:
+            return self.sortedUncraftableGear!.count
+        default:
             return (self.sortedGear?.count)!
         }
     }
@@ -84,16 +85,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GearTableViewCell", for: indexPath) as! GearTableViewCell
-        cell.cellDelegate = self
         cell.tag = indexPath.row
         cell.layoutMargins = UIEdgeInsets.zero
         cell.accessoryType = .disclosureIndicator
 
         var gear: Gear
         
-        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
+        switch(segmentedControlOutlet.selectedSegmentIndex) {
+        case 0:
+            gear = self.sortedGear![indexPath.row]
+        case 1:
             gear = self.sortedCraftableGear![indexPath.row]
-        } else {
+        case 2:
+            gear = self.sortedUncraftableGear![indexPath.row]
+        default:
             gear = self.sortedGear![indexPath.row]
         }
         
@@ -104,17 +109,19 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         return cell
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return " Craft Gear"
-    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let craftDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "CraftGearDetailViewController") as? CraftGearDetailViewController {
             let gearIndex = tableView.indexPathForSelectedRow?.row
-            if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count != 0 {
-                craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
-            } else {
-                craftDetailVC.gear = self.sortedGear![gearIndex!]
 
+            switch(segmentedControlOutlet.selectedSegmentIndex) {
+            case 0:
+                craftDetailVC.gear = self.sortedGear![gearIndex!]
+            case 1:
+                craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
+            case 2:
+                craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
+            default:
+                craftDetailVC.gear = self.sortedGear![gearIndex!]
             }
             craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear) > 0 ? true:false
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
@@ -211,84 +218,16 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
     }
-    func tappedCraftButton(cell: GearTableViewCell) {
-        var gear: Gear?
-        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count > 0 {
-            gear = self.sortedCraftableGear![cell.tag]
-        } else {
-            gear = self.sortedGear![cell.tag]
-        }
-        if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
-            mySettlement!.gearCraftedDict[gear!]! += 1
-        } else if validator.checkCraftability(gear: gear!) > 0 && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
-            spendResources(for: gear!)
-        } else {
-            // Can't craft!
-        }
-        tableView.reloadData()
-    }
-    func tappedArchiveButton(cell: GearTableViewCell) {
-        var gear: Gear?
-        if self.filterCraftableOutlet.isOn && self.sortedCraftableGear!.count > 0 {
-            gear = self.sortedCraftableGear![cell.tag]
-        } else {
-            gear = self.sortedGear![cell.tag]
-        }
-        if self.mySettlement!.gearCraftedDict[gear!]! > 0 {
-            mySettlement!.gearCraftedDict[gear!]! -= 1
-        }
-        tableView.reloadData()
-    }
-    fileprivate func spendResources(for gear: Gear) {
-        var requiredTypes = [resourceType]()
-        var requiredResourceTypes = [resourceType:Int]()
-        if gear.resourceSpecialRequirements == nil {
-            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 }
-            requiredResourceTypes = gear.resourceTypeRequirements!
-        } else {
-            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys
-            requiredResourceTypes = gear.resourceTypeRequirements!.merging(gear.resourceSpecialRequirements!) { (current, _) in current } // Also combined dict
-        }
-
-        var spendableResources = [Resource:Int]()
-        validator.resources = mySettlement!.resourceStorage // Update validator
-        
-        let spendResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "spendResourcesVC") as! SpendResourcesViewController
-        
-        for resource in myStorage!.keys {
-            if myStorage![resource]! > 0 {
-                for type in resource.type {
-                    if requiredTypes.contains(type) {
-                        spendableResources[resource] = myStorage![resource]! //assign value
-                        break
-                    }
-                }
+    fileprivate func getUncraftableGear() -> [Gear] {
+        self.sortedUncraftableGear = []
+        for gear in mySettlement!.availableGear {
+            if validator.checkCraftability(gear: gear) < 1 || checkIfMaxedOut(gear: gear) {
+                self.sortedUncraftableGear!.append(gear)
             }
         }
-        spendResourcesVC.spendableResources = spendableResources
-        spendResourcesVC.requiredResourceTypes = requiredResourceTypes
-        self.currentGear = gear
-        spendResourcesVC.delegate = self
-        
-        self.present(spendResourcesVC, animated: true, completion: nil)
+        return self.sortedUncraftableGear!.sorted(by: { $0.name < $1.name })
     }
-    func updateStorage(with spentResources: [Resource : Int]) {
-        for (resource, qty) in spentResources {
-            mySettlement!.resourceStorage[resource]! -= qty
-            myStorage![resource]! -= qty
-        }
-        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
-        validator.resources = mySettlement!.resourceStorage // Update validator here?
-        mySettlement!.gearCraftedDict[self.currentGear!]! += 1
-        tableView.reloadData()
-    }
-    fileprivate func setFilterCraftableOutlet() {
-        if mySettlement!.overrideEnabled == true {
-            self.filterCraftableOutlet.isHidden = true
-        } else {
-            self.filterCraftableOutlet.isHidden = false
-        }
-    }
+
     func checkIfMaxedOut (gear: Gear) -> Bool {
         if mySettlement!.gearCraftedDict[gear]! >= gear.qtyAvailable {
             return true

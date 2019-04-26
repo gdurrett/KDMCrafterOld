@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Manage Resources-->
+        <!--Manage Resources View Controller-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
                 <viewController storyboardIdentifier="ManageResourcesViewController" id="9pv-A4-QxB" customClass="ManageResourcesViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
@@ -19,27 +19,27 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ENq-Ks-dml">
-                                <rect key="frame" x="0.0" y="84" width="414" height="729"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ENq-Ks-dml" firstAttribute="bottom" secondItem="PQr-Ze-W5v" secondAttribute="bottom" id="bbX-FT-bpu"/>
-                            <constraint firstItem="ENq-Ks-dml" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" constant="40" id="edT-fH-uwY"/>
+                            <constraint firstItem="ENq-Ks-dml" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="edT-fH-uwY"/>
                             <constraint firstItem="ENq-Ks-dml" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="mS9-et-6b4"/>
                             <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="ENq-Ks-dml" secondAttribute="trailing" id="na9-Al-fKb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Manage Resources" image="first" id="acW-dT-cKf"/>
+                    <navigationItem key="navigationItem" id="h59-D0-ki0"/>
                     <connections>
                         <outlet property="tableView" destination="ENq-Ks-dml" id="kLK-cq-z7Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.60000000000002" y="-320.68965517241384"/>
+            <point key="canvasLocation" x="1659.4202898550725" y="-320.75892857142856"/>
         </scene>
         <!--Spend Resources View Controller-->
         <scene sceneID="gzB-kK-8Mg">
@@ -115,7 +115,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="srU-Nj-FMQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1685.5999999999999" y="-330.58470764617692"/>
+            <point key="canvasLocation" x="2595.6521739130435" y="-330.80357142857139"/>
         </scene>
         <!--Craft Gear View Controller-->
         <scene sceneID="wg7-f3-ORb">
@@ -126,44 +126,44 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DP0-mO-r1L">
-                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="161" width="414" height="652"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="M7R-Or-DJP">
+                                <rect key="frame" x="71" y="103" width="264" height="29"/>
+                                <segments>
+                                    <segment title="All"/>
+                                    <segment title="Craftable"/>
+                                    <segment title="Uncraftable"/>
+                                </segments>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="segmentedControlAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="Bje-vh-80H"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" id="0Gl-i0-Mff"/>
+                            <constraint firstItem="M7R-Or-DJP" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="71" id="J3z-Od-zWR"/>
+                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="M7R-Or-DJP" secondAttribute="bottom" constant="30" id="NdE-hC-FOl"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="bottom" secondItem="O1u-W8-tvY" secondAttribute="bottom" id="dSq-xZ-ptD"/>
+                            <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="M7R-Or-DJP" secondAttribute="trailing" constant="79" id="dza-Xw-ehA"/>
                             <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="DP0-mO-r1L" secondAttribute="trailing" id="esf-hp-r54"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" id="fs5-ox-s4S"/>
+                            <constraint firstItem="M7R-Or-DJP" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="15" id="t1u-uH-OZd"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="O1u-W8-tvY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="cmW-09-tL3">
-                        <leftBarButtonItems>
-                            <barButtonItem id="XqE-u2-rwk">
-                                <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="Wax-1E-tLm">
-                                    <rect key="frame" x="20" y="6.5" width="51" height="31"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <connections>
-                                        <action selector="filterCraftableAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="N1k-dV-oEU"/>
-                                    </connections>
-                                </switch>
-                            </barButtonItem>
-                            <barButtonItem title="Filter Craftable" id="PWg-Hh-hrC">
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </barButtonItem>
-                        </leftBarButtonItems>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="cmW-09-tL3"/>
                     <connections>
-                        <outlet property="filterCraftableOutlet" destination="Wax-1E-tLm" id="qzz-H0-8K0"/>
+                        <outlet property="segmentedControlOutlet" destination="M7R-Or-DJP" id="EkV-pY-74f"/>
                         <outlet property="tableView" destination="DP0-mO-r1L" id="cQg-ZS-pVh"/>
                         <segue destination="cBP-Jk-lxg" kind="show" identifier="ShowCraftGearDetailView" id="1YK-5v-37f"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1659" y="368"/>
+            <point key="canvasLocation" x="1657.9710144927537" y="367.63392857142856"/>
         </scene>
         <!--Craft Gear Detail View Controller-->
         <scene sceneID="ZnC-2a-jyH">
@@ -456,7 +456,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zJg-cq-j6v" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3798.5507246376815" y="243.75"/>
+            <point key="canvasLocation" x="4708.695652173913" y="243.75"/>
         </scene>
         <!--Add Innovations-->
         <scene sceneID="L0p-Xa-ndu">
@@ -562,7 +562,7 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     </tabBar>
                     <connections>
-                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="ZHC-c9-uXK"/>
+                        <segue destination="0Vy-fp-ch3" kind="relationship" relationship="viewControllers" id="ZHC-c9-uXK"/>
                         <segue destination="5Rp-28-66k" kind="relationship" relationship="viewControllers" id="euT-jO-SYL"/>
                         <segue destination="30M-tm-Aru" kind="relationship" relationship="viewControllers" id="Moi-SG-4Ht"/>
                         <segue destination="ppt-Yj-Ftm" kind="relationship" relationship="viewControllers" id="8af-i4-FAP"/>
@@ -609,6 +609,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zYM-gx-VKA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="749" y="368"/>
+        </scene>
+        <!--Manage Resources-->
+        <scene sceneID="pOj-7Z-Ddr">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="0Vy-fp-ch3" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Manage Resources" image="first" id="acW-dT-cKf"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0ZB-Fi-NM1">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="rootViewController" id="RUf-Bz-iKz"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mec-I0-h3S" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="749.27536231884062" y="-320.75892857142856"/>
         </scene>
     </scenes>
     <resources>
