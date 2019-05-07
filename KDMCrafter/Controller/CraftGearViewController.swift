@@ -12,6 +12,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     @IBAction func segmentedControlAction(_ sender: Any) {
+        getCraftableGear()
+        getUncraftableGear()
+        updateSearchResults(for: self.searchController)
         tableView.reloadData()
     }
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
@@ -24,9 +27,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var mySettlement: Settlement?
     var myStorage: [Resource:Int]?
     var sortedStorage: [(key: Resource, value: Int)]?
+    var filteredSortedStorage: [(key: Resource, value: Int)]?
+    
     var sortedGear: [Gear]?
+    var filteredSortedGear: [Gear]?
     var sortedCraftableGear: [Gear]?
+    var filteredSortedCraftableGear: [Gear]?
     var sortedUncraftableGear: [Gear]?
+    var filteredSortedUncraftableGear: [Gear]?
+    
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
     var myLocations: [Location]?
@@ -34,6 +43,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var currentGear: Gear?
     
     var craftability = Bool()
+    
+    let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,9 +62,12 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myAvailableGear = mySettlement!.availableGear
         
         sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
-        sortedCraftableGear = getUncraftableGear()
+        sortedCraftableGear = getCraftableGear()
+        sortedUncraftableGear = getUncraftableGear()
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
+        setupSearch()
+        
         navigationItem.title = "Craft Gear"
         
         tableView.reloadData()
@@ -65,17 +79,28 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedUncraftableGear = getUncraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
-        //setFilterCraftableOutlet()
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
-            return (self.sortedGear?.count)!
+            if isFiltering() {
+                return self.filteredSortedGear!.count
+            } else {
+                return (self.sortedGear?.count)!
+            }
         case 1:
-            return self.sortedCraftableGear!.count
+            if isFiltering() {
+                return self.filteredSortedCraftableGear!.count
+            } else {
+                return self.sortedCraftableGear!.count
+            }
         case 2:
-            return self.sortedUncraftableGear!.count
+            if isFiltering() {
+                return self.filteredSortedUncraftableGear!.count
+            } else {
+                return self.sortedUncraftableGear!.count
+            }
         default:
             return (self.sortedGear?.count)!
         }
@@ -93,11 +118,23 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
-            gear = self.sortedGear![indexPath.row]
+            if isFiltering() {
+                gear = self.filteredSortedGear![indexPath.row]
+            } else {
+                gear = self.sortedGear![indexPath.row]
+            }
         case 1:
-            gear = self.sortedCraftableGear![indexPath.row]
+            if isFiltering() {
+                gear = filteredSortedCraftableGear![indexPath.row]
+            } else {
+                gear = self.sortedCraftableGear![indexPath.row]
+            }
         case 2:
-            gear = self.sortedUncraftableGear![indexPath.row]
+            if isFiltering() {
+                gear = self.filteredSortedUncraftableGear![indexPath.row]
+            } else {
+                gear = self.sortedUncraftableGear![indexPath.row]
+            }
         default:
             gear = self.sortedGear![indexPath.row]
         }
@@ -115,11 +152,23 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
 
             switch(segmentedControlOutlet.selectedSegmentIndex) {
             case 0:
-                craftDetailVC.gear = self.sortedGear![gearIndex!]
+                if isFiltering() {
+                    craftDetailVC.gear = self.filteredSortedGear![gearIndex!]
+                } else {
+                    craftDetailVC.gear = self.sortedGear![gearIndex!]
+                }
             case 1:
-                craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
+                if isFiltering() {
+                    craftDetailVC.gear = self.filteredSortedCraftableGear![gearIndex!]
+                } else {
+                    craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
+                }
             case 2:
-                craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
+                if isFiltering() {
+                    craftDetailVC.gear = self.filteredSortedUncraftableGear![gearIndex!]
+                } else {
+                    craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
+                }
             default:
                 craftDetailVC.gear = self.sortedGear![gearIndex!]
             }
@@ -216,7 +265,12 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.sortedCraftableGear!.append(gear)
             }
         }
-        return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
+        if isFiltering() {
+            updateSearchResults(for: self.searchController)
+            return self.filteredSortedCraftableGear!.sorted(by: { $0.name < $1.name })
+        } else {
+            return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
+        }
     }
     fileprivate func getUncraftableGear() -> [Gear] {
         self.sortedUncraftableGear = []
@@ -234,5 +288,65 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         } else {
             return false
         }
+    }
+    fileprivate func setupSearch() {
+        //Set up searchController stuff
+        searchController.searchBar.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 44.0)
+        searchController.searchBar.delegate = self
+        searchController.searchBar.barTintColor = UIColor.black
+        searchController.searchBar.placeholder = "Search resource names"
+        searchController.searchBar.tintColor = UIColor.white
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.searchBarStyle = .default
+        searchController.searchBar.showsCancelButton = false
+        definesPresentationContext = true
+        tableView.tableHeaderView = searchController.searchBar
+        //tableView.tableHeaderView = nil
+        searchController.hidesNavigationBarDuringPresentation = false
+    }
+    // Search Controller delegate stuff
+    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+        switch(segmentedControlOutlet.selectedSegmentIndex) {
+        case 0:
+            filteredSortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
+                return gear.name.lowercased().contains(searchText.lowercased())
+            })
+        case 1:
+            filteredSortedCraftableGear = self.sortedCraftableGear!.filter( {( gear: Gear) -> Bool in
+                return gear.name.lowercased().contains(searchText.lowercased())
+            })
+        case 2:
+            filteredSortedUncraftableGear = self.sortedUncraftableGear!.filter( {( gear: Gear) -> Bool in
+                return gear.name.lowercased().contains(searchText.lowercased())
+            })
+        default:
+            sortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
+                return gear.name.lowercased().contains(searchText.lowercased())
+            })
+        }
+        
+        tableView.reloadData()
+    }
+    func searchBarIsEmpty() -> Bool {
+        // Returns true if the text is empty or nil
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+    func isFiltering() -> Bool {
+        let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
+        return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
+    }
+}
+
+extension CraftGearViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
+}
+extension CraftGearViewController: UISearchBarDelegate {
+    // MARK: - UISearchBar Delegate
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }

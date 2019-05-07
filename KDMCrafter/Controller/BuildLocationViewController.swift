@@ -205,6 +205,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         } else if mySettlement!.locationsBuiltDict[location] == true {
             mySettlement!.locationsBuiltDict[location] = false
         }
+        dataModel.writeData()
         tableView.reloadData()
     }
     fileprivate func spendResources(for location: Location) {

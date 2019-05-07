@@ -26,7 +26,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     var numResourceRows: Int?
     
     let searchController = UISearchController(searchResultsController: nil)
-//    let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTap(sender:)))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +43,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
         
         setupSearch()
-//        setupTapGestureRecognizer()
         
         navigationItem.title = "Manage Resources"
         
@@ -98,6 +96,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
             self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
             self.dataModel.currentSettlement!.resourceStorage[self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
+            self.dataModel.writeData()
         }
         return cell
     }
@@ -169,25 +168,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
     }
-//    func setupTapGestureRecognizer() {
-//        self.tapGestureRecognizer.numberOfTapsRequired = 1
-//        self.tapGestureRecognizer.isEnabled = true
-//        self.tapGestureRecognizer.cancelsTouchesInView = false
-//        self.tapGestureRecognizer.delegate = self
-//        self.view.addGestureRecognizer(tapGestureRecognizer)
-//       // self.tableView.addGestureRecognizer(tapGestureRecognizer)
-//    }
-//    private func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-//        if touch.view?.isDescendant(of: self.tableView) == true {
-//            return false
-//        }
-//        return true
-//    }
-//    @objc func singleTap(sender: UITapGestureRecognizer) {
-//
-//        print("Tapped?!")
-//        self.searchController.searchBar.endEditing(true)
-//    }
 }
 
 extension ManageResourcesViewController: UISearchResultsUpdating {
