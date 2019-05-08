@@ -291,11 +291,13 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     fileprivate func setupSearch() {
         //Set up searchController stuff
-        searchController.searchBar.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 44.0)
+        //searchController.searchBar.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 44.0)
         searchController.searchBar.delegate = self
-        searchController.searchBar.barTintColor = UIColor.black
-        searchController.searchBar.placeholder = "Search resource names"
-        searchController.searchBar.tintColor = UIColor.white
+        searchController.searchBar.barTintColor = UIColor.white
+        searchController.searchBar.placeholder = "Search gear names"
+        searchController.searchBar.tintColor = UIColor.black
+        searchController.searchBar.backgroundColor = UIColor.white
+        searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
@@ -350,3 +352,4 @@ extension CraftGearViewController: UISearchBarDelegate {
         filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }
+

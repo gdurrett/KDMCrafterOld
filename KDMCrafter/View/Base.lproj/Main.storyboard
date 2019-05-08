@@ -126,11 +126,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DP0-mO-r1L">
-                                <rect key="frame" x="0.0" y="161" width="414" height="652"/>
+                                <rect key="frame" x="0.0" y="146" width="414" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="M7R-Or-DJP">
-                                <rect key="frame" x="71" y="103" width="264" height="29"/>
+                                <rect key="frame" x="50" y="103" width="314" height="29"/>
                                 <segments>
                                     <segment title="All"/>
                                     <segment title="Craftable"/>
@@ -144,10 +144,10 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="M7R-Or-DJP" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="71" id="J3z-Od-zWR"/>
-                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="M7R-Or-DJP" secondAttribute="bottom" constant="30" id="NdE-hC-FOl"/>
+                            <constraint firstItem="M7R-Or-DJP" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="50" id="J3z-Od-zWR"/>
+                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="M7R-Or-DJP" secondAttribute="bottom" constant="15" id="NdE-hC-FOl"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="bottom" secondItem="O1u-W8-tvY" secondAttribute="bottom" id="dSq-xZ-ptD"/>
-                            <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="M7R-Or-DJP" secondAttribute="trailing" constant="79" id="dza-Xw-ehA"/>
+                            <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="M7R-Or-DJP" secondAttribute="trailing" constant="50" id="dza-Xw-ehA"/>
                             <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="DP0-mO-r1L" secondAttribute="trailing" id="esf-hp-r54"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" id="fs5-ox-s4S"/>
                             <constraint firstItem="M7R-Or-DJP" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="15" id="t1u-uH-OZd"/>
