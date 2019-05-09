@@ -12,8 +12,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     @IBAction func segmentedControlAction(_ sender: Any) {
-        getCraftableGear()
-        getUncraftableGear()
         updateSearchResults(for: self.searchController)
         tableView.reloadData()
     }

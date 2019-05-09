@@ -19,21 +19,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ENq-Ks-dml">
-                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="139" width="414" height="674"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="7MF-OD-zlm">
+                                <rect key="frame" x="10" y="102" width="394" height="29"/>
+                                <segments>
+                                    <segment title="All"/>
+                                    <segment title="Bone"/>
+                                    <segment title="Cons"/>
+                                    <segment title="Hide"/>
+                                    <segment title="Organ"/>
+                                    <segment title="Special"/>
+                                </segments>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="segmentedControlAction:" destination="9pv-A4-QxB" eventType="valueChanged" id="KAy-Hl-URs"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="7MF-OD-zlm" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" constant="10" id="VTW-ob-WLm"/>
                             <constraint firstItem="ENq-Ks-dml" firstAttribute="bottom" secondItem="PQr-Ze-W5v" secondAttribute="bottom" id="bbX-FT-bpu"/>
-                            <constraint firstItem="ENq-Ks-dml" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="edT-fH-uwY"/>
+                            <constraint firstItem="7MF-OD-zlm" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" constant="14" id="enc-0M-fJ7"/>
+                            <constraint firstItem="ENq-Ks-dml" firstAttribute="top" secondItem="7MF-OD-zlm" secondAttribute="bottom" constant="9" id="k61-yY-4Q3"/>
                             <constraint firstItem="ENq-Ks-dml" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="mS9-et-6b4"/>
                             <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="ENq-Ks-dml" secondAttribute="trailing" id="na9-Al-fKb"/>
+                            <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="7MF-OD-zlm" secondAttribute="trailing" constant="10" id="py0-Jf-DGY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
                     <navigationItem key="navigationItem" id="h59-D0-ki0"/>
                     <connections>
+                        <outlet property="segmentedControlOutlet" destination="7MF-OD-zlm" id="7Om-7i-3Jr"/>
                         <outlet property="tableView" destination="ENq-Ks-dml" id="kLK-cq-z7Z"/>
                     </connections>
                 </viewController>
