@@ -29,6 +29,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         
         settingsButton.frame = CGRect(x: 340, y: 6, width: 60, height: 30)
         
+        navigationItem.title = "Settings"
     }
 
     // MARK: - Table view data source
@@ -44,19 +45,9 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 30
-        } else {
-            return 5
-        }
+        return 5
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return " Settings"
-        } else {
-            return ""
-        }
-    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as! SettingsTableViewCell
         
@@ -69,12 +60,14 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             settingsButton.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
             settingsButton.layer.masksToBounds = true
             settingsButton.layer.cornerRadius = 5
+            settingsButton.frame.origin.x = 271
             settingsButton.addTarget(self, action: #selector(resetSettlement(sender:)), for: .touchUpInside)
             
         } else if indexPath.section == 1 {
             cell.view.addSubview(settingsSwitch)
             cell.settingNameLabel.text = "Enable Override"
             
+            settingsSwitch.frame.origin.x = 271
             settingsSwitch.addTarget(self, action: #selector(enableOverride(sender:)), for: .touchUpInside)
         }
         return cell

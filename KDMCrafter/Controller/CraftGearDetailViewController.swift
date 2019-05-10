@@ -65,6 +65,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     var currentCell = GearRequirementTableViewCell()
     var craftStatusDict = [String:Bool]()
     
+    let cellStatusLabelChecked = #imageLiteral(resourceName: "icons8-tick-box-100")
+    let cellStatusLabelUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
+    let cellStatusLabelIndeterminate = #imageLiteral(resourceName: "icons8-indeterminate-checkbox-100")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

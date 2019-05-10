@@ -15,6 +15,11 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         updateSearchResults(for: self.searchController)
         tableView.reloadData()
     }
+    @IBAction func settingsButtonAction(_ sender: Any) {
+        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
+            mainVC.toggleSideMenu(fromViewController: self)
+        }
+    }
     
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     let dataModel = DataModel.sharedInstance
@@ -55,12 +60,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         mySettlement = dataModel.currentSettlement!
         myStorage = dataModel.currentSettlement!.resourceStorage
         
-        sortedStorage = dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
-        sortedBoneStorage = getBasicStorageForType(resourceType: .bone)
-        sortedConsStorage = getBasicStorageForType(resourceType: .consumable)
-        sortedHideStorage = getBasicStorageForType(resourceType: .hide)
-        sortedOrganStorage = getBasicStorageForType(resourceType: .organ)
-        sortedSpecialStorage = getSpecialStorage()
+        updateStorage()
         
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
         
@@ -72,12 +72,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        sortedStorage = dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
-        sortedBoneStorage = getBasicStorageForType(resourceType: .bone)
-        sortedConsStorage = getBasicStorageForType(resourceType: .consumable)
-        sortedHideStorage = getBasicStorageForType(resourceType: .hide)
-        sortedOrganStorage = getBasicStorageForType(resourceType: .organ)
-        sortedSpecialStorage = getSpecialStorage()
+        updateStorage()
         
         tableView.reloadData()
     }
@@ -201,11 +196,66 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         cell.resourceCountLabel.text! = "\(value!)"
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
             cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            //self.myStorage![key] = Int(change.newValue!)
-            self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
-            self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
-            self.dataModel.currentSettlement!.resourceStorage[self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
+            var selectedResource: Resource?
+            switch(self.segmentedControlOutlet.selectedSegmentIndex) {
+            case 0:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedStorage![indexPath.row].0
+                    self.filteredSortedStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedStorage![indexPath.row].0
+                    self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            case 1:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedBoneStorage![indexPath.row].0
+                    self.filteredSortedBoneStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedBoneStorage![indexPath.row].0
+                    self.sortedBoneStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            case 2:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedConsStorage![indexPath.row].0
+                    self.filteredSortedConsStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedConsStorage![indexPath.row].0
+                    self.sortedConsStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            case 3:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedHideStorage![indexPath.row].0
+                    self.filteredSortedHideStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedHideStorage![indexPath.row].0
+                    self.sortedHideStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            case 4:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedOrganStorage![indexPath.row].0
+                    self.filteredSortedOrganStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedOrganStorage![indexPath.row].0
+                    self.sortedOrganStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            case 5:
+                if self.isFiltering() {
+                    selectedResource = self.filteredSortedSpecialStorage![indexPath.row].0
+                    self.filteredSortedSpecialStorage![indexPath.row].1 = Int(change.newValue!)
+                } else {
+                    selectedResource = self.sortedSpecialStorage![indexPath.row].0
+                    self.sortedSpecialStorage![indexPath.row].1 = Int(change.newValue!)
+                }
+            default:
+                selectedResource = self.sortedStorage![indexPath.row].0
+            }
+            //self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
+            //self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
+            self.myStorage![selectedResource!] = Int(change.newValue!)
+            self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(change.newValue!)
             self.dataModel.writeData()
+            
+            self.updateStorage()
         }
         return cell
     }
@@ -308,6 +358,14 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         }
 
         tableView.reloadData()
+    }
+    func updateStorage() {
+        self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
+        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
+        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
+        self.sortedHideStorage = self.getBasicStorageForType(resourceType: .hide)
+        self.sortedOrganStorage = self.getBasicStorageForType(resourceType: .organ)
+        self.sortedSpecialStorage = self.getSpecialStorage()
     }
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil

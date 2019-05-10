@@ -17,6 +17,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     
+    @IBAction func settingsButtonAction(_ sender: Any) {
+        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
+            mainVC.toggleSideMenu(fromViewController: self)
+        }
+    }
     let dataModel = DataModel.sharedInstance
     let gearDetailSegueIdentifier = "ShowCraftGearDetailView"
     
