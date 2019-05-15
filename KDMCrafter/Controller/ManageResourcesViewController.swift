@@ -21,6 +21,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
     
+    @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
     let dataModel = DataModel.sharedInstance
     
@@ -65,6 +66,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
         
         setupSearch()
+        setUpMenuButton()
         
         navigationItem.title = "Manage Resources"
         
@@ -380,6 +382,19 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
     func getSpecialStorage() -> [(key: Resource, value: Int)] {
         return self.sortedStorage!.filter { !$0.key.type.contains(.bone) && !$0.key.type.contains(.consumable) && !$0.key.type.contains(.hide) && !$0.key.type.contains(.organ)}
+    }
+    func setUpMenuButton(){
+        let menuBtn = UIButton(type: .custom)
+        menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: menuBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.leftBarButtonItem = menuBarItem
     }
 }
 

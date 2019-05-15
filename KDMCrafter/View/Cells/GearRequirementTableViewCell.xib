@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,12 +31,22 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5O7-EW-Hdp">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WiU-Qy-GOA">
                             <rect key="frame" x="151.5" y="0.0" width="73.5" height="68"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" semanticContentAttribute="forceRightToLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="x3p-ep-XiX">
+                                    <rect key="frame" x="40" y="5" width="28.5" height="58"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="x3p-ep-XiX" firstAttribute="leading" secondItem="WiU-Qy-GOA" secondAttribute="leading" constant="40" id="Lys-Nm-Noc"/>
+                                <constraint firstAttribute="trailing" secondItem="x3p-ep-XiX" secondAttribute="trailing" constant="5" id="Pd3-dP-7Dy"/>
+                                <constraint firstItem="x3p-ep-XiX" firstAttribute="top" secondItem="WiU-Qy-GOA" secondAttribute="top" constant="5" id="ZUl-r4-N77"/>
+                                <constraint firstAttribute="bottom" secondItem="x3p-ep-XiX" secondAttribute="bottom" constant="5" id="oj1-ga-xcg"/>
+                            </constraints>
+                            <viewLayoutGuide key="safeArea" id="ioW-ea-SEO"/>
+                        </view>
                     </subviews>
                 </stackView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWZ-ZK-xqn">
@@ -67,9 +77,9 @@
                 <outlet property="qtyAvailableLabel" destination="rep-sF-ZO6" id="Q5f-EJ-7JG"/>
                 <outlet property="requiredQtyLabel" destination="mtG-ld-tEg" id="OtE-yC-yaY"/>
                 <outlet property="requiredTypeLabel" destination="kWZ-ZK-xqn" id="gOX-gS-GpH"/>
-                <outlet property="statusLabel" destination="5O7-EW-Hdp" id="SNs-Xb-fu2"/>
+                <outlet property="statusImage" destination="x3p-ep-XiX" id="8zd-fT-dwd"/>
             </connections>
-            <point key="canvasLocation" x="220" y="-114.24287856071965"/>
+            <point key="canvasLocation" x="16.800000000000001" y="-229.38530734632684"/>
         </view>
     </objects>
 </document>

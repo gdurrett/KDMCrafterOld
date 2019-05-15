@@ -114,3 +114,4 @@ extension UISearchBar {
             .first
     }
 }
+

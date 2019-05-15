@@ -12,6 +12,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var tableView: UITableView!
     @IBAction func segmentedControlAction(_ sender: Any) {
+        sortedCraftableGear = getCraftableGear()
+        sortedUncraftableGear = getUncraftableGear()
         updateSearchResults(for: self.searchController)
         tableView.reloadData()
     }
@@ -70,6 +72,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
         setupSearch()
+        setUpMenuButton()
         
         navigationItem.title = "Craft Gear"
         
@@ -78,12 +81,16 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
-        sortedCraftableGear = getCraftableGear()
-        sortedUncraftableGear = getUncraftableGear()
+//        sortedCraftableGear = getCraftableGear()
+//        sortedUncraftableGear = getUncraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
         tableView.reloadData()
+        if isFiltering() {
+            print("Still filtering!")
+        }
     }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
@@ -342,6 +349,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
     }
+    func setUpMenuButton(){
+        let menuBtn = UIButton(type: .custom)
+        menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: menuBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.leftBarButtonItem = menuBarItem
+    }
+
 }
 
 extension CraftGearViewController: UISearchResultsUpdating {

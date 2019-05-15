@@ -65,9 +65,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     var currentCell = GearRequirementTableViewCell()
     var craftStatusDict = [String:Bool]()
     
-    let cellStatusLabelChecked = #imageLiteral(resourceName: "icons8-tick-box-100")
-    let cellStatusLabelUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
-    let cellStatusLabelIndeterminate = #imageLiteral(resourceName: "icons8-indeterminate-checkbox-100")
+    let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-50")
+    let cellStatusImageUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
+    let cellStatusImageIndeterminate = #imageLiteral(resourceName: "icons8-indeterminate-checkbox-100")
+    let cellStatusImageOverride = #imageLiteral(resourceName: "icons8-settings-filled-50")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,7 +144,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         //configureOverrideStatusLabel()
         configureNumAvailableLabel()
     }
-
+    override func viewWillDisappear(_ animated: Bool) {
+        print("Going away now!")
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return requiredResourcesArray!.count
     }
@@ -252,9 +255,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
 
             if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "⚠️"
+                    //cell.statusLabel.text! = "⚠️"
+                    cell.statusImage.image = cellStatusImageIndeterminate
                 }
             } else if qtyReq > qtyAvail {
 //                if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
@@ -275,9 +279,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
 //                    }
 //                }
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "❌"
+                    cell.statusImage.image = cellStatusImageUnchecked
                 }
             } else {
 //                if gear.name == "Skull Helm" {
@@ -290,9 +294,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
 //                    }
 //                }
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "✅"
+                    cell.statusImage.image = cellStatusImageChecked
                 }
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
@@ -303,17 +307,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             if mySettlement!.locationsBuiltDict[requiredResource] == true {
                 cell.qtyAvailableLabel.text! = "1"
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "✅"
+                    cell.statusImage.image = cellStatusImageChecked
                 }
                 craftStatusDict[requiredResource.name] = true
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "❌"
+                    cell.statusImage.image = cellStatusImageUnchecked
                 }
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Innovation {
@@ -324,16 +328,16 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             if validator.getInnovationExists(innovation: requiredResource) {
                 cell.qtyAvailableLabel.text! = "1"
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "✅"
+                    cell.statusImage.image = cellStatusImageChecked
                 }
             } else {
                 cell.qtyAvailableLabel.text! = "0"
                 if mySettlement!.overrideEnabled {
-                    cell.statusLabel.text! = "❎"
+                    cell.statusImage.image = cellStatusImageOverride
                 } else {
-                    cell.statusLabel.text! = "❌"
+                    cell.statusImage.image = cellStatusImageUnchecked
                 }
             }
         }
@@ -508,36 +512,27 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         dataModel.writeData()
         tableView.reloadData()
     }
-//    func checkCraftableStatus() {
-//        let cells = self.tableView.visibleCells
-//        var status = Bool()
-//
-//        if mySettlement!.overrideEnabled {
-//            status = true
-//        } else {
-//            for cell in cells {
-//                if let myCell = cell as? GearRequirementTableViewCell {
-//                    status = (myCell.statusLabel.text! == "❌" || myCell.statusLabel.text! == "⚠️") && myCell.isHidden == true ? false:true
-//                    if gear.name == "Skull Helm" {
-//                        print("Skull status: \(status)")
-//                    }
-//                    if status == false { break }
-//                }
-//            }
-//        }
-//        if !(mySettlement!.gearCraftedDict[gear]! < gear!.qtyAvailable) { status = false }
-//        self.craftability = status
-//        tableView.reloadData()
-//    }
     func checkCraftableStatus() {
         var status = Bool()
-        if mySettlement!.overrideEnabled {
+        if mySettlement!.overrideEnabled && gear!.qtyAvailable < mySettlement!.gearCraftedDict[gear]! {
             status = true
         } else {
-            status = self.validator.checkCraftability(gear: gear) > 0 ? true:false
+            if self.validator.checkCraftability(gear: gear) > 0 && !checkIfMaxedOut(gear: gear) {
+                status = true
+            } else {
+                status = false
+            }
+            //status = self.validator.checkCraftability(gear: gear) > 0 ? true:false
         }
         self.craftability = status
         tableView.reloadData()
+    }
+    func checkIfMaxedOut (gear: Gear) -> Bool {
+        if mySettlement!.gearCraftedDict[gear]! >= gear.qtyAvailable {
+            return true
+        } else {
+            return false
+        }
     }
     func showCraftedAlert(for gear: Gear) {
         //let alert = UIAlertController(title: "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available", message: "", preferredStyle: .alert)

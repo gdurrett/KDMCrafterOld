@@ -60,6 +60,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="segmentedControlOutlet" destination="7MF-OD-zlm" id="7Om-7i-3Jr"/>
+                        <outlet property="settingsButtonOutlet" destination="uez-4d-MI3" id="d04-ib-lC9"/>
                         <outlet property="tableView" destination="ENq-Ks-dml" id="kLK-cq-z7Z"/>
                     </connections>
                 </viewController>
@@ -141,7 +142,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="srU-Nj-FMQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2595.6521739130435" y="-330.80357142857139"/>
+            <point key="canvasLocation" x="2633" y="-321"/>
         </scene>
         <!--Craft Gear View Controller-->
         <scene sceneID="wg7-f3-ORb">
