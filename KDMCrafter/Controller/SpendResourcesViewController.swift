@@ -72,12 +72,12 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
         sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
         
+//        for (type, qty) in requiredResourceTypes {
+//            requiredTypesString.append("\(type.rawValue):\(qty) ")
+//        }
+        //requiredTypesLabel.text! = requiredTypesString
         for (type, qty) in requiredResourceTypes {
-            requiredTypesString.append("\(type.rawValue):\(qty) ")
-        }
-        requiredTypesLabel.text! = requiredTypesString
-        for (type, _) in requiredResourceTypes {
-            spentTypesString.append("\(type.rawValue.capitalized):0 ")
+            spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
         }
         spentTypesLabel.text! = spentTypesString
         
@@ -179,12 +179,16 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             self.spentResourceTypes[key] = [type:spentResourceQty]
     }
     fileprivate func setSpentTypes() {
+//        for (type, qty) in requiredResourceTypes {
+//            requiredTypesString.append("\(type.rawValue):\(qty) ")
+//        }
         let typeVals = Array(self.spentResourceTypes.values)
         self.spentTypesString = "Spent: "
-        for type in self.requiredResourceTypes.keys {
+//        for type in self.requiredResourceTypes.keys {
+        for (type, qty ) in self.requiredResourceTypes {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
             self.spentResourceTypesTemp[type] = spentAmount
-                 self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount) ")
+                 self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount)/\(qty) ")
         }
         self.spentTypesLabel.text = self.spentTypesString
         self.checkIfRequirementsMet()

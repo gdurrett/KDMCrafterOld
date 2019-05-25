@@ -34,13 +34,14 @@ public class CraftBuildValidator {
         if typeRequirements?.count != 0 || typeRequirements != nil {
             for (type, qty) in typeRequirements! {
                 let typeCount = getTypeCount(type: type, resources: resources)
+                //print(type,typeCount)
                 numTypeCraftable = (typeCount/qty)
                 craftableTypes.append(numTypeCraftable)
             }
         }
         if specialRequirements?.count != nil {
             for (special, qty) in specialRequirements! {
-                let specialCount = getSpecialCount(resources: resources, special: special)
+                let specialCount = getSpecialCount(resources: resources, special: special.type[0])
                 numSpecialCraftable = (specialCount/qty)
                 craftableSpecials.append(numSpecialCraftable)
                 if numSpecialCraftable == 0 {
@@ -120,7 +121,7 @@ public class CraftBuildValidator {
         let resourceSpecialRequirements = gear.resourceSpecialRequirements
         if resourceSpecialRequirements != nil && resourceSpecialRequirements!.count != 0 {
             for pair in resourceSpecialRequirements! {
-                myArray.append([pair.key.rawValue:pair.value])
+                myArray.append([pair.key.name:pair.value])
             }
         }
         if resourceTypeRequirements!.count != 0 {
@@ -130,10 +131,10 @@ public class CraftBuildValidator {
         }
         return myArray
     }
-    func getSpecialStrings(resourceTypes: [resourceType:Int]) -> [String] {
+    func getSpecialStrings(resources: [Resource:Int]) -> [String] {
         var myArray = [String]()
-        for (type, _) in resourceTypes {
-            myArray.append(type.rawValue)
+        for (name, _) in resources {
+            myArray.append(name.name)
         }
         return myArray
     }
@@ -178,5 +179,104 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
+    func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool) {
+        var returnValue = true
+        var requiredSpecials = [Resource:Int]()
+        var availableSpecials = [Resource:Int]()
+        // First, see if it's craftable
+        // Loop through any special requirements to make sure we have enough
+        if gear.resourceSpecialRequirements != nil {
+            for (resource, qty) in gear.resourceSpecialRequirements! {
+                let difference = (settlement!.resourceStorage[resource]! - qty)
+                if settlement!.resourceStorage[resource]! >= qty {
+                    if returnValue != false {
+                        returnValue = true
+                        if difference > 0 && availableSpecials[resource] != nil {
+                            availableSpecials[resource]! += difference
+                        } else if difference > 0 && availableSpecials[resource] == nil {
+                            availableSpecials[resource] = difference
+                        }
+                    }
+                } else {
+                    returnValue = false
+                }
+                requiredSpecials[resource] = qty // Keep track of specials required and qty in a dict
+            }
+        }
+        print("Specials required: \(requiredSpecials.keys)")
+        // Need to reduce availability of multi resources that are not part of this gear's cost
+        let availableResources = settlement!.resourceStorage.filter { $0.value > 0 }
+        var nonBasic = availableResources.filter { $0.key.kind != .basic }
+        for (resource, qty) in requiredSpecials {
+            if nonBasic[resource] != nil {
+                nonBasic[resource]! -= qty // reduce available nonBasics by number required for this gear
+            }
+        }
+        let multi = nonBasic.filter { $0.key.type.count > 1 }
 
+        print("Multi: \(multi.keys)")
+        var availableBasics = [resourceType:Int]()
+        var resourceCountDict = [Resource:Int]()
+        for (item, qty) in multi {
+            for type in item.type {
+                if availableBasics[type] != nil && (type == .hide || type == .organ || type == .bone || type == .consumable) && gear.resourceTypeRequirements!.keys.contains(type) {
+                    availableBasics[type]! += qty
+                    if qty > 0 { resourceCountDict[item] = 1 }
+                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
+                    availableBasics[type] = qty
+                    if qty > 0 { resourceCountDict[item] = 1 }
+                }
+            }
+        }
+
+        var loopCounter = 0
+        while loopCounter <= resourceCountDict.count {
+            let max = availableBasics.map { $1 }.max()!
+            let sum = availableBasics.values.reduce(0, +)
+            if sum == resourceCountDict.count {
+                break
+            }
+            for (type, qty) in availableBasics {
+//                if qty == max {
+                if qty == max && gear.overlappingResources.contains(type) { //test skip if not in overlapping
+                    availableBasics[type]! -= 1
+                    print("Decrementing: \(type.rawValue)")
+                    break
+                }
+            }
+            loopCounter += 1
+        }
+        // Now get basic types and add to remaining multis (availableBasics)
+        let basics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
+        if gear.resourceTypeRequirements != [:] {
+            for (resource, qty) in basics {
+                for type in resource.type {
+                    if gear.resourceTypeRequirements!.keys.contains(type) {
+                        if qty > 0 {
+                            if availableBasics[type] != nil {
+                                availableBasics[type]! += qty
+                            } else {
+                                availableBasics[type] = qty
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if gear.resourceTypeRequirements != [:] {
+            for (type, qty) in gear.resourceTypeRequirements! {
+                if availableBasics[type]! >= qty {
+                    if returnValue != false {
+                        returnValue = true
+                    }
+                    print("We have enough resource types!")
+                } else {
+                    returnValue = false
+                    print("Not enough resource types!")
+                }
+            }
+        }
+        print("Final availableBasics: \(availableBasics)")
+        return (availableSpecials, availableBasics, returnValue)
+    }
 }

@@ -116,7 +116,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         requiredResourcesArray = [gear!.locationRequirement!]
         let gearRequiredPairs = validator.getGearResourceRequirements(gear: gear!)
         if gear.resourceSpecialRequirements != nil {
-            specialTypesStringArray = validator.getSpecialStrings(resourceTypes: gear.resourceSpecialRequirements!)
+            specialTypesStringArray = validator.getSpecialStrings(resources: gear.resourceSpecialRequirements!)
         }
         for gear in gearRequiredPairs {
             requiredResourcesArray?.append(gear)
@@ -124,6 +124,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         if gear!.innovationRequirement != nil {
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
+        
+        let result = validator.checkCraftability2(gear: gear)
+        print("Results from validator: \(result)")
+        
         configureCraftButton()
         configureArchiveButton()
         configureNumAvailableLabel()
@@ -186,7 +190,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 for special in specialTypesStringArray! { // Loop through array of strings of Special resource names
                     if requestedTypeRawValue == special { // If this particular resource is a Special
                         for (type, qtyRequired ) in specialReqAmt! { // Break out type and qty required for this Special
-                            if type.rawValue == requestedTypeRawValue {
+                            if type.name == requestedTypeRawValue {
                                 for res in mySettlement!.resourceStorage {
                                     if res.key.name == requestedTypeRawValue {
                                         for type in res.key.type {
@@ -471,12 +475,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     fileprivate func spendResources(for gear: Gear) {
         var requiredTypes = [resourceType]()
         var requiredResourceTypes = [resourceType:Int]()
+        var tempTypes = [resourceType:Int]()
         if gear.resourceSpecialRequirements == nil {
             requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 }
             requiredResourceTypes = gear.resourceTypeRequirements!
         } else {
-            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys
-            requiredResourceTypes = gear.resourceTypeRequirements!.merging(gear.resourceSpecialRequirements!) { (current, _) in current } // Also combined dict
+            for (resource, qty) in gear.resourceSpecialRequirements! {
+                let type = resource.type[0]
+                tempTypes[type] = qty
+            }
+            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys.map { $0.type[0] }
+            requiredResourceTypes = gear.resourceTypeRequirements!.merging(tempTypes) { (current, _) in current } // Also combined dict
         }
         
         var spendableResources = [Resource:Int]()

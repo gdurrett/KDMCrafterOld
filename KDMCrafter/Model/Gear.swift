@@ -26,7 +26,7 @@ struct Gear: Hashable, Codable {
         description = try gear.decode(GearDescription.self, forKey: .description)
         qtyAvailable = try gear.decode(Int.self, forKey: .qtyAvailable)
         resourceTypeRequirements = try gear.decode([resourceType:Int]?.self, forKey: .resourceTypeRequirements)
-        resourceSpecialRequirements = try gear.decode([resourceType:Int]?.self, forKey: .resourceSpecialRequirements)
+        resourceSpecialRequirements = try gear.decode([Resource:Int]?.self, forKey: .resourceSpecialRequirements)
         
         do {
             innovationRequirement = try gear.decode(Innovation.self, forKey: .innovationRequirement)
@@ -57,7 +57,7 @@ struct Gear: Hashable, Codable {
     let description: GearDescription
     let qtyAvailable: Int
     var resourceTypeRequirements: [resourceType:Int]? = nil
-    var resourceSpecialRequirements: [resourceType:Int]? = nil
+    var resourceSpecialRequirements: [Resource:Int]? = nil
     var innovationRequirement: Innovation? = nil
     var locationRequirement: Location?
     var overlappingResources: [resourceType]
@@ -67,7 +67,7 @@ struct Gear: Hashable, Codable {
     }
     
     // Full init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], innovationRequirement: Innovation, locationRequirement: Location, overlappingResources: [resourceType]) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [Resource:Int], innovationRequirement: Innovation, locationRequirement: Location, overlappingResources: [resourceType]) {
         
         self.name = name
         self.description = description
@@ -79,7 +79,7 @@ struct Gear: Hashable, Codable {
         self.overlappingResources = overlappingResources
     }
     // Non Innovation init
-    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [resourceType:Int], locationRequirement: Location, overlappingResources: [resourceType]) {
+    init(name: String, description: GearDescription, qtyAvailable: Int, resourceTypeRequirements: [resourceType:Int], resourceSpecialRequirements: [Resource:Int], locationRequirement: Location, overlappingResources: [resourceType]) {
         
         self.name = name
         self.description = description

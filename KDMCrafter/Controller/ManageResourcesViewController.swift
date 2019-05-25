@@ -381,7 +381,10 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         return self.sortedStorage!.filter { $0.key.type.contains(resourceType) }
     }
     func getSpecialStorage() -> [(key: Resource, value: Int)] {
-        return self.sortedStorage!.filter { !$0.key.type.contains(.bone) && !$0.key.type.contains(.consumable) && !$0.key.type.contains(.hide) && !$0.key.type.contains(.organ)}
+//        return self.sortedStorage!.filter { !$0.key.type.contains(.bone) && !$0.key.type.contains(.consumable) && !$0.key.type.contains(.hide) && !$0.key.type.contains(.organ)}
+        return self.sortedStorage!.filter { $0.key.kind == .basic
+            
+        }
     }
     func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
