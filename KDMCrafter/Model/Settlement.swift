@@ -54,7 +54,8 @@ class Settlement: Codable, Equatable {
         availableGear = try settlement.decode([Gear].self, forKey: .availableGear)
         availableInnovations = try settlement.decode([Innovation].self, forKey: .availableInnovations)
         innovationsAddedDict = try settlement.decode([Innovation:Bool].self, forKey: .innovationsAddedDict)
-        overrideEnabled = try settlement.decode(Bool.self, forKey: .overrideEnabled)
+        //overrideEnabled = try settlement.decode(Bool.self, forKey: .overrideEnabled)
+        overrideEnabled = false
     }
     func encode(to encoder: Encoder) throws {
         var settlement = encoder.container(keyedBy: CodingKeys.self)
@@ -68,7 +69,8 @@ class Settlement: Codable, Equatable {
         try settlement.encode(availableGear, forKey: .availableGear)
         try settlement.encode(availableInnovations, forKey: .availableInnovations)
         try settlement.encode(innovationsAddedDict, forKey: .innovationsAddedDict)
-        try settlement.encode(overrideEnabled, forKey: .overrideEnabled)
+//        try settlement.encode(overrideEnabled, forKey: .overrideEnabled)
+        overrideEnabled = false
     }
     
     // For the settlement object

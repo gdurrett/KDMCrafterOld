@@ -128,6 +128,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         let result = validator.checkCraftability2(gear: gear)
         print("Results from validator: \(result)")
         
+        
+        
         configureCraftButton()
         configureArchiveButton()
         configureNumAvailableLabel()
@@ -419,7 +421,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 5
         
-        if self.craftability == true {
+        if self.craftability == true || (mySettlement!.overrideEnabled == true && checkIfMaxedOut(gear: gear) != true) {
             button.isEnabled = true
             button.setTitleColor(UIColor(red: 0.9686, green: 0.9647, blue: 0.8314, alpha: 1.0), for: .normal)
             button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
@@ -462,7 +464,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         if self.mySettlement!.overrideEnabled && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
             //mySettlement!.gearCraftedDict[gear!]! += 1
             showCraftedAlert(for: gear)
-        } else if validator.checkCraftability(gear: gear!) > 0 && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
+        } else if validator.checkCraftability(gear: gear!) == true && mySettlement!.gearCraftedDict[gear!]! < gear!.qtyAvailable {
             showCraftedAlert(for: gear!)
         } else {
             // Can't craft!
@@ -475,18 +477,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     fileprivate func spendResources(for gear: Gear) {
         var requiredTypes = [resourceType]()
         var requiredResourceTypes = [resourceType:Int]()
-        var tempTypes = [resourceType:Int]()
-        if gear.resourceSpecialRequirements == nil {
-            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 }
-            requiredResourceTypes = gear.resourceTypeRequirements!
-        } else {
-            for (resource, qty) in gear.resourceSpecialRequirements! {
-                let type = resource.type[0]
-                tempTypes[type] = qty
-            }
-            requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 } + gear.resourceSpecialRequirements!.keys.map { $0.type[0] }
-            requiredResourceTypes = gear.resourceTypeRequirements!.merging(tempTypes) { (current, _) in current } // Also combined dict
-        }
+        requiredTypes = gear.resourceTypeRequirements!.keys.map { $0 }
+        requiredResourceTypes = gear.resourceTypeRequirements!
         
         var spendableResources = [Resource:Int]()
         validator.resources = mySettlement!.resourceStorage // Update validator
@@ -505,6 +497,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
+        
+        if gear.resourceSpecialRequirements != nil { spendResourcesVC.requiredResources = gear.resourceSpecialRequirements }
         spendResourcesVC.delegate = self
         
         self.present(spendResourcesVC, animated: true, completion: nil)
@@ -522,18 +516,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         tableView.reloadData()
     }
     func checkCraftableStatus() {
-        var status = Bool()
-        if mySettlement!.overrideEnabled && gear!.qtyAvailable < mySettlement!.gearCraftedDict[gear]! {
-            status = true
-        } else {
-            if self.validator.checkCraftability(gear: gear) > 0 && !checkIfMaxedOut(gear: gear) {
-                status = true
-            } else {
-                status = false
-            }
-            //status = self.validator.checkCraftability(gear: gear) > 0 ? true:false
-        }
-        self.craftability = status
+        self.craftability = (validator.checkCraftability(gear: gear) == true && !checkIfMaxedOut(gear: gear))
         tableView.reloadData()
     }
     func checkIfMaxedOut (gear: Gear) -> Bool {
@@ -557,6 +540,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             self.configureCraftButton()
             self.configureArchiveButton()
             self.configureNumAvailableLabel()
+            self.dataModel.writeData()
         }))
         
         self.present(alert, animated: true, completion: nil)

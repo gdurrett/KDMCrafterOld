@@ -28,8 +28,9 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     @IBAction func dismiss(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
-    var spendableResources: [Resource:Int]! // Sent by Resource VC
-    var requiredResourceTypes: [resourceType:Int]! // Sent by Resource VC
+    var spendableResources: [Resource:Int]! // Sent by Craft Detail VC
+    var requiredResourceTypes: [resourceType:Int]! // Sent by Craft Detail VC
+    var requiredResources: [Resource:Int]? // Sent by Craft Detail VC
     
     var spentResources = [Resource:Int]() // Track spent resources
     var spentResourceTypes = [Resource:[resourceType:Int]]() // Track spent resource types by Resource
@@ -37,13 +38,17 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     
     var sortedSpendableResources: [(key: Resource, value: Int)]?
     var sortedSpentResources: [(key: Resource, value: Int)]?
+    var prevSpentResources = Int()
+    
+    var oldValue = 0 // Track previous stepper value
     
     var resourceName: String?
     var resourceValue: Int?
     
     var requiredTypesString = "Required: "
-    var spentTypesString = "Spent: "
+    var spentTypesString = String()
     var providedTypesString = "Provides: "
+    var spentResourcesString = "Spent: "
     
     // For type picker alertView
     var typeChoices = [resourceType]()
@@ -68,19 +73,17 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         tableView.separatorInset = UIEdgeInsets.zero
         save.isHidden = true
         spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+        preSpend() //Set spentResourcesString
         
         sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
         sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
         
-//        for (type, qty) in requiredResourceTypes {
-//            requiredTypesString.append("\(type.rawValue):\(qty) ")
-//        }
-        //requiredTypesLabel.text! = requiredTypesString
         for (type, qty) in requiredResourceTypes {
             spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
         }
-        spentTypesLabel.text! = spentTypesString
-        
+        spentTypesLabel.text! = spentResourcesString + spentTypesString
+
+        print("Spendable: \(spendableResources.keys)")
     }
     
 
@@ -121,35 +124,58 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         cell.stepperOutlet.value = Double(value)
         cell.stepperOutlet.maximumValue = Double(value)
         cell.resourceCountLabel.text! = "\(value)"
-        
+
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
-            //cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            
+            self.typeChoices.removeAll()
+            
             self.stepperVal = Int(change.newValue!)
             self.currentCell = cell
-            
-            self.save.isHidden = true
-            self.spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
-
+            self.prevSpentResources = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
             let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            if self.sortedSpentResources![indexPath.row].0.type.count > 1 && spentResourceQty > 0  {
-                self.typeChoices = self.sortedSpentResources![indexPath.row].0.type
-                self.selectedType = nil //Reset so we can test for first picker row selection
-                self.showChoices(self)
-            } else {
-                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            }
-            if spentResourceQty >= 0 {
-                for type in self.sortedSpentResources![indexPath.row].0.type {
-                    self.currentResource = key
-                    self.currentQty = spentResourceQty
-                    self.setSpentTypes(key: key, type: type, spentResourceQty: spentResourceQty)
+            print("spentResourceQty: \(spentResourceQty) vs prevSpentResources: \(self.prevSpentResources)")
+            
+            
+            var typesProvidedByThisResource = [resourceType]()
+            for type in self.requiredResourceTypes.keys { // Get a count of types provided by this resource that are required by gear in question
+                if key.type.contains(type) {
+                    typesProvidedByThisResource.append(type)
                 }
             }
-            self.setSpentTypes()            
-            self.checkIfRequirementsMet()
+            let weDecremented = (spentResourceQty < self.prevSpentResources) ? true:false
+            if key.type.count == 1 { // No need for picker
+                self.setSpentTypes(key: key, type: key.type[0], spentResourceQty: spentResourceQty) // Spend the only type this resource has
+                self.setSpentTypes()
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            } else if typesProvidedByThisResource.count == 1 { // If this resource provides multiple types, but only one of the types qualifies for use
+                self.setSpentTypes(key: key, type: typesProvidedByThisResource[0], spentResourceQty: spentResourceQty)
+                self.setSpentTypes()
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            } else if weDecremented {
+                self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: spentResourceQty)
+                self.setSpentTypes()
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            } else if key.kind != .basic && key.type.count > 2 { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
+                for type in self.sortedSpentResources![indexPath.row].0.type {
+                    if type == self.sortedSpentResources![indexPath.row].0.type[0] {
+                        continue
+                    } else if !self.requiredResourceTypes.keys.contains(type) {
+                        continue
+                    } else {
+                        self.typeChoices.append(type)
+                    }
+                }
+                self.currentResource = key
+                self.currentQty = spentResourceQty
+                self.showChoices(self)
+            } else {
+                self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: 1)
+                self.setSpentTypes()
+                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
+            }
+            
         }
-        
         return cell
     }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
@@ -163,6 +189,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         label.sizeToFit()
     }
     fileprivate func checkIfRequirementsMet() {
+        print("spentResourceTypesTemp: \(spentResourceTypesTemp.values) vs requiredResourceTypes: \(requiredResourceTypes.values)")
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
@@ -170,6 +197,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
             }
         } else {
+            save.isHidden = true
+            spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
             for (resource, qty) in self.spentResourceTypes {
                 self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
             }
@@ -177,13 +206,14 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     }
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
             self.spentResourceTypes[key] = [type:spentResourceQty]
+        print("Spent types: \(self.spentResourceTypes)")
     }
     fileprivate func setSpentTypes() {
 //        for (type, qty) in requiredResourceTypes {
 //            requiredTypesString.append("\(type.rawValue):\(qty) ")
 //        }
         let typeVals = Array(self.spentResourceTypes.values)
-        self.spentTypesString = "Spent: "
+        self.spentTypesString = spentResourcesString
 //        for type in self.requiredResourceTypes.keys {
         for (type, qty ) in self.requiredResourceTypes {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
@@ -192,6 +222,22 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         }
         self.spentTypesLabel.text = self.spentTypesString
         self.checkIfRequirementsMet()
+    }
+
+    fileprivate func preSpend() { // Automatically reduce spendable resources that we know have to be used for this gear (requiredSpecial)
+        for (resource, _) in spendableResources! {
+            if requiredResources != nil && requiredResources![resource] != nil {
+                spendableResources[resource]! -= requiredResources![resource]!
+                if spendableResources[resource]! == 0 {
+                    spendableResources.removeValue(forKey: resource)
+                }
+            }
+            if requiredResources != nil && requiredResources![resource] != nil {
+                //self.spentTypesString.append("\(resource.name):\(requiredResources![resource]!)/\(requiredResources![resource]!) ")
+                spentResourcesString.append ("\(resource.name):\(requiredResources![resource]!)/\(requiredResources![resource]!) ")
+            }
+        }
+        
     }
     @IBAction func showChoices(_ sender: Any) {
         let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)
@@ -203,16 +249,18 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         pickerFrame.dataSource = self
         pickerFrame.delegate = self
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
+            self.currentCell!.stepperOutlet.value += 1 // Re-increment stepper behind the scenes so that minus button is not greyed out after canceling picker
+        }))
+        
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) in
             
             if self.selectedType == nil {
-                self.selectedType = self.typeChoices[0]
+                self.selectedType = self.typeChoices[0] // Auto-pick first entry if picker isn't actually moved by user
             }
             self.spentResourceTypes[self.currentResource!] = [self.selectedType!:self.currentQty!]
             self.currentCell!.resourceCountLabel.text = "\(self.stepperVal!)"
             self.setSpentTypes()
-
         }))
         self.present(alert,animated: true, completion: nil )
     }

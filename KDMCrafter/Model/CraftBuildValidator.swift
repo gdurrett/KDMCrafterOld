@@ -18,7 +18,7 @@ public class CraftBuildValidator {
         self.resources = settlement.resourceStorage
     }
     
-    func checkCraftability(gear: Gear) -> Int {
+    func checkCraftability(gear: Gear) -> Bool {
         let resources = settlement!.resourceStorage
         let typeRequirements = gear.resourceTypeRequirements
         let specialRequirements = gear.resourceSpecialRequirements
@@ -27,7 +27,7 @@ public class CraftBuildValidator {
         var numSpecialCraftable = Int()
         var innovationExists = Bool()
         let locationExists = settlement!.locationsBuiltDict[gear.locationRequirement!]!
-        var maxCraftable = Int()
+        var isCraftable = Bool()
         var craftableTypes = [Int]()
         var craftableSpecials = [Int]()
         
@@ -57,28 +57,35 @@ public class CraftBuildValidator {
             innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
         }
         if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Basic resource only
-            maxCraftable = craftableTypes.min()!
+//            isCraftable = craftableTypes.min()!
+            isCraftable = checkCraftability2(gear: gear).2
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && gear.resourceTypeRequirements!.count != 0 { // Special and regular resource types required, but no innovation required
             if gear.name == "Skull Helm" { // Special case of either/or
-                maxCraftable = craftableTypes.min()! + craftableSpecials.min()!
+//                isCraftable = craftableTypes.min()! + craftableSpecials.min()!
+                isCraftable = checkCraftability2(gear: gear).2
             } else {
-                maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
+//                isCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
+                isCraftable = checkCraftability2(gear: gear).2
             }
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count == 0 { //Special resource required, no innovation or regular types required
-            maxCraftable = craftableSpecials.min()!
+//            isCraftable = craftableSpecials.min()!
+            isCraftable = checkCraftability2(gear: gear).2
         } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements!.count != 0 { // Innovation required and regular resource types required
-            maxCraftable = craftableTypes.min()!
+//            isCraftable = craftableTypes.min()!
+            isCraftable = checkCraftability2(gear: gear).2
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count != 0 && gear.resourceSpecialRequirements != nil { //Innovation and regular resource and special required
-            maxCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
+//            isCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
+            isCraftable = checkCraftability2(gear: gear).2
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count == 0 && gear.resourceSpecialRequirements != nil { //Requires special and innovation but not regular
-            maxCraftable = craftableSpecials.min()!
+//            isCraftable = craftableSpecials.min()!
+            isCraftable = checkCraftability2(gear: gear).2
         } else {
-            //print(gear.name)
+            print(gear.name)
         }
         
         // Need to deal with gear type 'any' case when we get to actually decrementing gear storage for crafting!
         
-        return maxCraftable
+        return isCraftable
     }
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
         var count = Int()
@@ -139,12 +146,13 @@ public class CraftBuildValidator {
         return myArray
     }
     func isBuildable(locations: [Location], location: Location) -> Bool {
-        if settlement!.locationsBuiltDict[location] == true { print("Returning false for \(location.name)");return false }
-        if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) || settlement!.overrideEnabled == true {
-            print("Returning true for \(location.name)")
+        if settlement!.locationsBuiltDict[location] == true {
+            return false
+        } else if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) || settlement!.overrideEnabled == true {
+            //print("Returning true for \(location.name)")
             return true
         } else {
-            print("Returning false for \(location.name)")
+            //print("Returning false for \(location.name)")
             return false
         }
     }
@@ -203,7 +211,7 @@ public class CraftBuildValidator {
                 requiredSpecials[resource] = qty // Keep track of specials required and qty in a dict
             }
         }
-        print("Specials required: \(requiredSpecials.keys)")
+        //print("Specials required: \(requiredSpecials.keys)")
         // Need to reduce availability of multi resources that are not part of this gear's cost
         let availableResources = settlement!.resourceStorage.filter { $0.value > 0 }
         var nonBasic = availableResources.filter { $0.key.kind != .basic }
@@ -214,7 +222,7 @@ public class CraftBuildValidator {
         }
         let multi = nonBasic.filter { $0.key.type.count > 1 }
 
-        print("Multi: \(multi.keys)")
+        //print("Multi: \(multi.keys)")
         var availableBasics = [resourceType:Int]()
         var resourceCountDict = [Resource:Int]()
         for (item, qty) in multi {
@@ -230,7 +238,7 @@ public class CraftBuildValidator {
         }
 
         var loopCounter = 0
-        while loopCounter <= resourceCountDict.count {
+        while loopCounter <= resourceCountDict.count && availableBasics != [:] {
             let max = availableBasics.map { $1 }.max()!
             let sum = availableBasics.values.reduce(0, +)
             if sum == resourceCountDict.count {
@@ -265,7 +273,7 @@ public class CraftBuildValidator {
         }
         if gear.resourceTypeRequirements != [:] {
             for (type, qty) in gear.resourceTypeRequirements! {
-                if availableBasics[type]! >= qty {
+                if availableBasics[type] != nil && availableBasics[type]! >= qty {
                     if returnValue != false {
                         returnValue = true
                     }
@@ -276,7 +284,7 @@ public class CraftBuildValidator {
                 }
             }
         }
-        print("Final availableBasics: \(availableBasics)")
+        //print("Required Specials: \(gear.resourceSpecialRequirements), Required Basics: \(gear.resourceTypeRequirements)")
         return (availableSpecials, availableBasics, returnValue)
     }
 }

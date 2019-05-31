@@ -182,7 +182,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             default:
                 craftDetailVC.gear = self.sortedGear![gearIndex!]
             }
-            craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear) > 0 ? true:false
+            craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear)
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
         }
     }
@@ -233,12 +233,12 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         label.textColor = UIColor.gray
     }
     fileprivate func configureNumCraftableLabel(for cell: UITableViewCell, with gear: Gear, for tag: Int) {
-        let numCraftable = self.validator.checkCraftability(gear: gear) > gear.qtyAvailable ? gear.qtyAvailable:self.validator.checkCraftability(gear: gear) // If numCraftable greater than qty available, use qtyAvailable
+//        let numCraftable = self.validator.checkCraftability(gear: gear) > gear.qtyAvailable ? gear.qtyAvailable:self.validator.checkCraftability(gear: gear) // If numCraftable greater than qty available, use qtyAvailable
         
         let label = cell.viewWithTag(tag) as! UILabel
         var labelString = String()
         
-        if numCraftable > 0 && !checkIfMaxedOut(gear: gear) || mySettlement!.overrideEnabled && !checkIfMaxedOut(gear: gear) {
+        if validator.checkCraftability(gear:gear) == true && !checkIfMaxedOut(gear: gear) || mySettlement!.overrideEnabled && !checkIfMaxedOut(gear: gear) {
             labelString = "Craftable"
             self.craftability = true
             label.textColor = UIColor(red: 0.3843, green: 0.8275, blue: 0, alpha: 1.0)
@@ -271,13 +271,21 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     fileprivate func getCraftableGear() -> [Gear] {
         self.sortedCraftableGear = []
         for gear in mySettlement!.availableGear {
-            if validator.checkCraftability(gear: gear) > 0 && !checkIfMaxedOut(gear: gear) {
+            if validator.checkCraftability(gear: gear) == true && !checkIfMaxedOut(gear: gear) {
                 self.sortedCraftableGear!.append(gear)
             }
         }
         if isFiltering() {
             updateSearchResults(for: self.searchController)
             return self.filteredSortedCraftableGear!.sorted(by: { $0.name < $1.name })
+        } else if mySettlement!.overrideEnabled == true {
+            self.sortedCraftableGear = []
+            for gear in mySettlement!.availableGear {
+                if !checkIfMaxedOut(gear: gear) {
+                    self.sortedCraftableGear?.append(gear)
+                }
+            }
+            return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
         } else {
             return self.sortedCraftableGear!.sorted(by: { $0.name < $1.name })
         }
@@ -285,11 +293,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     fileprivate func getUncraftableGear() -> [Gear] {
         self.sortedUncraftableGear = []
         for gear in mySettlement!.availableGear {
-            if validator.checkCraftability(gear: gear) < 1 || checkIfMaxedOut(gear: gear) {
+            if validator.checkCraftability2(gear: gear).2 == false || checkIfMaxedOut(gear: gear) {
                 self.sortedUncraftableGear!.append(gear)
             }
         }
-        return self.sortedUncraftableGear!.sorted(by: { $0.name < $1.name })
+        if mySettlement!.overrideEnabled == true {
+            return []
+        } else {
+            return self.sortedUncraftableGear!.sorted(by: { $0.name < $1.name })
+        }
     }
 
     func checkIfMaxedOut (gear: Gear) -> Bool {
@@ -326,9 +338,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
                 return gear.name.lowercased().contains(searchText.lowercased())
             })
         case 1:
-            filteredSortedCraftableGear = self.sortedCraftableGear!.filter( {( gear: Gear) -> Bool in
-                return gear.name.lowercased().contains(searchText.lowercased())
-            })
+            if mySettlement!.overrideEnabled == true {
+                filteredSortedCraftableGear = self.myAvailableGear!.filter( {( gear: Gear) -> Bool in
+                    return gear.name.lowercased().contains(searchText.lowercased())
+                })
+            } else {
+                filteredSortedCraftableGear = self.sortedCraftableGear!.filter( {( gear: Gear) -> Bool in
+                    return gear.name.lowercased().contains(searchText.lowercased())
+                })
+            }
         case 2:
             filteredSortedUncraftableGear = self.sortedUncraftableGear!.filter( {( gear: Gear) -> Bool in
                 return gear.name.lowercased().contains(searchText.lowercased())

@@ -91,6 +91,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         }
         print("Buildable status for \(location.name): \(buildableStatus)")
         let isBuilt = mySettlement!.locationsBuiltDict[location]!
+        print("\(location.name) \(isBuilt)")
         let buildableStatusString = setBuildableStatusString(location: location, isBuilt: isBuilt, buildableStatus: buildableStatus)
         let missingResourcesString = setMissingResourcesString(location: location, buildableStatus: buildableStatus, isBuilt: isBuilt)
 
@@ -196,9 +197,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
-        if location.locationRequirement.contains("Special") || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
-            //myLocations![cell.tag].isBuilt = true
-            //dataModel.currentSettlement!.allLocations[cell.tag].isBuilt = true
+        if (location.locationRequirement.contains("Special") && mySettlement!.locationsBuiltDict[location] == false) || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
             mySettlement!.locationsBuiltDict[location] = true
         } else if validator.isBuildable(locations: myLocations!, location: location) {
             spendResources(for: location)
