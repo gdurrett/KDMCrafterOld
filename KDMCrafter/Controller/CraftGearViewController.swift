@@ -83,6 +83,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myAvailableGear = mySettlement!.availableGear
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
+        setUpMenuButton()
         tableView.reloadData()
     }
 
@@ -364,7 +365,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
-        menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        if mySettlement!.overrideEnabled {
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+        } else {
+            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        }
         menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
         
         let menuBarItem = UIBarButtonItem(customView: menuBtn)

@@ -34,6 +34,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         numInnovationRows = myInnovations!.count
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        myInnovations = mySettlement!.availableInnovations
+        tableView.reloadData()
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return numInnovationRows!
     }
