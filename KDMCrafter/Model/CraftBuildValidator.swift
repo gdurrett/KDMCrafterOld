@@ -213,23 +213,34 @@ public class CraftBuildValidator {
             for type in item.type {
                 if availableBasics[type] != nil && (type == .hide || type == .organ || type == .bone || type == .consumable) && gear.resourceTypeRequirements!.keys.contains(type) {
                     availableBasics[type]! += qty
-                    if qty > 0 { resourceCountDict[item] = 1 }
+                    //if qty > 0 { resourceCountDict[item] = 1 }
+                    if resourceCountDict[item] != nil {
+                        if qty > 0 { resourceCountDict[item]! += qty }
+                    } else {
+                        if qty > 0 { resourceCountDict[item] = qty }
+                    }
                 } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
                     availableBasics[type] = qty
-                    if qty > 0 { resourceCountDict[item] = 1 }
+                    //if qty > 0 { resourceCountDict[item] = 1 }
+                    if resourceCountDict[item] != nil {
+                        if qty > 0 { resourceCountDict[item]! += qty }
+                    } else {
+                        if qty > 0 { resourceCountDict[item] = qty }
+                    }
                 }
             }
         }
-
         var loopCounter = 0
         while loopCounter <= resourceCountDict.count && availableBasics != [:] {
             let max = availableBasics.map { $1 }.max()!
             let sum = availableBasics.values.reduce(0, +)
-            if sum == resourceCountDict.count {
+//            if sum == resourceCountDict.count {
+//                break
+//            }
+            if sum == resourceCountDict.values.reduce(0, +) {
                 break
             }
             for (type, qty) in availableBasics {
-//                if qty == max {
                 if qty == max && gear.overlappingResources.contains(type) { //test skip if not in overlapping
                     availableBasics[type]! -= 1
                     break

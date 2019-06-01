@@ -193,22 +193,37 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 let requestedResourceName = requiredResource.map { $0.key }[0]
                 for (type, _) in gear.resourceTypeRequirements! {
                     if type.rawValue == requestedResourceName {
-                        for (availType, qty) in result!.1 {
-                            if type == availType {
-                                cell.qtyAvailableLabel.text! = "\(qty)"
-                                if mySettlement!.overrideEnabled {
-                                    cell.statusImage.image = cellStatusImageOverride
-                                } else {
-                                    if qty >= requiredResourceQty {
-                                        cell.statusImage.image = cellStatusImageChecked
+                        if result!.1 == [:] {
+                            cell.qtyAvailableLabel.text! = "0"
+                            if mySettlement!.overrideEnabled {
+                                cell.statusImage.image = cellStatusImageOverride
+                            } else {
+                                cell.statusImage.image = cellStatusImageUnchecked
+                            }
+                        } else if !result!.1.keys.contains(type) { // If we have something in availableBasics, but not the type we need
+                            cell.qtyAvailableLabel.text! = "0"
+                            if mySettlement!.overrideEnabled {
+                                cell.statusImage.image = cellStatusImageOverride
+                            } else {
+                                cell.statusImage.image = cellStatusImageUnchecked
+                            }
+                        } else {
+                            for (availType, qty) in result!.1 {
+                                if type == availType {
+                                    cell.qtyAvailableLabel.text! = "\(qty)"
+                                    if mySettlement!.overrideEnabled {
+                                        cell.statusImage.image = cellStatusImageOverride
                                     } else {
-                                        cell.statusImage.image = cellStatusImageUnchecked
+                                        if qty >= requiredResourceQty {
+                                            cell.statusImage.image = cellStatusImageChecked
+                                        } else {
+                                            cell.statusImage.image = cellStatusImageUnchecked
+                                        }
                                     }
+                                    break
                                 }
-                                break
                             }
                         }
-                        
                     }
                 }
             }

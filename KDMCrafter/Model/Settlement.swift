@@ -54,8 +54,7 @@ class Settlement: Codable, Equatable {
         availableGear = try settlement.decode([Gear].self, forKey: .availableGear)
         availableInnovations = try settlement.decode([Innovation].self, forKey: .availableInnovations)
         innovationsAddedDict = try settlement.decode([Innovation:Bool].self, forKey: .innovationsAddedDict)
-        //overrideEnabled = try settlement.decode(Bool.self, forKey: .overrideEnabled)
-        overrideEnabled = false
+        overrideEnabled = try settlement.decode(Bool.self, forKey: .overrideEnabled)
     }
     func encode(to encoder: Encoder) throws {
         var settlement = encoder.container(keyedBy: CodingKeys.self)
@@ -69,8 +68,7 @@ class Settlement: Codable, Equatable {
         try settlement.encode(availableGear, forKey: .availableGear)
         try settlement.encode(availableInnovations, forKey: .availableInnovations)
         try settlement.encode(innovationsAddedDict, forKey: .innovationsAddedDict)
-//        try settlement.encode(overrideEnabled, forKey: .overrideEnabled)
-        overrideEnabled = false
+        try settlement.encode(overrideEnabled, forKey: .overrideEnabled)
     }
     
     // For the settlement object
@@ -138,7 +136,7 @@ class Settlement: Codable, Equatable {
         allResources.append(endeavor)
         let multi = Resource(name: "???", kind: .strange, type: [.bone, .consumable, .hide, .organ])
         allResources.append(multi)
-        let brokenLantern = Resource(name: "Broken Lantern", kind: .basic, type: [.scrap])
+        let brokenLantern = Resource(name: "Broken Lantern", kind: .strange, type: [.scrap])
         allResources.append(brokenLantern)
         let loveJuice = Resource(name: "Love Juice", kind: .basic, type: [.organ])
         allResources.append(loveJuice)
@@ -148,7 +146,7 @@ class Settlement: Codable, Equatable {
         allResources.append(monsterHide)
         let monsterOrgan = Resource(name: "Monster Organ", kind: .basic, type: [.organ])
         allResources.append(monsterOrgan)
-        let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
+        let scrap = Resource(name: "Scrap", kind: .strange, type: [.scrap])
         allResources.append(scrap)
         let skull = Resource(name: "Skull", kind: .basic, type: [.bone, .skull])
         allResources.append(skull)
@@ -445,7 +443,7 @@ class Settlement: Codable, Equatable {
         availableGear.append(featherShield)
         let hollowSword = Gear(name: "Hollow Sword", description: GearDescription(type: .weapon, statsLeft: "Speed:\nAccuracy:\nPower:", statsRight: "3\n5+\n3", affinities: [.none], detailText: WrappedString(nsAttributedString: NSMutableAttributedString().bold("Frail, Paired").normal("\n\nOn a ").bold("Perfect hit").normal(", make 1 additional attack roll."))), qtyAvailable: 4, resourceTypeRequirements: [.bone:2, .hide:2], resourceSpecialRequirements: [hollowWingBones:1], locationRequirement: plumery, overlappingResources: [.bone])
         availableGear.append(hollowSword)
-        let hollowpointArrow = Gear(name: "Hollowpoint Arrow", description: GearDescription(type: .weapon, statsLeft: "Speed:nAccuracy:nPower:", statsRight: "1\n6+\n11", affinities: [.none], detailText: WrappedString(nsAttributedString: NSMutableAttributedString().bold("Slow, Ammo - Bow").normal("\n\nOn a hit, monster gains -1 movement token. Use once per showdown."))), qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [hollowWingBones:1, scrap:1], locationRequirement: plumery, overlappingResources: [.none])
+        let hollowpointArrow = Gear(name: "Hollowpoint Arrow", description: GearDescription(type: .weapon, statsLeft: "Speed:\nAccuracy:\nPower:", statsRight: "1\n6+\n11", affinities: [.none], detailText: WrappedString(nsAttributedString: NSMutableAttributedString().bold("Slow, Ammo - Bow").normal("\n\nOn a hit, monster gains -1 movement token. Use once per showdown."))), qtyAvailable: 3, resourceTypeRequirements: [:], resourceSpecialRequirements: [hollowWingBones:1, scrap:1], locationRequirement: plumery, overlappingResources: [.none])
         availableGear.append(hollowpointArrow)
         let hoursRing = Gear(name: "Hours Ring", description: GearDescription(type: .item, statsLeft: "N/A", statsRight: "N/A", affinities: [.none], detailText: WrappedString(nsAttributedString: NSMutableAttributedString().bold("Unique").normal("\n\nDuring the aftermath, if you died or ceased to exist, you may archive the Hours Ring and reset the campaign to the previous Settlement Phase's develop step before you departed."))), qtyAvailable: 1, resourceTypeRequirements: [.organ:5], resourceSpecialRequirements: [shimmeringHalo:1], locationRequirement: plumery, overlappingResources: [.organ])
         availableGear.append(hoursRing)
