@@ -313,7 +313,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     fileprivate func setupSearch() {
         //Set up searchController stuff
-        //searchController.searchBar.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 44.0)
         searchController.searchBar.delegate = self
         searchController.searchBar.barTintColor = UIColor.white
         searchController.searchBar.placeholder = "Search gear names"

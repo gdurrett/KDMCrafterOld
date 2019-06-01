@@ -187,7 +187,7 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
-    func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool) {
+    func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool, [Resource:Int]) {
         var returnValue = true
         var requiredSpecials = [Resource:Int]()
         var availableSpecials = [Resource:Int]()
@@ -224,6 +224,7 @@ public class CraftBuildValidator {
 
         //print("Multi: \(multi.keys)")
         var availableBasics = [resourceType:Int]()
+        var availableBasicsResources = [Resource:Int]()
         var resourceCountDict = [Resource:Int]()
         for (item, qty) in multi {
             for type in item.type {
@@ -285,6 +286,6 @@ public class CraftBuildValidator {
             }
         }
         //print("Required Specials: \(gear.resourceSpecialRequirements), Required Basics: \(gear.resourceTypeRequirements)")
-        return (availableSpecials, availableBasics, returnValue)
+        return (availableSpecials, availableBasics, returnValue, availableBasicsResources)
     }
 }

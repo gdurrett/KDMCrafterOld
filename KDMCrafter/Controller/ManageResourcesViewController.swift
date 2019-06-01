@@ -75,7 +75,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
 
     override func viewWillAppear(_ animated: Bool) {
         updateStorage()
-        
         tableView.reloadData()
     }
 

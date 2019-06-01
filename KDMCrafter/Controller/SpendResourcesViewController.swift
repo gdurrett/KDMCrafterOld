@@ -39,16 +39,14 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     var sortedSpendableResources: [(key: Resource, value: Int)]?
     var sortedSpentResources: [(key: Resource, value: Int)]?
     var prevSpentResources = Int()
-    
-    var oldValue = 0 // Track previous stepper value
-    
+        
     var resourceName: String?
     var resourceValue: Int?
     
     var requiredTypesString = "Required: "
     var spentTypesString = String()
     var providedTypesString = "Provides: "
-    var spentResourcesString = "Spent: "
+    var spentResourcesString = " "
     
     // For type picker alertView
     var typeChoices = [resourceType]()
@@ -108,6 +106,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         
         configureTitle(for: cell, with: resourceName!, with: 3500)
         configureValue(for: cell, with: resourceValue!)
+        
+        cell.stepperOutlet.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         
         for (idx, type) in key.type.enumerated() {
             if key.type.count > 1 && !(idx == key.type.endIndex - 1) {
@@ -189,7 +189,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         label.sizeToFit()
     }
     fileprivate func checkIfRequirementsMet() {
-        print("spentResourceTypesTemp: \(spentResourceTypesTemp.values) vs requiredResourceTypes: \(requiredResourceTypes.values)")
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
@@ -206,7 +205,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     }
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
             self.spentResourceTypes[key] = [type:spentResourceQty]
-        print("Spent types: \(self.spentResourceTypes)")
     }
     fileprivate func setSpentTypes() {
 //        for (type, qty) in requiredResourceTypes {
