@@ -80,8 +80,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
         }
         spentTypesLabel.text! = spentResourcesString + spentTypesString
-
-        print("Spendable: \(spendableResources.keys)")
     }
     
 
@@ -133,9 +131,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             self.currentCell = cell
             self.prevSpentResources = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
-            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            print("spentResourceQty: \(spentResourceQty) vs prevSpentResources: \(self.prevSpentResources)")
-            
+            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1            
             
             var typesProvidedByThisResource = [resourceType]()
             for type in self.requiredResourceTypes.keys { // Get a count of types provided by this resource that are required by gear in question
@@ -152,13 +148,13 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 self.setSpentTypes(key: key, type: typesProvidedByThisResource[0], spentResourceQty: spentResourceQty)
                 self.setSpentTypes()
                 cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            } else if weDecremented {
+            } else if weDecremented { // If we 'unspent'
                 self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: spentResourceQty)
                 self.setSpentTypes()
                 cell.resourceCountLabel.text = "\(Int(change.newValue!))"
             } else if key.kind != .basic && key.type.count > 2 { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
                 for type in self.sortedSpentResources![indexPath.row].0.type {
-                    if type == self.sortedSpentResources![indexPath.row].0.type[0] {
+                    if type == self.sortedSpentResources![indexPath.row].0.type[0] && key.name != "???" {
                         continue
                     } else if !self.requiredResourceTypes.keys.contains(type) {
                         continue

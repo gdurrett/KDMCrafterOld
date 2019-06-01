@@ -81,14 +81,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewWillAppear(_ animated: Bool) {
         mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
-//        sortedCraftableGear = getCraftableGear()
-//        sortedUncraftableGear = getUncraftableGear()
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
         tableView.reloadData()
-        if isFiltering() {
-            print("Still filtering!")
-        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

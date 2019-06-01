@@ -30,7 +30,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     
     @IBAction func craftGearButtonAction(_ sender: Any) {
         tappedCraftButton()
-        //spendResources(for: gear)
     }
     @IBOutlet weak var craftGearButtonOutlet: UIButton!
     
@@ -64,6 +63,8 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     var skullDict = [String:Bool]()
     var currentCell = GearRequirementTableViewCell()
     var craftStatusDict = [String:Bool]()
+    
+    var result: ([Resource:Int], [resourceType:Int], Bool)?
     
     let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-50")
     let cellStatusImageUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
@@ -125,10 +126,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             requiredResourcesArray!.append(gear!.innovationRequirement!)
         }
         
-        let result = validator.checkCraftability2(gear: gear)
-        print("Results from validator: \(result)")
-        
-        
+        result = validator.checkCraftability2(gear: gear)
         
         configureCraftButton()
         configureArchiveButton()
@@ -141,29 +139,19 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //self.mySettlement = dataModel.currentSettlement!
-        //self.reducedTypes = [String:[resourceType:Int]]()
         myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
         configureCraftButton()
         configureArchiveButton()
-        //configureOverrideStatusLabel()
+        result = validator.checkCraftability2(gear: gear)
         configureNumAvailableLabel()
     }
     override func viewWillDisappear(_ animated: Bool) {
-        print("Going away now!")
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return requiredResourcesArray!.count
     }
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let px = 1/UIScreen.main.scale
-//        let frame = CGRect(x: 0, y: 0, width: self.tableView.frame.size.width, height: px)
-//        let line = UIView(frame: frame)
-//        self.tableView.tableHeaderView = line
-//        line.backgroundColor = self.tableView.separatorColor
-//        return line
-//    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if currentCell.isHidden {
             return 0.0
@@ -176,133 +164,52 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         cell.layoutMargins = UIEdgeInsets.zero
         
         if let requiredResource = self.requiredResourcesArray![indexPath.row] as? [String:Int] {
-            let qtyReq = requiredResource.map { $0.value }[0]
-            requestedTypeRawValue = requiredResource.map { $0.key }[0]
-            let specialReqAmt = gear.resourceSpecialRequirements
-            
-            if specialTypesStringArray != nil {
-                for special in specialTypesStringArray! { // Initialize dictionaries
-                    if requestedTypeRawValue == special {
-                        reducedTypes[requestedTypeRawValue] = [:]
+            currentCell = cell
+            cell.isHidden = false
+            cell.requiredTypeLabel.text! = ("\(requiredResource.map { $0.key })").replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
+            cell.requiredQtyLabel.text! = ("\(requiredResource.map { $0.value })").replacingOccurrences(of: "[\\[\\]\"]", with: "", options: .regularExpression, range: nil)
+            let requiredResourceQty = requiredResource.map { $0.value }[0]
+            if gear.resourceSpecialRequirements != nil {
+                let requestedResourceName = requiredResource.map { $0.key }[0]
+                for resource in gear.resourceSpecialRequirements! { // Loop through required Special resources
+                    if resource.key.name == requestedResourceName { // If we find a match in our requiredResources array
+                        let qty = mySettlement!.resourceStorage[resource.key]
+                        cell.qtyAvailableLabel.text! = "\(qty!)"
+                        if mySettlement!.overrideEnabled {
+                            cell.statusImage.image = cellStatusImageOverride
+                        } else {
+                            if qty! >= requiredResourceQty {
+                                cell.statusImage.image = cellStatusImageChecked
+                            } else {
+                                cell.statusImage.image = cellStatusImageUnchecked
+                            }
+                        }
+                        break
                     }
                 }
             }
-            var qtyAvail = validator.getTypeCount(type: resourceType(rawValue: requestedTypeRawValue)!, resources: mySettlement!.resourceStorage)
-            if gear.overlappingResources != [.none] { // If this gear has overlapping resources
-                for special in specialTypesStringArray! { // Loop through array of strings of Special resource names
-                    if requestedTypeRawValue == special { // If this particular resource is a Special
-                        for (type, qtyRequired ) in specialReqAmt! { // Break out type and qty required for this Special
-                            if type.name == requestedTypeRawValue {
-                                for res in mySettlement!.resourceStorage {
-                                    if res.key.name == requestedTypeRawValue {
-                                        for type in res.key.type {
-                                            if gear.overlappingResources.contains(type) {
-                                                if qtyAvail > 0 && qtyAvail < qtyRequired {
-                                                    if reducedTypes[requestedTypeRawValue]?[type] == nil {
-                                                        reducedTypes[requestedTypeRawValue]![type] = qtyAvail
-                                                    }
-                                                } else if qtyAvail == qtyRequired {
-                                                    currentSpecial = requestedTypeRawValue
-                                                    reducedTypes[requestedTypeRawValue]![type] = qtyAvail
-                                                    specialMet[requestedTypeRawValue] = true
-                                                    if requestedTypeRawValue == "Skull" {
-                                                        skullDict["Skull"] = true
-                                                    }
-                                                } else if qtyAvail > qtyRequired && gear.overlappingResources.count > 1 { // e.g. Skull Helm only has one overlapping type so cascades to next else if
-                                                    currentSpecial = requestedTypeRawValue
-                                                    specialMet[requestedTypeRawValue] = false
-                                                    if reducedTypes[requestedTypeRawValue]![type] != nil {
-                                                        reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
-                                                    } else {
-                                                        reducedTypes[requestedTypeRawValue]![type] = qtyRequired
-                                                    }
-                                                } else if qtyAvail > qtyRequired {
-                                                    currentSpecial = requestedTypeRawValue
-                                                    specialMet[requestedTypeRawValue] = true
-                                                    if reducedTypes[requestedTypeRawValue]![type] != nil {
-                                                        reducedTypes[requestedTypeRawValue]![type]! += qtyRequired
-                                                    } else {
-                                                        reducedTypes[requestedTypeRawValue]![type] = qtyRequired
-                                                    }
-                                                    if requestedTypeRawValue == "Skull" {
-                                                        skullDict["Skull"] = true
-                                                    }
-                                                }
-                                            }
-                                        }
+            
+            if gear.resourceTypeRequirements != [:] {
+                let requestedResourceName = requiredResource.map { $0.key }[0]
+                for (type, _) in gear.resourceTypeRequirements! {
+                    if type.rawValue == requestedResourceName {
+                        for (availType, qty) in result!.1 {
+                            if type == availType {
+                                cell.qtyAvailableLabel.text! = "\(qty)"
+                                if mySettlement!.overrideEnabled {
+                                    cell.statusImage.image = cellStatusImageOverride
+                                } else {
+                                    if qty >= requiredResourceQty {
+                                        cell.statusImage.image = cellStatusImageChecked
+                                    } else {
+                                        cell.statusImage.image = cellStatusImageUnchecked
                                     }
                                 }
+                                break
                             }
                         }
+                        
                     }
-                }
-                if !specialTypesStringArray!.contains(requestedTypeRawValue) {
-                    for resource in reducedTypes {
-                        for pair in reducedTypes[resource.key]! {
-                            if pair.key.rawValue == requestedTypeRawValue {
-                                qtyAvail -= pair.value
-                                flaggedTypes[pair.key.rawValue] = 1
-                            }
-                        }
-                    }
-                }
-            } // If this is a special resource and gear also requires a regular type provided by the special resource, reduce available count
-            if specialMet[currentSpecial] != nil && specialMet[currentSpecial]! == true {
-                flaggedTypes[requiredResource.map { $0.key }[0]] = nil
-            }
-            if gear.name == "Skull Helm" && (requiredResource.map { $0.key }[0]) != "Bone" {
-                cell.requiredTypeLabel.text! = ("\(requiredResource.map { $0.key }[0]) or")
-            } else {
-                cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
-            }
-//            cell.requiredTypeLabel.text! = requiredResource.map { $0.key }[0]
-            cell.requiredQtyLabel.text! = String(qtyReq)
-            cell.qtyAvailableLabel.text! = String(qtyAvail)
-
-            if flaggedTypes[requiredResource.map { $0.key }[0]] != nil && qtyAvail <= qtyReq && qtyAvail > 0 {
-                if mySettlement!.overrideEnabled {
-                    cell.statusImage.image = cellStatusImageOverride
-                } else {
-                    //cell.statusLabel.text! = "⚠️"
-                    cell.statusImage.image = cellStatusImageIndeterminate
-                }
-            } else if qtyReq > qtyAvail {
-//                if gear.name == "Skull Helm" && requestedTypeRawValue == "Bone" {
-//                    skullDict["Bone"] = false
-//                    if skullDict["Skull"] == true {
-//                        currentCell = cell
-//                        cell.isHidden = true
-//                    } else {
-//                        cell.isHidden = false
-//                    }
-//                } else if gear.name == "Skull Helm" && requestedTypeRawValue == "Skull" {
-//                    skullDict["Skull"] = false
-//                    if skullDict["Bone"] == true {
-//                        currentCell = cell
-//                        cell.isHidden = true
-//                    } else {
-//                        cell.isHidden = false
-//                    }
-//                }
-                if mySettlement!.overrideEnabled {
-                    cell.statusImage.image = cellStatusImageOverride
-                } else {
-                    cell.statusImage.image = cellStatusImageUnchecked
-                }
-            } else {
-//                if gear.name == "Skull Helm" {
-//                    currentCell = cell
-//                    cell.isHidden = false
-//                    if requestedTypeRawValue == "Bone" {
-//                        skullDict["Bone"] = true
-//                    } else if requestedTypeRawValue == "Skull" {
-//                        skullDict["Skull"] = true
-//                    }
-//                }
-                if mySettlement!.overrideEnabled {
-                    cell.statusImage.image = cellStatusImageOverride
-                } else {
-                    cell.statusImage.image = cellStatusImageChecked
                 }
             }
         } else if let requiredResource = self.requiredResourcesArray![indexPath.row] as? Location {
@@ -449,14 +356,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         }
     }
-    fileprivate func configureOverrideStatusLabel() {
-//        overrideStatusLabel.text = "Override Enabled"
-//        if mySettlement!.overrideEnabled == true {
-//            overrideStatusLabel.isHidden = false
-//        } else {
-//            overrideStatusLabel.isHidden = true
-//        }
-    }
+
     fileprivate func configureNumAvailableLabel() {
         numAvailableLabel.text = ("\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available")
     }

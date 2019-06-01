@@ -83,15 +83,11 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         let location = myLocations![indexPath.row]
         
         if mySettlement!.overrideEnabled && mySettlement!.locationsBuiltDict[location] == false {
-            if location.name == "Bone Smith" { print("Here in first part bone.") }
             buildableStatus = true
         } else {
-            if location.name == "Bone Smith" { print("Here in first part bone.") }
             buildableStatus = validator.isBuildable(locations: myLocations!, location: location)
         }
-        print("Buildable status for \(location.name): \(buildableStatus)")
         let isBuilt = mySettlement!.locationsBuiltDict[location]!
-        print("\(location.name) \(isBuilt)")
         let buildableStatusString = setBuildableStatusString(location: location, isBuilt: isBuilt, buildableStatus: buildableStatus)
         let missingResourcesString = setMissingResourcesString(location: location, buildableStatus: buildableStatus, isBuilt: isBuilt)
 

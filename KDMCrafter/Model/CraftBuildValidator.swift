@@ -34,7 +34,6 @@ public class CraftBuildValidator {
         if typeRequirements?.count != 0 || typeRequirements != nil {
             for (type, qty) in typeRequirements! {
                 let typeCount = getTypeCount(type: type, resources: resources)
-                //print(type,typeCount)
                 numTypeCraftable = (typeCount/qty)
                 craftableTypes.append(numTypeCraftable)
             }
@@ -45,7 +44,6 @@ public class CraftBuildValidator {
                 numSpecialCraftable = (specialCount/qty)
                 craftableSpecials.append(numSpecialCraftable)
                 if numSpecialCraftable == 0 {
-                    //print("Missing \(special.name) special resource for \(gear.name).")
                 } else {
                     if gear.resourceSpecialRequirements != nil {
 
@@ -57,30 +55,23 @@ public class CraftBuildValidator {
             innovationExists = getInnovationExists(innovation: gear.innovationRequirement!)
         }
         if gear.resourceSpecialRequirements == nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count != 0 { // Basic resource only
-//            isCraftable = craftableTypes.min()!
             isCraftable = checkCraftability2(gear: gear).2
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && gear.resourceTypeRequirements!.count != 0 { // Special and regular resource types required, but no innovation required
             if gear.name == "Skull Helm" { // Special case of either/or
-//                isCraftable = craftableTypes.min()! + craftableSpecials.min()!
                 isCraftable = checkCraftability2(gear: gear).2
             } else {
-//                isCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
                 isCraftable = checkCraftability2(gear: gear).2
             }
         } else if gear.resourceSpecialRequirements != nil && gear.innovationRequirement == nil && locationExists && typeRequirements!.count == 0 { //Special resource required, no innovation or regular types required
-//            isCraftable = craftableSpecials.min()!
             isCraftable = checkCraftability2(gear: gear).2
         } else if gear.resourceSpecialRequirements == nil && (gear.innovationRequirement != nil && innovationExists) && locationExists && typeRequirements!.count != 0 { // Innovation required and regular resource types required
-//            isCraftable = craftableTypes.min()!
             isCraftable = checkCraftability2(gear: gear).2
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count != 0 && gear.resourceSpecialRequirements != nil { //Innovation and regular resource and special required
-//            isCraftable = [craftableTypes.min()!, craftableSpecials.min()!].min()!
             isCraftable = checkCraftability2(gear: gear).2
         } else if locationExists && (gear.innovationRequirement != nil && innovationExists) && typeRequirements!.count == 0 && gear.resourceSpecialRequirements != nil { //Requires special and innovation but not regular
-//            isCraftable = craftableSpecials.min()!
             isCraftable = checkCraftability2(gear: gear).2
         } else {
-            print(gear.name)
+            //print(gear.name)
         }
         
         // Need to deal with gear type 'any' case when we get to actually decrementing gear storage for crafting!
@@ -90,11 +81,9 @@ public class CraftBuildValidator {
     func getTypeCount(type: resourceType, resources: [Resource:Int]) -> Int {
         var count = Int()
         if type == .any { // e.g. for Musk Bomb
-            //count = resources.count
             count = resources.filter { $0.value > 0 }.count
         } else {
             count = resources.filter { key, value in return key.type.contains(type) }.values.reduce(0, +)
-            //print("GetTypeCt returning: \(type)")
         }
         return count
     }
@@ -149,10 +138,8 @@ public class CraftBuildValidator {
         if settlement!.locationsBuiltDict[location] == true {
             return false
         } else if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) || settlement!.overrideEnabled == true {
-            //print("Returning true for \(location.name)")
             return true
         } else {
-            //print("Returning false for \(location.name)")
             return false
         }
     }
@@ -187,7 +174,7 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
-    func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool, [Resource:Int]) {
+    func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool) {
         var returnValue = true
         var requiredSpecials = [Resource:Int]()
         var availableSpecials = [Resource:Int]()
@@ -211,7 +198,6 @@ public class CraftBuildValidator {
                 requiredSpecials[resource] = qty // Keep track of specials required and qty in a dict
             }
         }
-        //print("Specials required: \(requiredSpecials.keys)")
         // Need to reduce availability of multi resources that are not part of this gear's cost
         let availableResources = settlement!.resourceStorage.filter { $0.value > 0 }
         var nonBasic = availableResources.filter { $0.key.kind != .basic }
@@ -221,10 +207,7 @@ public class CraftBuildValidator {
             }
         }
         let multi = nonBasic.filter { $0.key.type.count > 1 }
-
-        //print("Multi: \(multi.keys)")
         var availableBasics = [resourceType:Int]()
-        var availableBasicsResources = [Resource:Int]()
         var resourceCountDict = [Resource:Int]()
         for (item, qty) in multi {
             for type in item.type {
@@ -249,7 +232,6 @@ public class CraftBuildValidator {
 //                if qty == max {
                 if qty == max && gear.overlappingResources.contains(type) { //test skip if not in overlapping
                     availableBasics[type]! -= 1
-                    print("Decrementing: \(type.rawValue)")
                     break
                 }
             }
@@ -278,14 +260,11 @@ public class CraftBuildValidator {
                     if returnValue != false {
                         returnValue = true
                     }
-                    print("We have enough resource types!")
                 } else {
                     returnValue = false
-                    print("Not enough resource types!")
                 }
             }
         }
-        //print("Required Specials: \(gear.resourceSpecialRequirements), Required Basics: \(gear.resourceTypeRequirements)")
-        return (availableSpecials, availableBasics, returnValue, availableBasicsResources)
+        return (availableSpecials, availableBasics, returnValue)
     }
 }
