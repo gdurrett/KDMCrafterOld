@@ -495,7 +495,7 @@
             </objects>
             <point key="canvasLocation" x="4036" y="315"/>
         </scene>
-        <!--Add Innovations-->
+        <!--Add Innovation View Controller-->
         <scene sceneID="L0p-Xa-ndu">
             <objects>
                 <viewController storyboardIdentifier="AddInnovationViewController" id="ppt-Yj-Ftm" customClass="AddInnovationViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
@@ -512,19 +512,26 @@
                         <constraints>
                             <constraint firstItem="AFr-cE-vDT" firstAttribute="bottom" secondItem="iIw-BS-Jx3" secondAttribute="bottom" id="79U-SL-k22"/>
                             <constraint firstItem="AFr-cE-vDT" firstAttribute="trailing" secondItem="iIw-BS-Jx3" secondAttribute="trailing" id="Obm-lK-dSn"/>
-                            <constraint firstItem="iIw-BS-Jx3" firstAttribute="top" secondItem="AFr-cE-vDT" secondAttribute="top" constant="44" id="nXI-4R-fgW"/>
+                            <constraint firstItem="iIw-BS-Jx3" firstAttribute="top" secondItem="AFr-cE-vDT" secondAttribute="top" id="nXI-4R-fgW"/>
                             <constraint firstItem="iIw-BS-Jx3" firstAttribute="leading" secondItem="AFr-cE-vDT" secondAttribute="leading" id="ojo-eX-P9l"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="AFr-cE-vDT"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Add Innovations" image="first" id="22o-rO-hO3"/>
+                    <navigationItem key="navigationItem" id="X9D-Zs-pys">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="icons8-settings-50" id="mCg-HR-fgI">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="settingsButtonAction:" destination="ppt-Yj-Ftm" id="bHa-ri-lhO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="iIw-BS-Jx3" id="WLU-Su-fUE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C2g-yx-sAG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.60000000000002" y="1830.1349325337333"/>
+            <point key="canvasLocation" x="1656.521739130435" y="1830.1339285714284"/>
         </scene>
         <!--Settings View Controller-->
         <scene sceneID="eb8-0F-DQZ">
@@ -557,7 +564,7 @@
             </objects>
             <point key="canvasLocation" x="1660.144927536232" y="2591.5178571428569"/>
         </scene>
-        <!--Build Locations-->
+        <!--Build Location View Controller-->
         <scene sceneID="R60-OV-K6Y">
             <objects>
                 <viewController storyboardIdentifier="BuildLocationViewController" id="30M-tm-Aru" customClass="BuildLocationViewController" customModule="KDMCrafter" customModuleProvider="target" sceneMemberID="viewController">
@@ -566,7 +573,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zq9-7I-wJO">
-                                <rect key="frame" x="0.0" y="86" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="723"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
@@ -574,20 +581,27 @@
                         <constraints>
                             <constraint firstItem="XqU-cj-ECq" firstAttribute="trailing" secondItem="zq9-7I-wJO" secondAttribute="trailing" id="EVx-cL-sCC"/>
                             <constraint firstItem="zq9-7I-wJO" firstAttribute="bottom" secondItem="XqU-cj-ECq" secondAttribute="bottom" constant="-2" id="HIU-Tu-xyJ"/>
-                            <constraint firstItem="zq9-7I-wJO" firstAttribute="top" secondItem="XqU-cj-ECq" secondAttribute="top" constant="42" id="Hfw-nt-g7w"/>
+                            <constraint firstItem="zq9-7I-wJO" firstAttribute="top" secondItem="XqU-cj-ECq" secondAttribute="top" id="Hfw-nt-g7w"/>
                             <constraint firstItem="XqU-cj-ECq" firstAttribute="bottom" secondItem="zq9-7I-wJO" secondAttribute="bottom" constant="2" id="l4P-qO-gkK"/>
                             <constraint firstItem="zq9-7I-wJO" firstAttribute="leading" secondItem="XqU-cj-ECq" secondAttribute="leading" id="yOg-g0-jTb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="XqU-cj-ECq"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Build Locations" image="second" id="xIE-0Z-20g"/>
+                    <navigationItem key="navigationItem" id="El0-oZ-12Y">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="icons8-settings-50" id="goG-U3-e5p">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="settingsButtonAction:" destination="30M-tm-Aru" id="d37-GO-CNp"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="zq9-7I-wJO" id="3T9-hk-v3T"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F4D-iO-DDw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="743.47826086956525" y="1077.4553571428571"/>
+            <point key="canvasLocation" x="1650.7246376811595" y="1077.4553571428571"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="mze-3B-yPa">
@@ -641,12 +655,13 @@
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="selectedImageTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
                         <segue destination="0Vy-fp-ch3" kind="relationship" relationship="viewControllers" id="ZHC-c9-uXK"/>
                         <segue destination="5Rp-28-66k" kind="relationship" relationship="viewControllers" id="euT-jO-SYL"/>
-                        <segue destination="30M-tm-Aru" kind="relationship" relationship="viewControllers" id="Moi-SG-4Ht"/>
-                        <segue destination="ppt-Yj-Ftm" kind="relationship" relationship="viewControllers" id="8af-i4-FAP"/>
+                        <segue destination="2b4-3p-Aq6" kind="relationship" relationship="viewControllers" id="Moi-SG-4Ht"/>
+                        <segue destination="Qia-b1-8qd" kind="relationship" relationship="viewControllers" id="8af-i4-FAP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -675,7 +690,7 @@
         <scene sceneID="DZC-dt-n0Z">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5Rp-28-66k" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Craft Gear" image="second" id="459-6h-6LA"/>
+                    <tabBarItem key="tabBarItem" title="Craft Gear" image="icons8-metal-26" id="459-6h-6LA"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="k2X-dS-ByU">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -694,7 +709,9 @@
         <scene sceneID="pOj-7Z-Ddr">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="0Vy-fp-ch3" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Manage Resources" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Manage Resources" image="icons8-drawstring-bag-24" id="acW-dT-cKf">
+                        <color key="badgeColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0ZB-Fi-NM1">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -728,9 +745,50 @@
             </objects>
             <point key="canvasLocation" x="753.62318840579712" y="2591.5178571428569"/>
         </scene>
+        <!--Build Locations-->
+        <scene sceneID="FXP-8n-7lz">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2b4-3p-Aq6" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Build Locations" image="icons8-home-24" id="xIE-0Z-20g"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gok-R8-l1v">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="30M-tm-Aru" kind="relationship" relationship="rootViewController" id="CGQ-IN-4L8"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZDX-qd-wcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="743.47826086956525" y="1077.4553571428571"/>
+        </scene>
+        <!--Add Innovations-->
+        <scene sceneID="ZEd-gV-3Tu">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Qia-b1-8qd" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Add Innovations" image="icons8-idea-30" id="22o-rO-hO3"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="3ua-Ho-UB3">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="ppt-Yj-Ftm" kind="relationship" relationship="rootViewController" id="bVz-0I-5Qs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H2Q-wA-xlN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="749.27536231884062" y="1830.1339285714284"/>
+        </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
+        <image name="icons8-drawstring-bag-24" width="24" height="24"/>
+        <image name="icons8-home-24" width="24" height="24"/>
+        <image name="icons8-idea-30" width="30" height="30"/>
+        <image name="icons8-metal-26" width="26" height="26"/>
         <image name="icons8-settings-50" width="50" height="50"/>
         <image name="second" width="30" height="30"/>
     </resources>

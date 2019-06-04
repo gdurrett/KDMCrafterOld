@@ -8,10 +8,21 @@
 
 import UIKit
 
+enum buildingAction: String {
+    case build = "Build"
+    case archive = "Archive"
+    case buildSpecial = "Build "
+}
+
 class BuildLocationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocationTableViewCellDelegate, SpendResourcesVCDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func settingsButtonAction(_ sender: Any) {
+        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
+            mainVC.toggleSideMenu(fromViewController: self)
+        }
+    }
     
     let dataModel = DataModel.sharedInstance
     let validator = CraftBuildValidator(settlement: DataModel.sharedInstance.currentSettlement!)
@@ -57,6 +68,11 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         numLocationRows = dataModel.currentSettlement!.allLocations.count
         numInnovationRows = 1
 
+        NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
+
+        setUpMenuButton()
+        navigationItem.title = "Build Locations"
+        
         tableView.reloadData()
         
     }
@@ -107,9 +123,9 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return " Build Locations"
-    }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return " Build Locations"
+//    }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
@@ -131,13 +147,16 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         button.setTitle(status, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 5
-        
+        if location.name == "Lantern Hoard" && mySettlement!.locationsBuiltDict[location] == false {
+            button.setTitle("Build", for: .normal)
+            button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
+        }
         if status == "Build" {
-            button.backgroundColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+            button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
         } else if status == "Unbuildable" {
             button.setTitle("Build", for: .normal)
             button.backgroundColor = UIColor.gray
-        } else if status == "Destroy" {
+        } else if status == "Archive" {
             button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         } else {
             //button.isHidden = true
@@ -161,12 +180,12 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     fileprivate func setBuildableStatusString(location: Location, isBuilt: Bool, buildableStatus: Bool) -> String {
         
         var buildableStatusString = String()
-        if location.name == "Lantern Hoard" {
-            buildableStatusString = ""
+        if location.name == "Lantern Hoard" && mySettlement!.locationsBuiltDict[location] == true {
+            buildableStatusString = "Archive"
         } else if buildableStatus == true {
             buildableStatusString = "Build"
         } else if isBuilt {
-            buildableStatusString = "Destroy"
+            buildableStatusString = "Archive"
         } else {
             buildableStatusString = "Unbuildable"
         }
@@ -194,11 +213,11 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
         if (location.locationRequirement.contains("Special") && mySettlement!.locationsBuiltDict[location] == false) || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
-            mySettlement!.locationsBuiltDict[location] = true
+            showAlert(for: location, action: .buildSpecial)
         } else if validator.isBuildable(locations: myLocations!, location: location) {
-            spendResources(for: location)
+            showAlert(for: location, action: .build)
         } else if mySettlement!.locationsBuiltDict[location] == true {
-            mySettlement!.locationsBuiltDict[location] = false
+            showAlert(for: location, action: .archive)
         }
         dataModel.writeData()
         tableView.reloadData()
@@ -239,6 +258,47 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         mySettlement!.locationsBuiltDict[currentLocation!] = true
         dataModel.writeData()
         tableView.reloadData()
+    }
+    @objc func setUpMenuButton(){
+        let menuBtn = UIButton(type: .custom)
+        menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        if mySettlement!.overrideEnabled {
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+        } else {
+            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        }
+        menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: menuBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.leftBarButtonItem = menuBarItem
+        tableView.reloadData()
+    }
+    func showAlert(for location: Location, action: buildingAction) {
+        let alert = UIAlertController(title: "\(action.rawValue) \(location.name)?", message: "", preferredStyle: .alert)
+        alert.isModalInPopover = true
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        if action == .archive {
+            alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
+                self.mySettlement!.locationsBuiltDict[location] = false
+                self.tableView.reloadData()
+                self.dataModel.writeData()
+            }))
+        } else if action == .build {
+            alert.addAction(UIAlertAction(title: "Build", style: .default, handler: { (UIAlertAction) in
+                self.spendResources(for: location)
+            }))
+        } else if action == .buildSpecial {
+            alert.addAction(UIAlertAction(title: "Build", style: .default, handler: { (UIAlertAction) in
+                self.mySettlement!.locationsBuiltDict[location] = true
+                self.tableView.reloadData()
+                self.dataModel.writeData()
+            }))
+        }
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

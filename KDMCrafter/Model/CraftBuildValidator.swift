@@ -174,16 +174,34 @@ public class CraftBuildValidator {
         }
         return locationRequirementMet
     }
+    func getAllTypesDict() -> [resourceType:Int] {
+        var allTypesDict = [resourceType:Int]()
+        for (resource, qty) in settlement!.resourceStorage {
+            for type in resource.type {
+                if allTypesDict[type] != nil {
+                    allTypesDict[type]! += qty
+                } else {
+                    allTypesDict[type] = qty
+                }
+            }
+        }
+        return allTypesDict
+    }
     func checkCraftability2(gear: Gear) -> ([Resource:Int], [resourceType:Int], Bool) {
         var returnValue = true
         var requiredSpecials = [Resource:Int]()
         var availableSpecials = [Resource:Int]()
+        var totalQty = Int()
         // First, see if it's craftable
         // Loop through any special requirements to make sure we have enough
         if gear.resourceSpecialRequirements != nil {
             for (resource, qty) in gear.resourceSpecialRequirements! {
-                let difference = (settlement!.resourceStorage[resource]! - qty)
-                if settlement!.resourceStorage[resource]! >= qty {
+                totalQty = 0
+                let difference = (settlement!.resourceStorage[resource]! - qty) >= 0 ? (settlement!.resourceStorage[resource]! - qty):0
+                if self.getAllTypesDict()[resource.type[0]] != nil && self.getAllTypesDict()[resource.type[0]] != 0 {
+                    totalQty += self.getAllTypesDict()[resource.type[0]]! - difference
+                }
+                if totalQty >= qty {
                     if returnValue != false {
                         returnValue = true
                         if difference > 0 && availableSpecials[resource] != nil {
@@ -207,11 +225,20 @@ public class CraftBuildValidator {
             }
         }
         let multi = nonBasic.filter { $0.key.type.count > 1 }
+        //print(multi.keys.map { $0.name })
         var availableBasics = [resourceType:Int]()
         var resourceCountDict = [Resource:Int]()
+        var gearRequiredSpecialTypes = [resourceType]()
+        if gear.resourceSpecialRequirements != nil {
+            gearRequiredSpecialTypes = gear.resourceSpecialRequirements!.keys.flatMap { $0.type }
+            //if gear.name == "Lantern Sword" { print(gearRequiredSpecialTypes) }
+        }
+        let types: [resourceType] = [.bone, .consumable, .hide, .iron, .organ, .scrap, .skull, .vermin]
         for (item, qty) in multi {
             for type in item.type {
-                if availableBasics[type] != nil && (type == .hide || type == .organ || type == .bone || type == .consumable) && gear.resourceTypeRequirements!.keys.contains(type) {
+                //if availableBasics[type] != nil && (type == .hide || type == .organ || type == .bone || type == .consumable) && gear.resourceTypeRequirements!.keys.contains(type) {
+                if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gearRequiredSpecialTypes.contains(type)) {
+                    //if gear.name == "Lantern Sword" { print("Adding \(type)") }
                     availableBasics[type]! += qty
                     //if qty > 0 { resourceCountDict[item] = 1 }
                     if resourceCountDict[item] != nil {
@@ -219,7 +246,8 @@ public class CraftBuildValidator {
                     } else {
                         if qty > 0 { resourceCountDict[item] = qty }
                     }
-                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
+//                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
+                } else if types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gearRequiredSpecialTypes.contains(type)) {
                     availableBasics[type] = qty
                     //if qty > 0 { resourceCountDict[item] = 1 }
                     if resourceCountDict[item] != nil {

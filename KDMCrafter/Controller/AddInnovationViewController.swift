@@ -13,6 +13,11 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func settingsButtonAction(_ sender: Any) {
+        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
+            mainVC.toggleSideMenu(fromViewController: self)
+        }
+    }
     let dataModel = DataModel.sharedInstance
     
     var mySettlement: Settlement?
@@ -32,6 +37,11 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         myInnovations = mySettlement!.availableInnovations
         
         numInnovationRows = myInnovations!.count
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
+
+        setUpMenuButton()
+        navigationItem.title = "Add Innovations"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,9 +73,6 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         configureAddInnovationButton(for: cell, with: innoStatusString, with: 5000, for: innovation)
         return cell
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return " Add Innovations"
-    }
     // Helper functions
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, for tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
@@ -81,7 +88,7 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         button.layer.cornerRadius = 5
         
         if status == "Add" {
-            button.backgroundColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+            button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
         } else {
             button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         }
@@ -97,5 +104,22 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         dataModel.writeData()
         tableView.reloadData()
     }
-    
+    @objc func setUpMenuButton(){
+        let menuBtn = UIButton(type: .custom)
+        menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        if mySettlement!.overrideEnabled {
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+        } else {
+            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+        }
+        menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: menuBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.leftBarButtonItem = menuBarItem
+        tableView.reloadData()
+    }
 }

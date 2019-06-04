@@ -70,9 +70,17 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorInset = UIEdgeInsets.zero
         save.isHidden = true
-        spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
-        preSpend() //Set spentResourcesString
-        
+        //spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+        spentTypesLabel.textColor = UIColor.white
+        if spendableResources == [:] { // resources auto-spent in this case, so just show done and spend them (maybe need an alert?)
+            preSpend()
+            for (resource, qty) in requiredResources! {
+                spentResourceTypes[resource] = [resource.type[0]:qty]
+            }
+            checkIfRequirementsMet()
+        } else {
+            preSpend()
+        }
         sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
         sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
         
@@ -80,6 +88,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
         }
         spentTypesLabel.text! = spentResourcesString + spentTypesString
+        
+
     }
     
 
@@ -187,28 +197,24 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     fileprivate func checkIfRequirementsMet() {
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
-            self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
-            for (resource, qty) in self.spentResourceTypes {
-                self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
-            }
+            //self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+            self.spentTypesLabel.textColor = UIColor.black
         } else {
             save.isHidden = true
-            spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
-            for (resource, qty) in self.spentResourceTypes {
-                self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
-            }
+            //spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            spentTypesLabel.textColor = UIColor.white
+        }
+        for (resource, qty) in self.spentResourceTypes {
+            self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
         }
     }
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
             self.spentResourceTypes[key] = [type:spentResourceQty]
     }
     fileprivate func setSpentTypes() {
-//        for (type, qty) in requiredResourceTypes {
-//            requiredTypesString.append("\(type.rawValue):\(qty) ")
-//        }
+
         let typeVals = Array(self.spentResourceTypes.values)
         self.spentTypesString = spentResourcesString
-//        for type in self.requiredResourceTypes.keys {
         for (type, qty ) in self.requiredResourceTypes {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
             self.spentResourceTypesTemp[type] = spentAmount
@@ -226,12 +232,12 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                     spendableResources.removeValue(forKey: resource)
                 }
             }
-            if requiredResources != nil && requiredResources![resource] != nil {
-                //self.spentTypesString.append("\(resource.name):\(requiredResources![resource]!)/\(requiredResources![resource]!) ")
-                spentResourcesString.append ("\(resource.name):\(requiredResources![resource]!)/\(requiredResources![resource]!) ")
+        }
+        if requiredResources != nil {
+            for (resource, qty) in requiredResources! {
+                spentResourcesString.append ("\(resource.name):\(qty)/\(qty) ")
             }
         }
-        
     }
     @IBAction func showChoices(_ sender: Any) {
         let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)

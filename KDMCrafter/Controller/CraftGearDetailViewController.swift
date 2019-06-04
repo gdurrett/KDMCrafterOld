@@ -173,7 +173,17 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                 let requestedResourceName = requiredResource.map { $0.key }[0]
                 for resource in gear.resourceSpecialRequirements! { // Loop through required Special resources
                     if resource.key.name == requestedResourceName { // If we find a match in our requiredResources array
-                        let qty = mySettlement!.resourceStorage[resource.key]
+                        var excessQty = Int()
+                        var qty = mySettlement!.resourceStorage[resource.key] == nil ? 0:mySettlement!.resourceStorage[resource.key]
+                        if validator.getAllTypesDict()[resource.key.type[0]] != nil {
+                            excessQty = validator.getAllTypesDict()[resource.key.type[0]]! - qty!
+//                            if qty != nil && qty! > 0 {
+//                                otherQty = validator.getAllTypesDict()[resource.key.type[0]]! - resource.value //Add other resource qtys that provide this special type (e.g. iron) but reduce by number required in special
+//                            } else {
+//                                otherQty = validator.getAllTypesDict()[resource.key.type[0]]!
+//                            }
+                        }
+                        if excessQty != 0 { qty! += excessQty } //
                         cell.qtyAvailableLabel.text! = "\(qty!)"
                         if mySettlement!.overrideEnabled {
                             cell.statusImage.image = cellStatusImageOverride
@@ -412,7 +422,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
-        
         if gear.resourceSpecialRequirements != nil { spendResourcesVC.requiredResources = gear.resourceSpecialRequirements }
         spendResourcesVC.delegate = self
         
@@ -444,6 +453,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     func showCraftedAlert(for gear: Gear) {
         //let alert = UIAlertController(title: "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available", message: "", preferredStyle: .alert)
         let alert = UIAlertController(title: "Craft one \(gear.name)?", message: "", preferredStyle: .alert)
+        
         alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { (UIAlertAction) in

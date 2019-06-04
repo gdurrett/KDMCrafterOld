@@ -71,6 +71,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedUncraftableGear = getUncraftableGear()
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
+        NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
+
         setupSearch()
         setUpMenuButton()
         
@@ -83,7 +85,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myAvailableGear = mySettlement!.availableGear
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
-        setUpMenuButton()
         tableView.reloadData()
     }
 
@@ -198,7 +199,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         button.layer.cornerRadius = 5
         
         if status == "Craft" {
-            button.backgroundColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
+            button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
         } else if status == "Uncraftable" {
             button.setTitle("Craft", for: .normal)
             button.backgroundColor = UIColor.gray
@@ -237,7 +238,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         if validator.checkCraftability(gear:gear) == true && !checkIfMaxedOut(gear: gear) || mySettlement!.overrideEnabled && !checkIfMaxedOut(gear: gear) {
             labelString = "Craftable"
             self.craftability = true
-            label.textColor = UIColor(red: 0.3843, green: 0.8275, blue: 0, alpha: 1.0)
+            label.textColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
         } else {
             labelString = "Uncraftable"
             self.craftability = false
@@ -362,7 +363,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
     }
-    func setUpMenuButton(){
+    @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         if mySettlement!.overrideEnabled {
@@ -378,6 +379,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
+        tableView.reloadData()
+        self.segmentedControlAction(self)
     }
 
 }

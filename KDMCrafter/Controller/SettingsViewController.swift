@@ -18,6 +18,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     var settingsButton = UIButton(type: .system)
     var settingsSwitch = UISwitch(frame: CGRect(x: 340, y: 6, width: 60, height: 30))
     
+    let notificationCenter = NotificationCenter.default
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -79,8 +81,10 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     @objc func enableOverride(sender: UISwitch) {
         if sender.isOn {
             mySettlement!.overrideEnabled = true
+            notificationCenter.post(Notification(name: .didToggleOverride, object: nil))
         } else {
             mySettlement!.overrideEnabled = false
+            notificationCenter.post(Notification(name: .didToggleOverride, object: nil))
         }
     }
     func showResetAlert() {

@@ -40,6 +40,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     var sortedSpecialStorage: [(key: Resource, value: Int)]?
     var filteredSortedSpecialStorage: [(key: Resource, value: Int)]?
 
+    //var settingsVC: SettingsViewController!
     
     var resourceName: String?
     var resourceValue: Int?
@@ -65,8 +66,11 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
         
+        NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
+        
         setupSearch()
         setUpMenuButton()
+        setUpTabBarIcons()
         
         navigationItem.title = "Manage Resources"
         
@@ -267,7 +271,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             (cell as! ResourceTableViewCell).observation = nil
         case 1:
             break
-        //(cell as! LocationTableViewCell).observation = nil
         default: break
         }
     }
@@ -386,7 +389,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             
         }
     }
-    func setUpMenuButton(){
+    @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         if mySettlement!.overrideEnabled {
@@ -403,6 +406,19 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
     }
+    
+    func setUpTabBarIcons() {
+        if let tabBarVC = self.navigationController?.parent as? UITabBarController {
+            let manageTabItem = tabBarVC.tabBar.items![0]
+            manageTabItem.image = UIImage(named: "icons8-drawstring-bag-24")
+            let craftTabItem = tabBarVC.tabBar.items![1]
+            craftTabItem.image = UIImage(named: "icons8-metal-26")
+            let buildTabItem = tabBarVC.tabBar.items![2]
+            buildTabItem.image = UIImage(named: "icons8-home-24")
+            let innovateTabItem = tabBarVC.tabBar.items![3]
+            innovateTabItem.image = UIImage(named: "icons8-idea-30")
+        }
+    }
 }
 
 extension ManageResourcesViewController: UISearchResultsUpdating {
@@ -416,4 +432,6 @@ extension ManageResourcesViewController: UISearchBarDelegate {
         filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }
-
+extension Notification.Name {
+    static let didToggleOverride = NSNotification.Name(rawValue: "didToggleOverride")
+}

@@ -23,9 +23,9 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hls-8v-XDp">
-                    <rect key="frame" x="296" y="20" width="60" height="47"/>
+                    <rect key="frame" x="276" y="15" width="80" height="57"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="60" id="TaL-XQ-Bi8"/>
+                        <constraint firstAttribute="width" constant="80" id="TaL-XQ-Bi8"/>
                     </constraints>
                     <state key="normal" title="Button">
                         <color key="titleColor" red="0.99607843139999996" green="0.96862745100000003" blue="0.85490196080000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -50,9 +50,9 @@
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="axq-KJ-dug" secondAttribute="bottom" constant="30" id="85l-Ej-xXg"/>
                 <constraint firstItem="eUT-EA-oJ0" firstAttribute="leading" secondItem="axq-KJ-dug" secondAttribute="leading" id="BwL-fp-oQC"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="hls-8v-XDp" secondAttribute="bottom" constant="20" id="D9a-6P-RdY"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="hls-8v-XDp" secondAttribute="bottom" constant="15" id="D9a-6P-RdY"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="eUT-EA-oJ0" secondAttribute="bottom" constant="5" id="OnX-2G-Y3u"/>
-                <constraint firstItem="hls-8v-XDp" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="Pf5-zY-2hN"/>
+                <constraint firstItem="hls-8v-XDp" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="15" id="Pf5-zY-2hN"/>
                 <constraint firstItem="axq-KJ-dug" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="5" id="WS5-4G-Orc"/>
                 <constraint firstItem="axq-KJ-dug" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="aSP-KI-e45"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="hls-8v-XDp" secondAttribute="trailing" constant="19" id="nhM-jF-HFS"/>
@@ -63,7 +63,7 @@
                 <outlet property="buildButton" destination="hls-8v-XDp" id="A4d-ax-TCV"/>
                 <outlet property="locationName" destination="axq-KJ-dug" id="pp2-UP-O35"/>
             </connections>
-            <point key="canvasLocation" x="-271" y="-169"/>
+            <point key="canvasLocation" x="-76" y="-214"/>
         </view>
     </objects>
 </document>
