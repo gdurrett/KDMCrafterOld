@@ -30,7 +30,6 @@
                                     <segment title="Cons"/>
                                     <segment title="Hide"/>
                                     <segment title="Organ"/>
-                                    <segment title="Special"/>
                                 </segments>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>

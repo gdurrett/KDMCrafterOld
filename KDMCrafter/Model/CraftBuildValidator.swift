@@ -226,6 +226,23 @@ public class CraftBuildValidator {
         }
         let multi = nonBasic.filter { $0.key.type.count > 1 }
         //print(multi.keys.map { $0.name })
+        var preBasics = [resourceType:Int]()
+        let basics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
+        if gear.resourceTypeRequirements != [:] {
+            for (resource, qty) in basics {
+                for type in resource.type {
+                    if gear.resourceTypeRequirements!.keys.contains(type) {
+                        if qty > 0 {
+                            if preBasics[type] != nil {
+                                preBasics[type]! += qty
+                            } else {
+                                preBasics[type] = qty
+                            }
+                        }
+                    }
+                }
+            }
+        }
         var availableBasics = [resourceType:Int]()
         var resourceCountDict = [Resource:Int]()
         var gearRequiredSpecialTypes = [resourceType]()
@@ -236,50 +253,76 @@ public class CraftBuildValidator {
         let types: [resourceType] = [.bone, .consumable, .hide, .iron, .organ, .scrap, .skull, .vermin]
         for (item, qty) in multi {
             for type in item.type {
-                //if availableBasics[type] != nil && (type == .hide || type == .organ || type == .bone || type == .consumable) && gear.resourceTypeRequirements!.keys.contains(type) {
-                if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gearRequiredSpecialTypes.contains(type)) {
-                    //if gear.name == "Lantern Sword" { print("Adding \(type)") }
+                if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
+                    if gear.name == "Lantern Sword" { print("Adding \(type)") }
                     availableBasics[type]! += qty
-                    //if qty > 0 { resourceCountDict[item] = 1 }
-                    if resourceCountDict[item] != nil {
-                        if qty > 0 { resourceCountDict[item]! += qty }
-                    } else {
-                        if qty > 0 { resourceCountDict[item] = qty }
-                    }
+                    if qty > 0 { resourceCountDict[item] = qty }
 //                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
-                } else if types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gearRequiredSpecialTypes.contains(type)) {
+                } else if types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
+                    if gear.name == "Lantern Sword" { print("Setting \(type)") }
                     availableBasics[type] = qty
-                    //if qty > 0 { resourceCountDict[item] = 1 }
-                    if resourceCountDict[item] != nil {
-                        if qty > 0 { resourceCountDict[item]! += qty }
-                    } else {
-                        if qty > 0 { resourceCountDict[item] = qty }
-                    }
+                    if qty > 0 { resourceCountDict[item] = qty }
                 }
             }
         }
         var loopCounter = 0
-        while loopCounter <= resourceCountDict.count && availableBasics != [:] {
-            let max = availableBasics.map { $1 }.max()!
-            let sum = availableBasics.values.reduce(0, +)
-//            if sum == resourceCountDict.count {
-//                break
-//            }
-            if sum == resourceCountDict.values.reduce(0, +) {
-                break
-            }
+        if gear.name == "Lantern Sword" {
+            print("Basics:\(availableBasics.keys), values: \(availableBasics.values), CountDict: \(resourceCountDict.values.reduce(0, +))")
+            print("preBasics: \(preBasics.keys) and \(preBasics.values)")
+        }
+        // See if we need to reduce or not
+        var reduce = false
+        if availableBasics != [:] {
             for (type, qty) in availableBasics {
-                if qty == max && gear.overlappingResources.contains(type) { //test skip if not in overlapping
-                    availableBasics[type]! -= 1
-                    break
+                if preBasics[type] != nil && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
+                    if gear.name == "Oxidized Lantern Sword" {
+                        print("Skipping \(type.rawValue) reduction")
+                    }
+                    continue
+                } else {
+                    reduce = true
                 }
             }
-            loopCounter += 1
+        }
+        if reduce == true {
+            while loopCounter <= resourceCountDict.values.reduce(0, +) && availableBasics != [:] {
+                let max = availableBasics.map { $1 }.max()!
+                let sum = availableBasics.values.reduce(0, +)
+                if gear.name == "Oxidized Lantern Sword" {
+                    print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
+                }
+
+                if sum == resourceCountDict.values.reduce(0, +) {
+                    break
+                }
+                for (type, qty) in availableBasics {
+                    if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
+                        if gear.name == "Oxidized Lantern Sword" {
+                            print("Decrementing: \(type) due to amnt being met already.")
+                            print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
+                        }
+                        availableBasics[type]! -= 1
+                        break
+                    }
+    //                } else if qty == max || gear.overlappingResources.contains(type) { //test skip if not in overlapping
+    //                    availableBasics[type]! -= 1
+    //                    if gear.name == "Lantern Sword" {
+    //                        print("Decrementing: \(type)")
+    //                        print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
+    //                    }
+    //                    break
+    //                }
+                }
+                loopCounter += 1
+            }
+        }
+        if gear.name == "Oxidized Lantern Sword" {
+            print("Basics final: \(availableBasics.keys), \(availableBasics.values)")
         }
         // Now get basic types and add to remaining multis (availableBasics)
-        let basics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
+        let postBasics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
         if gear.resourceTypeRequirements != [:] {
-            for (resource, qty) in basics {
+            for (resource, qty) in postBasics {
                 for type in resource.type {
                     if gear.resourceTypeRequirements!.keys.contains(type) {
                         if qty > 0 {

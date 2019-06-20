@@ -127,7 +127,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         
         result = validator.checkCraftability2(gear: gear)
-        
         configureCraftButton()
         configureArchiveButton()
         configureNumAvailableLabel()

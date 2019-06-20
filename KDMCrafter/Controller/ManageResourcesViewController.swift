@@ -37,8 +37,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     var filteredSortedHideStorage: [(key: Resource, value: Int)]?
     var sortedOrganStorage: [(key: Resource, value: Int)]?
     var filteredSortedOrganStorage: [(key: Resource, value: Int)]?
-    var sortedSpecialStorage: [(key: Resource, value: Int)]?
-    var filteredSortedSpecialStorage: [(key: Resource, value: Int)]?
 
     //var settingsVC: SettingsViewController!
     
@@ -115,12 +113,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             } else {
                 return sortedOrganStorage!.count
             }
-        case 5:
-            if isFiltering() {
-                return filteredSortedSpecialStorage!.count
-            } else {
-                return sortedSpecialStorage!.count
-            }
         default:
             return numResourceRows!
         }
@@ -176,14 +168,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             } else {
                 key = sortedOrganStorage![indexPath.row].0
                 value = sortedOrganStorage![indexPath.row].1
-            }
-        case 5:
-            if isFiltering() {
-                key = filteredSortedSpecialStorage![indexPath.row].0
-                value = filteredSortedSpecialStorage![indexPath.row].1
-            } else {
-                key = sortedSpecialStorage![indexPath.row].0
-                value = sortedSpecialStorage![indexPath.row].1
             }
         default:
             key = sortedStorage![indexPath.row].0
@@ -244,14 +228,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
                     selectedResource = self.sortedOrganStorage![indexPath.row].0
                     self.sortedOrganStorage![indexPath.row].1 = Int(change.newValue!)
                 }
-            case 5:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedSpecialStorage![indexPath.row].0
-                    self.filteredSortedSpecialStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedSpecialStorage![indexPath.row].0
-                    self.sortedSpecialStorage![indexPath.row].1 = Int(change.newValue!)
-                }
             default:
                 selectedResource = self.sortedStorage![indexPath.row].0
             }
@@ -260,7 +236,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             self.myStorage![selectedResource!] = Int(change.newValue!)
             self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(change.newValue!)
             self.dataModel.writeData()
-            
             self.updateStorage()
         }
         return cell
@@ -350,12 +325,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             filteredSortedOrganStorage = organStorage.filter( {(resource: Resource, value: Int) -> Bool in
                 return resource.name.lowercased().contains(searchText.lowercased())
             })
-        case 5:
-            //let specialStorage = self.sortedStorage!.filter { !$0.key.type.contains(.bone) && !$0.key.type.contains(.consumable) && !$0.key.type.contains(.hide) && !$0.key.type.contains(.organ)}
-            let specialStorage = getSpecialStorage()
-            filteredSortedSpecialStorage = specialStorage.filter( {(resource: Resource, value: Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
         default:
             filteredSortedStorage = self.sortedStorage!.filter( {(resource: Resource, value:Int) -> Bool in
                 return resource.name.lowercased().contains(searchText.lowercased())
@@ -370,7 +339,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
         self.sortedHideStorage = self.getBasicStorageForType(resourceType: .hide)
         self.sortedOrganStorage = self.getBasicStorageForType(resourceType: .organ)
-        self.sortedSpecialStorage = self.getSpecialStorage()
     }
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
@@ -382,12 +350,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
     func getBasicStorageForType(resourceType: resourceType) -> [(key: Resource, value: Int)] {
         return self.sortedStorage!.filter { $0.key.type.contains(resourceType) }
-    }
-    func getSpecialStorage() -> [(key: Resource, value: Int)] {
-//        return self.sortedStorage!.filter { !$0.key.type.contains(.bone) && !$0.key.type.contains(.consumable) && !$0.key.type.contains(.hide) && !$0.key.type.contains(.organ)}
-        return self.sortedStorage!.filter { $0.key.kind == .basic
-            
-        }
     }
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)

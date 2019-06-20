@@ -242,6 +242,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
+
         self.currentLocation = location
         spendResourcesVC.delegate = self
         

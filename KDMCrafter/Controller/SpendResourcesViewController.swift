@@ -89,7 +89,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         }
         spentTypesLabel.text! = spentResourcesString + spentTypesString
         
-
     }
     
 

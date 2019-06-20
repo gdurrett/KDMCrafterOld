@@ -85,6 +85,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         myAvailableGear = mySettlement!.availableGear
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
+        sortedCraftableGear = getCraftableGear()
+        sortedUncraftableGear = getUncraftableGear()
         tableView.reloadData()
     }
 
@@ -290,7 +292,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     fileprivate func getUncraftableGear() -> [Gear] {
         self.sortedUncraftableGear = []
         for gear in mySettlement!.availableGear {
-            if validator.checkCraftability2(gear: gear).2 == false || checkIfMaxedOut(gear: gear) {
+            if validator.checkCraftability(gear: gear) == false || checkIfMaxedOut(gear: gear) {
                 self.sortedUncraftableGear!.append(gear)
             }
         }
