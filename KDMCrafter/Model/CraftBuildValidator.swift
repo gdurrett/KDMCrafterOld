@@ -252,6 +252,7 @@ public class CraftBuildValidator {
         }
         let types: [resourceType] = [.bone, .consumable, .hide, .iron, .organ, .scrap, .skull, .vermin]
         for (item, qty) in multi {
+            //print("Checking \(item.name) with \(qty)")
             for type in item.type {
                 if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
                     if gear.name == "Lantern Sword" { print("Adding \(type)") }
@@ -271,24 +272,25 @@ public class CraftBuildValidator {
             print("preBasics: \(preBasics.keys) and \(preBasics.values)")
         }
         // See if we need to reduce or not
-        var reduce = false
-        if availableBasics != [:] {
-            for (type, qty) in availableBasics {
-                if preBasics[type] != nil && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
-                    if gear.name == "Oxidized Lantern Sword" {
-                        print("Skipping \(type.rawValue) reduction")
-                    }
-                    continue
-                } else {
-                    reduce = true
-                }
-            }
-        }
+        var reduce = true
+//        var reduce = false
+//        if availableBasics != [:] {
+//            for (type, qty) in availableBasics {
+//                if preBasics[type] != nil && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
+//                    if gear.name == "Lantern Sword" {
+//                        print("Skipping \(type.rawValue) reduction")
+//                    }
+//                    continue
+//                } else {
+//                    reduce = true
+//                }
+//            }
+//        }
         if reduce == true {
             while loopCounter <= resourceCountDict.values.reduce(0, +) && availableBasics != [:] {
                 let max = availableBasics.map { $1 }.max()!
                 let sum = availableBasics.values.reduce(0, +)
-                if gear.name == "Oxidized Lantern Sword" {
+                if gear.name == "Lantern Sword" {
                     print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
                 }
 
@@ -296,27 +298,37 @@ public class CraftBuildValidator {
                     break
                 }
                 for (type, qty) in availableBasics {
-                    if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
-                        if gear.name == "Oxidized Lantern Sword" {
-                            print("Decrementing: \(type) due to amnt being met already.")
-                            print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
+//                    if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
+//                        if gear.name == "Oxidized Lantern Sword" {
+//                            print("Decrementing: \(type) due to amnt being met already.")
+//                            print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
+//                        }
+//                        availableBasics[type]! -= 1
+//                        break
+//                    }
+                    if qty == max {
+                        if (preBasics[type] != nil) && (preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
+                            print("Reducing \(type.rawValue) as we already have enough.")
+                            print("Reducing \(type.rawValue)")
+                            availableBasics[type]! -= 1
+                            break
+                        } else if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
+                            print("Reducing \(type.rawValue) as we already have enough.")
+                            print("Reducing \(type.rawValue)")
+                            availableBasics[type]! -= 1
+                            break
+                        } else {
+                            continue
                         }
-                        availableBasics[type]! -= 1
-                        break
+//                        print("Reducing \(type.rawValue)")
+//                        availableBasics[type]! -= 1
+//                        break
                     }
-    //                } else if qty == max || gear.overlappingResources.contains(type) { //test skip if not in overlapping
-    //                    availableBasics[type]! -= 1
-    //                    if gear.name == "Lantern Sword" {
-    //                        print("Decrementing: \(type)")
-    //                        print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
-    //                    }
-    //                    break
-    //                }
                 }
                 loopCounter += 1
             }
         }
-        if gear.name == "Oxidized Lantern Sword" {
+        if gear.name == "Lantern Sword" {
             print("Basics final: \(availableBasics.keys), \(availableBasics.values)")
         }
         // Now get basic types and add to remaining multis (availableBasics)
@@ -347,6 +359,7 @@ public class CraftBuildValidator {
                 }
             }
         }
+        //print("Specials: \(availableSpecials), Basics: \(availableBasics), Return: \(returnValue)")
         return (availableSpecials, availableBasics, returnValue)
     }
 }

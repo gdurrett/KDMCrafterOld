@@ -155,7 +155,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DP0-mO-r1L">
-                                <rect key="frame" x="0.0" y="146" width="414" height="667"/>
+                                <rect key="frame" x="0.0" y="176" width="414" height="637"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="M7R-Or-DJP">
@@ -170,15 +170,29 @@
                                     <action selector="segmentedControlAction:" destination="8rJ-Kc-sve" eventType="valueChanged" id="Bje-vh-80H"/>
                                 </connections>
                             </segmentedControl>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="iGP-cB-lzT">
+                                <rect key="frame" x="50" y="139" width="314" height="29"/>
+                                <segments>
+                                    <segment title="Armor"/>
+                                    <segment title="Item"/>
+                                    <segment title="Weapon"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentedControlAction2:" destination="8rJ-Kc-sve" eventType="valueChanged" id="GUt-N9-dJS"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="iGP-cB-lzT" firstAttribute="top" secondItem="M7R-Or-DJP" secondAttribute="bottom" constant="8" id="3kw-gT-Fte"/>
+                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="iGP-cB-lzT" secondAttribute="bottom" constant="9" id="FP7-Wl-Amq"/>
                             <constraint firstItem="M7R-Or-DJP" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="50" id="J3z-Od-zWR"/>
-                            <constraint firstItem="DP0-mO-r1L" firstAttribute="top" secondItem="M7R-Or-DJP" secondAttribute="bottom" constant="15" id="NdE-hC-FOl"/>
+                            <constraint firstItem="iGP-cB-lzT" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" constant="50" id="c84-8l-4TF"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="bottom" secondItem="O1u-W8-tvY" secondAttribute="bottom" id="dSq-xZ-ptD"/>
                             <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="M7R-Or-DJP" secondAttribute="trailing" constant="50" id="dza-Xw-ehA"/>
                             <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="DP0-mO-r1L" secondAttribute="trailing" id="esf-hp-r54"/>
                             <constraint firstItem="DP0-mO-r1L" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" id="fs5-ox-s4S"/>
+                            <constraint firstItem="O1u-W8-tvY" firstAttribute="trailing" secondItem="iGP-cB-lzT" secondAttribute="trailing" constant="50" id="t1d-83-UjC"/>
                             <constraint firstItem="M7R-Or-DJP" firstAttribute="top" secondItem="O1u-W8-tvY" secondAttribute="top" constant="15" id="t1u-uH-OZd"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="O1u-W8-tvY"/>
@@ -193,6 +207,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="segmentedControlOutlet" destination="M7R-Or-DJP" id="EkV-pY-74f"/>
+                        <outlet property="segmentedControlOutlet2" destination="iGP-cB-lzT" id="9rs-sI-kM6"/>
                         <outlet property="tableView" destination="DP0-mO-r1L" id="cQg-ZS-pVh"/>
                         <segue destination="cBP-Jk-lxg" kind="show" identifier="ShowCraftGearDetailView" id="1YK-5v-37f"/>
                     </connections>
@@ -791,4 +806,5 @@
         <image name="icons8-settings-50" width="50" height="50"/>
         <image name="second" width="30" height="30"/>
     </resources>
+    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>

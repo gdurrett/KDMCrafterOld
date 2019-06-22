@@ -134,7 +134,7 @@ class Settlement: Codable, Equatable {
         // Basic Resource declarations
         let endeavor = Resource(name: "Endeavor", kind: .basic, type: [.endeavor])
         allResources.append(endeavor)
-        let multi = Resource(name: "???", kind: .strange, type: [.bone, .consumable, .hide, .organ])
+        let multi = Resource(name: "???", kind: .basic, type: [.bone, .consumable, .hide, .organ])
         allResources.append(multi)
         let brokenLantern = Resource(name: "Broken Lantern", kind: .strange, type: [.scrap])
         allResources.append(brokenLantern)
@@ -146,7 +146,7 @@ class Settlement: Codable, Equatable {
         allResources.append(monsterHide)
         let monsterOrgan = Resource(name: "Monster Organ", kind: .basic, type: [.organ])
         allResources.append(monsterOrgan)
-        let scrap = Resource(name: "Scrap", kind: .strange, type: [.scrap])
+        let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
         allResources.append(scrap)
         let skull = Resource(name: "Skull", kind: .basic, type: [.bone, .skull])
         allResources.append(skull)
