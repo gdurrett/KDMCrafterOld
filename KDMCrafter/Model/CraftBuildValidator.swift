@@ -205,9 +205,11 @@ public class CraftBuildValidator {
                     if returnValue != false {
                         returnValue = true
                         if difference > 0 && availableSpecials[resource] != nil {
+                            print("adding \(availableSpecials[resource]!)")
                             availableSpecials[resource]! += difference
                         } else if difference > 0 && availableSpecials[resource] == nil {
                             availableSpecials[resource] = difference
+                            print("setting \(availableSpecials[resource]!)")
                         }
                     }
                 } else {
@@ -248,36 +250,41 @@ public class CraftBuildValidator {
         var gearRequiredSpecialTypes = [resourceType]()
         if gear.resourceSpecialRequirements != nil {
             gearRequiredSpecialTypes = gear.resourceSpecialRequirements!.keys.flatMap { $0.type }
-            //if gear.name == "Lantern Sword" { print(gearRequiredSpecialTypes) }
+            //if gear.name == "Skull Helm" { print(gearRequiredSpecialTypes) }
         }
         let types: [resourceType] = [.bone, .consumable, .hide, .iron, .organ, .scrap, .skull, .vermin]
         for (item, qty) in multi {
             //print("Checking \(item.name) with \(qty)")
             for type in item.type {
                 if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
-                    if gear.name == "Lantern Sword" { print("Adding \(type)") }
+                    if gear.name == "Skull Helm" { print("Adding \(type)") }
                     availableBasics[type]! += qty
                     if qty > 0 { resourceCountDict[item] = qty }
 //                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
                 } else if types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
-                    if gear.name == "Lantern Sword" { print("Setting \(type)") }
+                    if gear.name == "Skull Helm" { print("Setting \(type)") }
                     availableBasics[type] = qty
                     if qty > 0 { resourceCountDict[item] = qty }
                 }
             }
         }
         var loopCounter = 0
-        if gear.name == "Lantern Sword" {
+        if gear.name == "Skull Helm" {
             print("Basics:\(availableBasics.keys), values: \(availableBasics.values), CountDict: \(resourceCountDict.values.reduce(0, +))")
             print("preBasics: \(preBasics.keys) and \(preBasics.values)")
         }
         // See if we need to reduce or not
-        var reduce = true
+        var reduce: Bool
+        if gear.name == "Skull Helm" && (availableResources.keys.filter { $0.type.contains(.bone) }).count > 1 {
+            reduce = false
+        } else {
+            reduce = true
+        }
 //        var reduce = false
 //        if availableBasics != [:] {
 //            for (type, qty) in availableBasics {
 //                if preBasics[type] != nil && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
-//                    if gear.name == "Lantern Sword" {
+//                    if gear.name == "Skull Helm" {
 //                        print("Skipping \(type.rawValue) reduction")
 //                    }
 //                    continue
@@ -290,7 +297,7 @@ public class CraftBuildValidator {
             while loopCounter <= resourceCountDict.values.reduce(0, +) && availableBasics != [:] {
                 let max = availableBasics.map { $1 }.max()!
                 let sum = availableBasics.values.reduce(0, +)
-                if gear.name == "Lantern Sword" {
+                if gear.name == "Skull Helm" {
                     print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
                 }
 
@@ -299,7 +306,7 @@ public class CraftBuildValidator {
                 }
                 for (type, qty) in availableBasics {
 //                    if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
-//                        if gear.name == "Oxidized Lantern Sword" {
+//                        if gear.name == "Oxidized Skull Helm" {
 //                            print("Decrementing: \(type) due to amnt being met already.")
 //                            print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
 //                        }
@@ -328,7 +335,7 @@ public class CraftBuildValidator {
                 loopCounter += 1
             }
         }
-        if gear.name == "Lantern Sword" {
+        if gear.name == "Skull Helm" {
             print("Basics final: \(availableBasics.keys), \(availableBasics.values)")
         }
         // Now get basic types and add to remaining multis (availableBasics)
@@ -359,7 +366,11 @@ public class CraftBuildValidator {
                 }
             }
         }
-        //print("Specials: \(availableSpecials), Basics: \(availableBasics), Return: \(returnValue)")
+        print(availableBasics)
+        // Gear special exceptions
+        if gear.name == "Skull Helm" && ((availableResources.keys.filter { $0.type.contains(.skull) }).count > 0 || (availableResources.keys.filter { $0.type.contains(.bone) }).count > 1) {
+            returnValue = true
+        }
         return (availableSpecials, availableBasics, returnValue)
     }
 }

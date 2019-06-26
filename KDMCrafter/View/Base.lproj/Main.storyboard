@@ -56,6 +56,11 @@
                                 <action selector="settingsButtonAction:" destination="9pv-A4-QxB" id="wBt-vn-fWl"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="mZh-4t-KJ5">
+                            <connections>
+                                <action selector="shareSettlementAction:" destination="9pv-A4-QxB" id="0cT-5I-XF4"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="segmentedControlOutlet" destination="7MF-OD-zlm" id="7Om-7i-3Jr"/>

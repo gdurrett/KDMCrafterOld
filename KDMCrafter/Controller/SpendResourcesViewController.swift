@@ -31,6 +31,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     var spendableResources: [Resource:Int]! // Sent by Craft Detail VC
     var requiredResourceTypes: [resourceType:Int]! // Sent by Craft Detail VC
     var requiredResources: [Resource:Int]? // Sent by Craft Detail VC
+    var gear: Gear? // Sent by Craft Detail VC
     
     var spentResources = [Resource:Int]() // Track spent resources
     var spentResourceTypes = [Resource:[resourceType:Int]]() // Track spent resource types by Resource
@@ -72,23 +73,32 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         save.isHidden = true
         //spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         spentTypesLabel.textColor = UIColor.white
-        if spendableResources == [:] { // resources auto-spent in this case, so just show done and spend them (maybe need an alert?)
-            preSpend()
-            for (resource, qty) in requiredResources! {
-                spentResourceTypes[resource] = [resource.type[0]:qty]
+        
+        if gear!.name == "Skull Helm" {
+            sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+            sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
+            for (type, qty) in requiredResourceTypes {
+                spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
             }
-            checkIfRequirementsMet()
+            spentTypesLabel.text! = spentResourcesString + spentTypesString
         } else {
-            preSpend()
+            if spendableResources == [:] { // resources auto-spent in this case, so just show done and spend them (maybe need an alert?)
+                preSpend()
+                for (resource, qty) in requiredResources! {
+                    spentResourceTypes[resource] = [resource.type[0]:qty]
+                }
+                checkIfRequirementsMet()
+            } else {
+                preSpend()
+            }
+            sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+            sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
+            
+                for (type, qty) in requiredResourceTypes {
+                    spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
+                }
+                spentTypesLabel.text! = spentResourcesString + spentTypesString
         }
-        sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
-        sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
-        
-        for (type, qty) in requiredResourceTypes {
-            spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
-        }
-        spentTypesLabel.text! = spentResourcesString + spentTypesString
-        
     }
     
 
@@ -140,8 +150,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             self.currentCell = cell
             self.prevSpentResources = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
-            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1            
-            
+            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
             var typesProvidedByThisResource = [resourceType]()
             for type in self.requiredResourceTypes.keys { // Get a count of types provided by this resource that are required by gear in question
                 if key.type.contains(type) {

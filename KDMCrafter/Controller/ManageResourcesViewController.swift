@@ -23,6 +23,16 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
+    @IBAction func shareSettlementAction(_ sender: Any) {
+        let url = dataModel.pathURL
+        let activityViewController = UIActivityViewController(activityItems: [url] , applicationActivities: nil)
+        
+        DispatchQueue.main.async {
+            self.present(activityViewController, animated: true, completion: nil)
+        }
+    }
+    
+    
     let dataModel = DataModel.sharedInstance
     
     var mySettlement: Settlement?
@@ -69,6 +79,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         setupSearch()
         setUpMenuButton()
         setUpTabBarIcons()
+        setUpSegLabels()
         
         navigationItem.title = "Manage Resources"
         
@@ -237,6 +248,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(change.newValue!)
             self.dataModel.writeData()
             self.updateStorage()
+            self.setUpSegLabels()
         }
         return cell
     }
@@ -380,6 +392,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             let innovateTabItem = tabBarVC.tabBar.items![3]
             innovateTabItem.image = UIImage(named: "icons8-idea-30")
         }
+    }
+    func setUpSegLabels() {
+        self.segmentedControlOutlet.setTitle(("All - \(self.sortedStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 0)
+        self.segmentedControlOutlet.setTitle(("Bone - \(self.sortedBoneStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 1)
+        self.segmentedControlOutlet.setTitle(("Cons - \(self.sortedConsStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 2)
+        self.segmentedControlOutlet.setTitle(("Hide - \(self.sortedHideStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 3)
+        self.segmentedControlOutlet.setTitle(("Organ - \(self.sortedOrganStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 4)
     }
 }
 

@@ -148,7 +148,7 @@ class Settlement: Codable, Equatable {
         allResources.append(monsterOrgan)
         let scrap = Resource(name: "Scrap", kind: .basic, type: [.scrap])
         allResources.append(scrap)
-        let skull = Resource(name: "Skull", kind: .basic, type: [.bone, .skull])
+        let skull = Resource(name: "Skull", kind: .strange, type: [.bone, .skull])
         allResources.append(skull)
         
         // Gear Resource declarations

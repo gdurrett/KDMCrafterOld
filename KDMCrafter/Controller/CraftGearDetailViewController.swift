@@ -175,12 +175,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
                         var excessQty = Int()
                         var qty = mySettlement!.resourceStorage[resource.key] == nil ? 0:mySettlement!.resourceStorage[resource.key]
                         if validator.getAllTypesDict()[resource.key.type[0]] != nil {
-                            excessQty = validator.getAllTypesDict()[resource.key.type[0]]! - qty!
-//                            if qty != nil && qty! > 0 {
-//                                otherQty = validator.getAllTypesDict()[resource.key.type[0]]! - resource.value //Add other resource qtys that provide this special type (e.g. iron) but reduce by number required in special
-//                            } else {
-//                                otherQty = validator.getAllTypesDict()[resource.key.type[0]]!
-//                            }
+                            if gear.name != "Skull Helm" { // Exception for Skull Helm unique resource requirements
+                                excessQty = validator.getAllTypesDict()[resource.key.type[0]]! - qty!
+                            }
                         }
                         if excessQty != 0 { qty! += excessQty } //
                         cell.qtyAvailableLabel.text! = "\(qty!)"
@@ -421,7 +418,10 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         }
         spendResourcesVC.spendableResources = spendableResources
         spendResourcesVC.requiredResourceTypes = requiredResourceTypes
-        if gear.resourceSpecialRequirements != nil { spendResourcesVC.requiredResources = gear.resourceSpecialRequirements }
+        spendResourcesVC.gear = self.gear
+        if gear.resourceSpecialRequirements != nil {
+            spendResourcesVC.requiredResources = gear.resourceSpecialRequirements
+        }
         spendResourcesVC.delegate = self
         
         self.present(spendResourcesVC, animated: true, completion: nil)
@@ -457,7 +457,26 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { (UIAlertAction) in
             if self.mySettlement!.overrideEnabled == false {
-                self.spendResources(for: gear)
+                let avail = self.mySettlement!.resourceStorage.filter { $0.value > 0 }
+                let skulls = avail.filter { $0.key.type.contains(.skull) }
+                if gear.name == "Skull Helm" && skulls != [:] { //
+                    if skulls.count == 1 {
+                        print("Just one skull! \(skulls)")
+                        self.updateStorage(with: skulls)
+                    } else {
+                        print("Not here I hope!")
+                        for (skull, _) in skulls {
+                            if skull.name == "Black Skull" {
+                                continue
+                            } else {
+                                self.updateStorage(with: [skull:1])
+                                break
+                            }
+                        }
+                    }
+                } else {
+                    self.spendResources(for: gear)
+                }
             } else {
                 self.mySettlement!.gearCraftedDict[gear]! += 1
             }

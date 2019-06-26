@@ -14,11 +14,11 @@ class DataModel {
     static var sharedInstance = DataModel()
     var currentSettlement: Settlement!
     var observation: NSKeyValueObservation?
-
+    var pathURL: URL
     var saveData = Data()
     
     private init() {
-        let pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
+        pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
         let xml = FileManager.default.contents(atPath: pathURL.path)
         if xml != nil {
             let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)

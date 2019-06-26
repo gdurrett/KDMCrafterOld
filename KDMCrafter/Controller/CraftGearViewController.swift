@@ -452,7 +452,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         if isFiltering() {
             updateSearchResults(for: self.searchController)
-            return self.filteredSortedCraftableGear!.sorted(by: { $0.name < $1.name })
+            if self.filteredSortedCraftableGear != nil {
+                return self.filteredSortedCraftableGear!.sorted(by: { $0.name < $1.name })
+            } else {
+                return []
+            }
         } else if mySettlement!.overrideEnabled == true {
             self.sortedCraftableGear = []
             for gear in mySettlement!.availableGear {
