@@ -205,11 +205,9 @@ public class CraftBuildValidator {
                     if returnValue != false {
                         returnValue = true
                         if difference > 0 && availableSpecials[resource] != nil {
-                            print("adding \(availableSpecials[resource]!)")
                             availableSpecials[resource]! += difference
                         } else if difference > 0 && availableSpecials[resource] == nil {
                             availableSpecials[resource] = difference
-                            print("setting \(availableSpecials[resource]!)")
                         }
                     }
                 } else {
@@ -257,22 +255,16 @@ public class CraftBuildValidator {
             //print("Checking \(item.name) with \(qty)")
             for type in item.type {
                 if availableBasics[type] != nil && types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
-                    if gear.name == "Skull Helm" { print("Adding \(type)") }
                     availableBasics[type]! += qty
                     if qty > 0 { resourceCountDict[item] = qty }
 //                } else if (type == .hide || type == .organ || type == .bone || type == .consumable)  && gear.resourceTypeRequirements!.keys.contains(type) {
                 } else if types.contains(type) && (gear.resourceTypeRequirements!.keys.contains(type) || gear.resourceTypeRequirements!.keys.contains(type) && gearRequiredSpecialTypes.contains(type)) {
-                    if gear.name == "Skull Helm" { print("Setting \(type)") }
                     availableBasics[type] = qty
                     if qty > 0 { resourceCountDict[item] = qty }
                 }
             }
         }
         var loopCounter = 0
-        if gear.name == "Skull Helm" {
-            print("Basics:\(availableBasics.keys), values: \(availableBasics.values), CountDict: \(resourceCountDict.values.reduce(0, +))")
-            print("preBasics: \(preBasics.keys) and \(preBasics.values)")
-        }
         // See if we need to reduce or not
         var reduce: Bool
         if gear.name == "Skull Helm" && (availableResources.keys.filter { $0.type.contains(.bone) }).count > 1 {
@@ -280,70 +272,70 @@ public class CraftBuildValidator {
         } else {
             reduce = true
         }
-//        var reduce = false
-//        if availableBasics != [:] {
-//            for (type, qty) in availableBasics {
-//                if preBasics[type] != nil && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
-//                    if gear.name == "Skull Helm" {
-//                        print("Skipping \(type.rawValue) reduction")
-//                    }
-//                    continue
-//                } else {
-//                    reduce = true
-//                }
-//            }
-//        }
+        if gear.name == "Oxidized Lantern Sword" {
+            print("Available Before: \(availableBasics)")
+            print("PreBasics Before: \(preBasics)")
+        }
         if reduce == true {
             while loopCounter <= resourceCountDict.values.reduce(0, +) && availableBasics != [:] {
+                if gear.name == "Oxidized Lantern Sword" {
+                    print("Loop counter: \(loopCounter)")
+                }
                 let max = availableBasics.map { $1 }.max()!
                 let sum = availableBasics.values.reduce(0, +)
-                if gear.name == "Skull Helm" {
+                if gear.name == "Oxidized Lantern Sword" {
                     print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
+                    print("PreBasics inside: \(preBasics)")
                 }
 
                 if sum == resourceCountDict.values.reduce(0, +) {
+                    if gear.name == "Oxidized Lantern Sword" {
+                        print("Leaving so soon?")
+                    }
                     break
                 }
                 for (type, qty) in availableBasics {
-//                    if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
-//                        if gear.name == "Oxidized Skull Helm" {
-//                            print("Decrementing: \(type) due to amnt being met already.")
-//                            print("Basics now: \(availableBasics.keys), \(availableBasics.values)")
-//                        }
-//                        availableBasics[type]! -= 1
-//                        break
-//                    }
                     if qty == max {
-                        if (preBasics[type] != nil) && (preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
-                            print("Reducing \(type.rawValue) as we already have enough.")
-                            print("Reducing \(type.rawValue)")
+                        if gear.name == "Oxidized Lantern Sword" {
+                            print("Inside: \(type.rawValue) is \(qty)")
+                        }
+                        if (preBasics[type] != nil) && (preBasics[type]! >= gear.resourceTypeRequirements![type]!) || (availableBasics[type] != nil) && (availableBasics[type]! >= gear.resourceTypeRequirements![type]!) {
                             availableBasics[type]! -= 1
+                            if gear.name == "Oxidized Lantern Sword" {
+                                print("Reducing \(type.rawValue)")
+                            }
                             break
-                        } else if (preBasics[type] != nil) && (qty + preBasics[type]! > gear.resourceTypeRequirements![type]!) {
-                            print("Reducing \(type.rawValue) as we already have enough.")
-                            print("Reducing \(type.rawValue)")
+                        } else if (preBasics[type] != nil) && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
                             availableBasics[type]! -= 1
+                            if gear.name == "Oxidized Lantern Sword" {
+                                print("Reducing \(type.rawValue)")
+                            }
                             break
                         } else {
                             continue
                         }
-//                        print("Reducing \(type.rawValue)")
-//                        availableBasics[type]! -= 1
-//                        break
+                    } else {
+                        if gear.name == "Oxidized Lantern Sword" {
+                            print("Instead: \(type.rawValue) is \(qty)")
+                        }
                     }
                 }
                 loopCounter += 1
             }
         }
-        if gear.name == "Skull Helm" {
-            print("Basics final: \(availableBasics.keys), \(availableBasics.values)")
+        if gear.name == "Oxidized Lantern Sword" {
+            print("Basics now: \(availableBasics)")
         }
         // Now get basic types and add to remaining multis (availableBasics)
         let postBasics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
+
         if gear.resourceTypeRequirements != [:] {
             for (resource, qty) in postBasics {
                 for type in resource.type {
                     if gear.resourceTypeRequirements!.keys.contains(type) {
+                        if gear.name == "Oxidized Lantern Sword" {
+                            print("postBasics: \(resource.name) \(type), \(qty)")
+                        }
                         if qty > 0 {
                             if availableBasics[type] != nil {
                                 availableBasics[type]! += qty
@@ -366,7 +358,6 @@ public class CraftBuildValidator {
                 }
             }
         }
-        print(availableBasics)
         // Gear special exceptions
         if gear.name == "Skull Helm" && ((availableResources.keys.filter { $0.type.contains(.skull) }).count > 0 || (availableResources.keys.filter { $0.type.contains(.bone) }).count > 1) {
             returnValue = true

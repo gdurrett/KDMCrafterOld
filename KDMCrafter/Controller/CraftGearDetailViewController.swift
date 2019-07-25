@@ -456,27 +456,9 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { (UIAlertAction) in
+            
             if self.mySettlement!.overrideEnabled == false {
-                let avail = self.mySettlement!.resourceStorage.filter { $0.value > 0 }
-                let skulls = avail.filter { $0.key.type.contains(.skull) }
-                if gear.name == "Skull Helm" && skulls != [:] { //
-                    if skulls.count == 1 {
-                        print("Just one skull! \(skulls)")
-                        self.updateStorage(with: skulls)
-                    } else {
-                        print("Not here I hope!")
-                        for (skull, _) in skulls {
-                            if skull.name == "Black Skull" {
-                                continue
-                            } else {
-                                self.updateStorage(with: [skull:1])
-                                break
-                            }
-                        }
-                    }
-                } else {
-                    self.spendResources(for: gear)
-                }
+                self.spendResources(for: gear)
             } else {
                 self.mySettlement!.gearCraftedDict[gear]! += 1
             }

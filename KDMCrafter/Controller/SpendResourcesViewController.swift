@@ -48,6 +48,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     var spentTypesString = String()
     var providedTypesString = "Provides: "
     var spentResourcesString = " "
+    var spentSkullsString = " "
     
     // For type picker alertView
     var typeChoices = [resourceType]()
@@ -74,15 +75,53 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         //spentTypesLabel.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         spentTypesLabel.textColor = UIColor.white
         
-        if gear!.name == "Skull Helm" {
-            sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
-            sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
-            for (type, qty) in requiredResourceTypes {
-                spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
-            }
-            spentTypesLabel.text! = spentResourcesString + spentTypesString
+        if gear != nil && gear!.name == "Skull Helm" {
+            let skulls = spendableResources.filter { $0.key.type.contains(.skull) }
+                if skulls.count == 1 {
+                    let name = skulls.compactMap { $0.key.name }[0]
+                    preSpend()
+                    let resource = skulls.keys.map { $0.self }[0]
+                    spentResourceTypes[resource] = [resource.type[0]:1] // Spend Black Skull
+                    checkIfRequirementsMet()
+                    spentTypesLabel.text! = "\(name):1/1"
+                    sortedSpendableResources = nil //Test show nothing when we want to just prespend a skull
+                } else if skulls.count == 0 { // If we don't have any skulls available, bring up other bone providers
+                    if spendableResources == [:] { // no basic types, just specials, so just show done and spend them (maybe need an alert?)
+                        preSpend()
+                        for (resource, qty) in requiredResources! {
+                            spentResourceTypes[resource] = [resource.type[0]:qty]
+                        }
+                        checkIfRequirementsMet()
+                    } else {
+                        preSpend()
+                    }
+                    sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+                    sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
+                    
+                    for (type, qty) in requiredResourceTypes {
+                        spentTypesString.append("\(type.rawValue.capitalized):0/\(qty) ")
+                    }
+                    spentTypesLabel.text! = spentTypesString
+                } else {
+                    for (skull, _) in skulls {
+                        if skull.name == "Black Skull" {
+                            continue
+                        } else {
+                            preSpend()
+                            for (resource, _) in requiredResources! {
+                                spentResourceTypes[resource] = [resource.type[0]:1]
+                            }
+                            checkIfRequirementsMet()
+                            spentTypesLabel.text! = "\(skull.name):1/1"
+                            break
+                        }
+                    }
+                    sortedSpendableResources = nil // Also test
+                }
+//            sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+//            sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
         } else {
-            if spendableResources == [:] { // resources auto-spent in this case, so just show done and spend them (maybe need an alert?)
+            if spendableResources == [:] { // no basic types, just specials, so just show done and spend them (maybe need an alert?)
                 preSpend()
                 for (resource, qty) in requiredResources! {
                     spentResourceTypes[resource] = [resource.type[0]:qty]
@@ -103,7 +142,11 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sortedSpendableResources!.count
+        if sortedSpendableResources == nil { // In case we have a skull, where we set this to nil
+            return 0
+        } else {
+            return sortedSpendableResources!.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -170,7 +213,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: spentResourceQty)
                 self.setSpentTypes()
                 cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            } else if key.kind != .basic && key.type.count > 2 { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
+            } else if (key.kind != .basic && key.type.count > 2) || (key.name == "???") { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
                 for type in self.sortedSpentResources![indexPath.row].0.type {
                     if type == self.sortedSpentResources![indexPath.row].0.type[0] && key.name != "???" {
                         continue
@@ -203,6 +246,10 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         label.sizeToFit()
     }
     fileprivate func checkIfRequirementsMet() {
+        if gear != nil && gear!.name == "Skull Helm" && (self.spentResourceTypes.keys.compactMap { $0.name }[0].contains("Skull")) {
+            save.isHidden = false
+            self.spentTypesLabel.textColor = UIColor.black
+        } else
         if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             //self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
@@ -228,7 +275,13 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             self.spentResourceTypesTemp[type] = spentAmount
                  self.spentTypesString.append("\(type.rawValue.capitalized):\(spentAmount)/\(qty) ")
         }
-        self.spentTypesLabel.text = self.spentTypesString
+        if spentTypesString.contains("Black Skull") {
+            self.spentTypesLabel.text = self.spentTypesString.replacingOccurrences(of: "Black Skull:1/1 ", with: "")
+        } else if spentTypesString.contains("Skull") {
+            self.spentTypesLabel.text = self.spentTypesString.replacingOccurrences(of: "Skull:1/1 ", with: "")
+        } else {
+            self.spentTypesLabel.text = self.spentTypesString
+        }
         self.checkIfRequirementsMet()
     }
 

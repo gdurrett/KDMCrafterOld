@@ -89,6 +89,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     override func viewWillAppear(_ animated: Bool) {
         updateStorage()
         setUpMenuButton()
+        setUpSegLabels()
         tableView.reloadData()
     }
 
@@ -193,6 +194,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         configureTypes(for: cell, with: key!.type, with: 3575)
         
         cell.stepperOutlet.value = Double(value!)
+        cell.stepperOutlet.minimumValue = 0.0
         cell.stepperOutlet.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         cell.resourceCountLabel.text! = "\(value!)"
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
