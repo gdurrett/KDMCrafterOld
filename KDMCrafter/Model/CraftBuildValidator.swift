@@ -135,6 +135,7 @@ public class CraftBuildValidator {
         return myArray
     }
     func isBuildable(locations: [Location], location: Location) -> Bool {
+        //if location.name == "Barber Surgeon" { print(isResourceRequirementMet(resources: resources, location: location))}
         if settlement!.locationsBuiltDict[location] == true {
             return false
         } else if isResourceRequirementMet(resources: resources, location: location) && isLocationRequirementMet(locations: locations, location: location) || settlement!.overrideEnabled == true {
@@ -157,7 +158,10 @@ public class CraftBuildValidator {
                     resourceRequirementsMet = true
                 }
             }
+        } else {
+            resourceRequirementsMet = true
         }
+        if location.name == "Barber Surgeon" { print(resourceRequirementsMet)}
         return resourceRequirementsMet
     }
     func isLocationRequirementMet(locations: [Location], location: Location) -> Bool {
@@ -165,8 +169,10 @@ public class CraftBuildValidator {
         if location.locationRequirement.contains("Special") {
             locationRequirementMet = true
         } else if location.innovationRequirement != nil {
+            
             let completedInnovations = settlement!.innovationsAddedDict
             if completedInnovations[location.innovationRequirement!] == true {
+                if location.name == "Barber Surgeon" { print("Should be here") }
                 locationRequirementMet = true
             } else {
                 locationRequirementMet = false

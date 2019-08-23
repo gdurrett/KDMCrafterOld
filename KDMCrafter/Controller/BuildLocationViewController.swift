@@ -114,6 +114,8 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
         } else if location.locationRequirement.contains("Special") {
             configureMissingResourceLabel(for: cell, with: missingResourcesString, with: 3700)
+        } else if location.name == "Barber Surgeon" {
+            configureMissingResourceLabel(for: cell, with: "Defeat L2 Antelope", with: 3700)
         } else {
             configureMissingResourceLabel(for: cell, with: "", with: 3700)
         }
@@ -169,7 +171,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         if label.text!.contains("Missing") && label.text != "Lantern Hoard" {
             label.textColor = UIColor.red
         } else {
-            label.textColor = UIColor.black
+            label.textColor = UIColor.gray
         }
         if label.text!.contains("Special") {
             label.text = missing.replacingOccurrences(of: "Special: ", with: "")
@@ -200,19 +202,19 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             if dict == [:] && location.innovationRequirement != nil {
                 missingResourcesString = "Missing: \(location.innovationRequirement!.name)"
             } else if dict == [:] {
-                if location.name == "Blacksmith" { print("First one") }
+                if location.name == "Barber Surgeon" { print("First one") }
                 missingResourcesString = "Missing: \(location.locationRequirement)"
             } else if !location.locationRequirement.contains("Special") &&
                 builtLocationNames.contains(location.locationRequirement) {
-                if location.name == "Blacksmith" { print("second one") }
+                if location.name == "Barber Surgeon" { print("second one") }
                 missingResourcesString = "Missing: \(dict)"
             } else {
                 if location.innovationRequirement != nil && location.locationRequirement != "" {
-                    if location.name == "Blacksmith" { print("Third one: \(location.locationRequirement)") }
+                    if location.name == "Barber Surgeon" { print("Third one: \(location.locationRequirement)") }
                     missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(location.locationRequirement), \(dict)"
                 } else if location.innovationRequirement != nil &&
                     mySettlement!.innovationsAddedDict[location.innovationRequirement!] != true {
-                    if location.name == "Blacksmith" { print("Fourth one: \(location.locationRequirement)") }
+                    if location.name == "Barber Surgeon" { print("Fourth one: \(location.locationRequirement)") }
                     missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(dict)"
                 } else {
                     if location.locationRequirement == "" {
@@ -223,7 +225,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
                 }
             }
         } else {
-            if location.name == "Blacksmith" { print("second one") }
+            if location.name == "Barber Surgeon" { print("Fifth one") }
             missingResourcesString = location.locationRequirement
         }
         return missingResourcesString

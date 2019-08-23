@@ -108,7 +108,7 @@ class Settlement: Codable, Equatable {
         let scrapSmelting = Innovation(name: "Scrap Smelting")
         availableInnovations.append(scrapSmelting)
         
-        let barberSurgeon = Location(name: "Barber Surgeon", locationRequirement: "Special: Defeat L2 Screaming Antelope with Pottery innovated", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        let barberSurgeon = Location(name: "Barber Surgeon", locationRequirement: "Defeat L2 Screaming Antelope with Pottery innovated", resourceRequirement: [:], innovationRequirement: pottery) // Allow toggle, but pop up message confirming requirement met
         allLocations.append(barberSurgeon)
         //let blackSmith = Location(name: "Blacksmith", locationRequirement: "Special: Innovate Scrap Smelting", resourceRequirement: [.bone:6, .endeavor:1, .scrap:3]) // Allow toggle, but pop up message confirming requirement met
         let blackSmith = Location(name: "Blacksmith", locationRequirement:"", resourceRequirement: [.bone:6, .endeavor:1, .scrap:3], innovationRequirement: scrapSmelting) // Allow toggle, but pop up message confirming requirement met
