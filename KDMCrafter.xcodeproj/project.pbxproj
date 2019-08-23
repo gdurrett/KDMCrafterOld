@@ -72,6 +72,7 @@
 		FBB85B232285E9EC00CAA684 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FBBD1AD222396C8400CAA684 /* GearRequirementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearRequirementTableViewCell.swift; sourceTree = "<group>"; };
 		FBBD1AD422396CA000CAA684 /* GearRequirementTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GearRequirementTableViewCell.xib; sourceTree = "<group>"; };
+		FBCA21CD22F0B8A100CAA684 /* KDMCrafter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KDMCrafter.entitlements; sourceTree = "<group>"; };
 		FBDE073A22527FE800CAA684 /* KDMCrafterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KDMCrafterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTableViewCell.swift; sourceTree = "<group>"; };
 		FBEA749C21FB7C9900CAA684 /* ResourceTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceTableViewCell.xib; sourceTree = "<group>"; };
@@ -180,6 +181,7 @@
 		FBFD693E21C43BA200CAA684 /* KDMCrafter */ = {
 			isa = PBXGroup;
 			children = (
+				FBCA21CD22F0B8A100CAA684 /* KDMCrafter.entitlements */,
 				FBFD693F21C43BA200CAA684 /* AppDelegate.swift */,
 				FB3D9A8521F649F100CAA684 /* View */,
 				FBFD695521C4582800CAA684 /* Model */,
@@ -261,6 +263,14 @@
 					FBFD693B21C43BA200CAA684 = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -537,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KDMCrafter/KDMCrafter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BER336RBH2;
 				INFOPLIST_FILE = KDMCrafter/Info.plist;
@@ -555,6 +566,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KDMCrafter/KDMCrafter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BER336RBH2;
 				INFOPLIST_FILE = KDMCrafter/Info.plist;

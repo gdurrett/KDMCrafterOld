@@ -197,14 +197,33 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         let builtLocationNames = mySettlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
         if buildableStatus != true && !isBuilt {
             let dict = validator.getMissingLocationResourceRequirements(location: location)
-            if dict == [:] {
+            if dict == [:] && location.innovationRequirement != nil {
+                missingResourcesString = "Missing: \(location.innovationRequirement!.name)"
+            } else if dict == [:] {
+                if location.name == "Blacksmith" { print("First one") }
                 missingResourcesString = "Missing: \(location.locationRequirement)"
-            } else if !location.locationRequirement.contains("Special") && builtLocationNames.contains(location.locationRequirement) {
+            } else if !location.locationRequirement.contains("Special") &&
+                builtLocationNames.contains(location.locationRequirement) {
+                if location.name == "Blacksmith" { print("second one") }
                 missingResourcesString = "Missing: \(dict)"
             } else {
-                missingResourcesString = "Missing: \(location.locationRequirement), \(dict)"
+                if location.innovationRequirement != nil && location.locationRequirement != "" {
+                    if location.name == "Blacksmith" { print("Third one: \(location.locationRequirement)") }
+                    missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(location.locationRequirement), \(dict)"
+                } else if location.innovationRequirement != nil &&
+                    mySettlement!.innovationsAddedDict[location.innovationRequirement!] != true {
+                    if location.name == "Blacksmith" { print("Fourth one: \(location.locationRequirement)") }
+                    missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(dict)"
+                } else {
+                    if location.locationRequirement == "" {
+                        missingResourcesString = "Missing: \(dict)"
+                    } else {
+                        missingResourcesString = "Missing: \(location.locationRequirement), \(dict)"
+                    }
+                }
             }
         } else {
+            if location.name == "Blacksmith" { print("second one") }
             missingResourcesString = location.locationRequirement
         }
         return missingResourcesString

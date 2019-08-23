@@ -17,6 +17,9 @@ class DataModel {
     var pathURL: URL
     var saveData = Data()
     
+    var keyStore = NSUbiquitousKeyValueStore()
+    
+
     private init() {
         pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
         let xml = FileManager.default.contents(atPath: pathURL.path)
@@ -42,6 +45,10 @@ class DataModel {
         } catch {
             print(error)
         }
+        // Test KVS cloud storage
+        keyStore.set(currentSettlement.name, forKey: "settlementName")
+        keyStore.synchronize()
+        print(keyStore.string(forKey: "Paint")!)
     }
 }
 extension NSMutableAttributedString {

@@ -24,6 +24,8 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     var myInnovations: [Innovation]?
     var numInnovationRows: Int?
     
+    var keyStore: NSUbiquitousKeyValueStore?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,6 +44,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
 
         setUpMenuButton()
         navigationItem.title = "Add Innovations"
+        
+        keyStore = dataModel.keyStore
+        // KVS Notification Center Setup
+        NotificationCenter.default.addObserver(self, selector: #selector(onUbiquitousKeyValueStoreDidChangeExternally(notification:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: DataModel.sharedInstance.keyStore)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -96,13 +102,18 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     }
     func tappedAddInnovationButton(cell: InnovationTableViewCell) {
         let innovation = myInnovations![cell.tag]
+        let key = innovation.name
         if mySettlement!.innovationsAddedDict[innovation] == false {
             mySettlement!.innovationsAddedDict[innovation] = true
+            // KVS test
+            keyStore?.set(true, forKey: key)
         } else {
             mySettlement!.innovationsAddedDict[innovation] = false
+            keyStore?.set(false, forKey: key)
         }
         dataModel.writeData()
         tableView.reloadData()
+        keyStore!.synchronize()
     }
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
@@ -121,5 +132,9 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
         tableView.reloadData()
+    }
+    @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
+    {
+        print("KVS updated!")
     }
 }

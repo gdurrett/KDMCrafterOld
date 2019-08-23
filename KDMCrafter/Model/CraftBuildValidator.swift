@@ -164,6 +164,13 @@ public class CraftBuildValidator {
         var locationRequirementMet = Bool()
         if location.locationRequirement.contains("Special") {
             locationRequirementMet = true
+        } else if location.innovationRequirement != nil {
+            let completedInnovations = settlement!.innovationsAddedDict
+            if completedInnovations[location.innovationRequirement!] == true {
+                locationRequirementMet = true
+            } else {
+                locationRequirementMet = false
+            }
         } else {
             let builtLocationNames = settlement!.locationsBuiltDict.filter { $0.value == true }.map { $0.key.name }
             if builtLocationNames.contains(location.locationRequirement) {

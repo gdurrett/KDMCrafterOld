@@ -513,6 +513,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
             filteredSortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
+                for affinity in gear.description.affinities {
+                    print(String(describing: affinity))
+                }
                 return gear.name.lowercased().contains(searchText.lowercased())
             })
         case 1:

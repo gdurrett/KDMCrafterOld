@@ -84,14 +84,34 @@ class Settlement: Codable, Equatable {
     var innovationsAddedDict = [Innovation:Bool]()
     var overrideEnabled = false
     
+    //var keyStore = DataModel.sharedInstance.keyStore
+    
     init(name: String) {
-        
+
         // Gotta have a name!
         self.name = name
         
+        
+        // Innovation declarations
+        let ammonia = Innovation(name: "Ammonia")
+        availableInnovations.append(ammonia)
+        let drums = Innovation(name: "Drums")
+        availableInnovations.append(drums)
+        let lanternOven = Innovation(name: "Lantern Oven")
+        availableInnovations.append(lanternOven)
+        let paint = Innovation(name: "Paint")
+        availableInnovations.append(paint)
+        let pictograph = Innovation(name: "Pictograph")
+        availableInnovations.append(pictograph)
+        let pottery = Innovation(name: "Pottery")
+        availableInnovations.append(pottery)
+        let scrapSmelting = Innovation(name: "Scrap Smelting")
+        availableInnovations.append(scrapSmelting)
+        
         let barberSurgeon = Location(name: "Barber Surgeon", locationRequirement: "Special: Defeat L2 Screaming Antelope with Pottery innovated", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
         allLocations.append(barberSurgeon)
-        let blackSmith = Location(name: "Blacksmith", locationRequirement: "Special: Innovate Scrap Smelting", resourceRequirement: [:]) // Allow toggle, but pop up message confirming requirement met
+        //let blackSmith = Location(name: "Blacksmith", locationRequirement: "Special: Innovate Scrap Smelting", resourceRequirement: [.bone:6, .endeavor:1, .scrap:3]) // Allow toggle, but pop up message confirming requirement met
+        let blackSmith = Location(name: "Blacksmith", locationRequirement:"", resourceRequirement: [.bone:6, .endeavor:1, .scrap:3], innovationRequirement: scrapSmelting) // Allow toggle, but pop up message confirming requirement met
         allLocations.append(blackSmith)
         let boneSmith = Location(name: "Bone Smith", locationRequirement: "Lantern Hoard", resourceRequirement: [.endeavor:1])
         allLocations.append(boneSmith)
@@ -115,20 +135,6 @@ class Settlement: Codable, Equatable {
         allLocations.append(stoneCircle)
         let weaponCrafter = Location(name: "Weapon Crafter", locationRequirement: "Bone Smith", resourceRequirement: [.bone:3, .hide:1])
         allLocations.append(weaponCrafter)
-        
-        // Innovation declarations
-        let ammonia = Innovation(name: "Ammonia")
-        availableInnovations.append(ammonia)
-        let drums = Innovation(name: "Drums")
-        availableInnovations.append(drums)
-        let lanternOven = Innovation(name: "Lantern Oven")
-        availableInnovations.append(lanternOven)
-        let paint = Innovation(name: "Paint")
-        availableInnovations.append(paint)
-        let pictograph = Innovation(name: "Pictograph")
-        availableInnovations.append(pictograph)
-        let pottery = Innovation(name: "Pottery")
-        availableInnovations.append(pottery)
         
         // Initialize resources
         // Basic Resource declarations
@@ -545,5 +551,10 @@ class Settlement: Codable, Equatable {
                 locationsBuiltDict[location] = false
             }
         }
+    }
+    
+    @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
+    {
+        print("KVS updated!")
     }
 }

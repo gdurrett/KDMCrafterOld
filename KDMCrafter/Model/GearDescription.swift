@@ -20,7 +20,7 @@ enum armorLocation: String, Codable {
     case waist = "Waist"
     case legs = "Legs"
 }
-enum affinity: String, Codable {
+enum affinity: String, Codable, CaseIterable {
     case blueRight = "Blue Right"
     case redRight = "Red Right"
     case greenRight = "GreenRight"
