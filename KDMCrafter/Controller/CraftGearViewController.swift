@@ -103,22 +103,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 0:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.filteredSortedGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.filteredSortedGear!.filter { $0.description.type == .item }
+                    filtered = self.filteredSortedGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.filteredSortedGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.filteredSortedGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.filteredSortedGear!
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.sortedGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.sortedGear!.filter { $0.description.type == .item }
+                    filtered = self.sortedGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.sortedGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.sortedGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.sortedGear!
@@ -127,22 +127,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 1:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }
+                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.filteredSortedCraftableGear!
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .item }
+                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.sortedCraftableGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.sortedCraftableGear!
@@ -151,22 +151,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 2:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }
+                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.filteredSortedUncraftableGear!
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .armor }
                 case 1:
-                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .item }
+                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .armor }
                 case 2:
+                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .item }
+                case 3:
                     filtered = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }
                 default:
                     filtered = self.sortedUncraftableGear!
@@ -191,22 +191,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 0:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.filteredSortedGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.filteredSortedGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.filteredSortedGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.filteredSortedGear![indexPath.row]
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.sortedGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.sortedGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.sortedGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.sortedGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.sortedGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.sortedGear![indexPath.row]
@@ -215,22 +215,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 1:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.filteredSortedCraftableGear![indexPath.row]
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.sortedCraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.sortedCraftableGear![indexPath.row]
@@ -239,22 +239,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case 2:
             if isFiltering() {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.filteredSortedUncraftableGear![indexPath.row]
                 }
             } else {
                 switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 0:
-                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 1:
-                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
                 case 2:
+                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
+                case 3:
                     gear = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
                 default:
                     gear = self.sortedUncraftableGear![indexPath.row]
@@ -279,22 +279,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             case 0:
                 if isFiltering() {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.filteredSortedGear![gearIndex!]
                     }
                 } else {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.sortedGear![gearIndex!]
@@ -303,22 +303,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             case 1:
                 if isFiltering() {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.filteredSortedCraftableGear![gearIndex!]
                     }
                 } else {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
@@ -327,22 +327,22 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             case 2:
                 if isFiltering() {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.filteredSortedUncraftableGear![gearIndex!]
                     }
                 } else {
                     switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 0:
-                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 1:
-                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
                     case 2:
+                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
+                    case 3:
                         craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
                     default:
                         craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]

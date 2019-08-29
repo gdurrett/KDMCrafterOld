@@ -11,10 +11,16 @@ import UIKit
 class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    @IBAction func segmentedControlAction(_ sender: Any) {
-        updateSearchResults(for: self.searchController)
-        tableView.reloadData()
+    @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet weak var filterStackView: UIStackView!
+    @IBOutlet weak var filterTypesButton: UIButton!
+    @IBAction func filterTypesAction(_ sender: Any) {
+        filterResources()
     }
+    @IBAction func filterStockAction(_ sender: Any) {
+    }
+    
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
@@ -22,13 +28,22 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
-    @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
-    @IBAction func shareSettlementAction(_ sender: Any) {
-        let url = dataModel.pathURL
-        let activityViewController = UIActivityViewController(activityItems: [url] , applicationActivities: nil)
-        
-        DispatchQueue.main.async {
-            self.present(activityViewController, animated: true, completion: nil)
+    @IBAction func showFilterAction(_ sender: Any) {
+        if !filterMenuIsVisible {
+            topLayoutConstraint.constant = 40
+            bottomLayoutConstraint.constant = -40
+            filterMenuIsVisible = true
+            filterStackView.isHidden = false
+        } else {
+            topLayoutConstraint.constant = 0
+            bottomLayoutConstraint.constant = 0
+            filterMenuIsVisible = false
+            filterStackView.isHidden = true
+        }
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: {
+            self.tableView.layoutIfNeeded()
+        }) { (animationComplete) in
+            print("The animation is complete!")
         }
     }
     
@@ -47,8 +62,10 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     var filteredSortedHideStorage: [(key: Resource, value: Int)]?
     var sortedOrganStorage: [(key: Resource, value: Int)]?
     var filteredSortedOrganStorage: [(key: Resource, value: Int)]?
+    
+    var filteredStorageType: String?
 
-    //var settingsVC: SettingsViewController!
+    var filterMenuIsVisible = false
     
     var resourceName: String?
     var resourceValue: Int?
@@ -70,6 +87,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         mySettlement = dataModel.currentSettlement!
         myStorage = dataModel.currentSettlement!.resourceStorage
         
+        filteredStorageType = "All"
+
         updateStorage()
         
         numResourceRows =  dataModel.currentSettlement!.resourceStorage.count
@@ -78,10 +97,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         setupSearch()
         setUpMenuButton()
+        setupFilterButton()
         setUpTabBarIcons()
-        setUpSegLabels()
         
-        navigationItem.title = "Manage Resources"
+        filterStackView.isHidden = true
+        filterTypesButton.setTitle("All Types", for: .normal)
+        
+        navigationItem.title = "All Resources"
         
         tableView.reloadData()
     }
@@ -89,46 +111,18 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     override func viewWillAppear(_ animated: Bool) {
         updateStorage()
         setUpMenuButton()
-        setUpSegLabels()
+        setupFilterButton()
         tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
-            if isFiltering() {
-                return filteredSortedStorage!.count
-            } else {
-                return numResourceRows!
-            }
-        case 1:
-            if isFiltering() {
-                return filteredSortedBoneStorage!.count
-            } else {
-                return sortedBoneStorage!.count
-            }
-        case 2:
-            if isFiltering() {
-                return filteredSortedConsStorage!.count
-            } else {
-                return sortedConsStorage!.count
-            }
-        case 3:
-            if isFiltering() {
-                return filteredSortedHideStorage!.count
-            } else {
-                return sortedHideStorage!.count
-            }
-        case 4:
-            if isFiltering() {
-                return filteredSortedOrganStorage!.count
-            } else {
-                return sortedOrganStorage!.count
-            }
-        default:
-            return numResourceRows!
-        }
 
+            //return numResourceRows!
+        if isFiltering() {
+            return filteredSortedStorage!.count
+        } else {
+            return sortedStorage!.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -140,52 +134,14 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         var key: Resource?
         var value: Int?
         
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
-            if isFiltering() {
-                key = filteredSortedStorage![indexPath.row].0
-                value = filteredSortedStorage![indexPath.row].1
-            } else {
-                key = sortedStorage![indexPath.row].0
-                value = sortedStorage![indexPath.row].1
-            }
-        case 1:
-            if isFiltering() {
-                key = filteredSortedBoneStorage![indexPath.row].0
-                value = filteredSortedBoneStorage![indexPath.row].1
-            } else {
-                key = sortedBoneStorage![indexPath.row].0
-                value = sortedBoneStorage![indexPath.row].1
-            }
-        case 2:
-            if isFiltering() {
-                key = filteredSortedConsStorage![indexPath.row].0
-                value = filteredSortedConsStorage![indexPath.row].1
-            } else {
-                key = sortedConsStorage![indexPath.row].0
-                value = sortedConsStorage![indexPath.row].1
-            }
-        case 3:
-            if isFiltering() {
-                key = filteredSortedHideStorage![indexPath.row].0
-                value = filteredSortedHideStorage![indexPath.row].1
-            } else {
-                key = sortedHideStorage![indexPath.row].0
-                value = sortedHideStorage![indexPath.row].1
-            }
-        case 4:
-            if isFiltering() {
-                key = filteredSortedOrganStorage![indexPath.row].0
-                value = filteredSortedOrganStorage![indexPath.row].1
-            } else {
-                key = sortedOrganStorage![indexPath.row].0
-                value = sortedOrganStorage![indexPath.row].1
-            }
-        default:
+        if isFiltering() {
+            key = filteredSortedStorage![indexPath.row].0
+            value = filteredSortedStorage![indexPath.row].1
+        } else {
             key = sortedStorage![indexPath.row].0
             value = sortedStorage![indexPath.row].1
         }
-
+        
         resourceName = key!.name
         resourceValue = value
         
@@ -200,57 +156,15 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
             cell.resourceCountLabel.text = "\(Int(change.newValue!))"
             var selectedResource: Resource?
-            switch(self.segmentedControlOutlet.selectedSegmentIndex) {
-            case 0:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedStorage![indexPath.row].0
-                    self.filteredSortedStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedStorage![indexPath.row].0
-                    self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
-                }
-            case 1:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedBoneStorage![indexPath.row].0
-                    self.filteredSortedBoneStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedBoneStorage![indexPath.row].0
-                    self.sortedBoneStorage![indexPath.row].1 = Int(change.newValue!)
-                }
-            case 2:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedConsStorage![indexPath.row].0
-                    self.filteredSortedConsStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedConsStorage![indexPath.row].0
-                    self.sortedConsStorage![indexPath.row].1 = Int(change.newValue!)
-                }
-            case 3:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedHideStorage![indexPath.row].0
-                    self.filteredSortedHideStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedHideStorage![indexPath.row].0
-                    self.sortedHideStorage![indexPath.row].1 = Int(change.newValue!)
-                }
-            case 4:
-                if self.isFiltering() {
-                    selectedResource = self.filteredSortedOrganStorage![indexPath.row].0
-                    self.filteredSortedOrganStorage![indexPath.row].1 = Int(change.newValue!)
-                } else {
-                    selectedResource = self.sortedOrganStorage![indexPath.row].0
-                    self.sortedOrganStorage![indexPath.row].1 = Int(change.newValue!)
-                }
-            default:
-                selectedResource = self.sortedStorage![indexPath.row].0
-            }
+
+            selectedResource = self.sortedStorage![indexPath.row].0
+            
             //self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
             //self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
             self.myStorage![selectedResource!] = Int(change.newValue!)
             self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(change.newValue!)
             self.dataModel.writeData()
             self.updateStorage()
-            self.setUpSegLabels()
         }
         return cell
     }
@@ -308,51 +222,28 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         //tableView.tableHeaderView = nil
         searchController.hidesNavigationBarDuringPresentation = false
     }
+    
     // Search Controller delegate stuff
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
-            filteredSortedStorage = self.sortedStorage!.filter( {(resource: Resource, value:Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        case 1:
-            //let boneStorage = self.sortedStorage!.filter { $0.key.type.contains(.bone) }
-            let boneStorage = getBasicStorageForType(resourceType: .bone)
-            filteredSortedBoneStorage = boneStorage.filter( {(resource: Resource, value: Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        case 2:
-            //let consStorage = self.sortedStorage!.filter { $0.key.type.contains(.consumable) }
-            let consStorage = getBasicStorageForType(resourceType: .consumable)
-            filteredSortedConsStorage = consStorage.filter( {(resource: Resource, value: Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        case 3:
-            //let hideStorage = self.sortedStorage!.filter { $0.key.type.contains(.hide) }
-            let hideStorage = getBasicStorageForType(resourceType: .hide)
-            filteredSortedHideStorage = hideStorage.filter( {(resource: Resource, value: Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        case 4:
-            //let organStorage = self.sortedStorage!.filter { $0.key.type.contains(.organ) }
-            let organStorage = getBasicStorageForType(resourceType: .organ)
-            filteredSortedOrganStorage = organStorage.filter( {(resource: Resource, value: Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        default:
-            filteredSortedStorage = self.sortedStorage!.filter( {(resource: Resource, value:Int) -> Bool in
-                return resource.name.lowercased().contains(searchText.lowercased())
-            })
-        }
+    //func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    func filterContentForSearchText(_ searchText: String) {
 
+            filteredSortedStorage = self.sortedStorage!.filter( {(resource: Resource, value:Int) -> Bool in
+                return resource.name.lowercased().contains(searchText.lowercased())
+            })
         tableView.reloadData()
     }
     func updateStorage() {
-        self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
-        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
-        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
-        self.sortedHideStorage = self.getBasicStorageForType(resourceType: .hide)
-        self.sortedOrganStorage = self.getBasicStorageForType(resourceType: .organ)
+        if self.filteredStorageType == "All" {
+            self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
+        } else {
+            let type = convertFilteredTypeToResourceType(typeString: self.filteredStorageType!)
+            self.sortedStorage = self.getBasicStorageForType(resourceType: type)
+            print("Got back with \(type.rawValue)")
+        }
+//        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
+//        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
+//        self.sortedHideStorage = self.getBasicStorageForType(resourceType: .hide)
+//        self.sortedOrganStorage = self.getBasicStorageForType(resourceType: .organ)
     }
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
@@ -363,7 +254,28 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
     }
     func getBasicStorageForType(resourceType: resourceType) -> [(key: Resource, value: Int)] {
+        self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name }) //reset
         return self.sortedStorage!.filter { $0.key.type.contains(resourceType) }
+    }
+    func convertFilteredTypeToResourceType(typeString: String) -> resourceType {
+        switch typeString {
+        case "bone":
+            return .bone
+        case "consumable":
+            return .consumable
+        case "hide":
+            return .hide
+        case "iron":
+            return .iron
+        case "organ":
+            return .organ
+        case "scrap":
+            return .scrap
+        case "vermin":
+            return .vermin
+        default:
+            return .any
+        }
     }
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
@@ -382,7 +294,23 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
     }
-    
+    @objc func setupFilterButton() {
+        let filterBtn = UIButton(type: .custom)
+        filterBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        if self.filteredStorageType == "All" {
+            filterBtn.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
+        } else {
+            filterBtn.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
+        }
+        filterBtn.addTarget(self, action: #selector(self.showFilterAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: filterBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.rightBarButtonItem = menuBarItem
+    }
     func setUpTabBarIcons() {
         if let tabBarVC = self.navigationController?.parent as? UITabBarController {
             let manageTabItem = tabBarVC.tabBar.items![0]
@@ -395,12 +323,23 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             innovateTabItem.image = UIImage(named: "icons8-idea-30")
         }
     }
-    func setUpSegLabels() {
-        self.segmentedControlOutlet.setTitle(("All - \(self.sortedStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 0)
-        self.segmentedControlOutlet.setTitle(("Bone - \(self.sortedBoneStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 1)
-        self.segmentedControlOutlet.setTitle(("Cons - \(self.sortedConsStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 2)
-        self.segmentedControlOutlet.setTitle(("Hide - \(self.sortedHideStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 3)
-        self.segmentedControlOutlet.setTitle(("Organ - \(self.sortedOrganStorage!.map { $0.value }.reduce(0, +))"), forSegmentAt: 4)
+
+    func filterResources() {
+        let filterResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "filterResourcesVC") as! FilterResourceViewController
+        filterResourcesVC.selectedType = self.filteredStorageType
+        self.present(filterResourcesVC, animated: true, completion: nil)
+        filterResourcesVC.filteredTypeCompletionHandler = { type in
+            self.filteredStorageType = type
+            if type == "All" {
+                self.filterTypesButton.setTitle("All Types", for: .normal)
+                self.navigationItem.title = "All Resources"
+            } else {
+                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+                self.navigationItem.title = "Filtered Resources"
+            }
+//            self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+            return type
+        }
     }
 }
 
@@ -412,7 +351,8 @@ extension ManageResourcesViewController: UISearchResultsUpdating {
 extension ManageResourcesViewController: UISearchBarDelegate {
     // MARK: - UISearchBar Delegate
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+//filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+        filterContentForSearchText(searchBar.text!)
     }
 }
 extension Notification.Name {
