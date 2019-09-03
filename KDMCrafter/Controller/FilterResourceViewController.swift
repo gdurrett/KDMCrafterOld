@@ -72,7 +72,7 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
         basicTypes = basicTypes.removingDuplicates()
-        print("Upon load, selected type is \(selectedType)")
+        
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return basicTypes.count

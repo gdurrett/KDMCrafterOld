@@ -10,17 +10,18 @@ import UIKit
 
 class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
+    @IBOutlet weak var filterView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
-    @IBOutlet weak var filterStackView: UIStackView!
     @IBOutlet weak var filterTypesButton: UIButton!
     @IBAction func filterTypesAction(_ sender: Any) {
         filterResources()
     }
-    @IBAction func filterStockAction(_ sender: Any) {
-    }
+//    @IBAction func filterStockAction(_ sender: Any) {
+//    }
     
+    @IBOutlet weak var filterArrow: UIButton!
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
@@ -30,21 +31,23 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
     @IBAction func showFilterAction(_ sender: Any) {
         if !filterMenuIsVisible {
-            topLayoutConstraint.constant = 40
-            bottomLayoutConstraint.constant = -40
+            topLayoutConstraint.constant = 128
+            bottomLayoutConstraint.constant = 0
             filterMenuIsVisible = true
-            filterStackView.isHidden = false
+            filterView.isHidden = false
         } else {
             topLayoutConstraint.constant = 0
             bottomLayoutConstraint.constant = 0
             filterMenuIsVisible = false
-            filterStackView.isHidden = true
+            filterView.isHidden = true
         }
         UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: {
             self.tableView.layoutIfNeeded()
         }) { (animationComplete) in
-            print("The animation is complete!")
+            
         }
+        updateStorage()
+        tableView.reloadData()
     }
     
     
@@ -95,12 +98,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
         
-        setupSearch()
+        //setupSearch()
         setUpMenuButton()
         setupFilterButton()
+        setupFilterArrow()
         setUpTabBarIcons()
         
-        filterStackView.isHidden = true
+        filterView.isHidden = true
         filterTypesButton.setTitle("All Types", for: .normal)
         
         navigationItem.title = "All Resources"
@@ -233,12 +237,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         tableView.reloadData()
     }
     func updateStorage() {
-        if self.filteredStorageType == "All" {
+        if self.filteredStorageType == "All" || !filterMenuIsVisible {
             self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
+            self.navigationItem.title = "All Resources"
         } else {
             let type = convertFilteredTypeToResourceType(typeString: self.filteredStorageType!)
             self.sortedStorage = self.getBasicStorageForType(resourceType: type)
-            print("Got back with \(type.rawValue)")
+            self.navigationItem.title = "Filtered Resources"
         }
 //        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
 //        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
@@ -310,6 +315,11 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
         currHeight?.isActive = true
         self.navigationItem.rightBarButtonItem = menuBarItem
+    }
+    func setupFilterArrow() {
+        //let filterArrow = UIButton(type: .custom)
+        filterArrow.frame = CGRect(x: 0.0, y: 0.0, width: 10, height: 10)
+        filterArrow.addTarget(self, action: #selector(self.filterTypesAction(_:)), for: UIControl.Event.touchUpInside)
     }
     func setUpTabBarIcons() {
         if let tabBarVC = self.navigationController?.parent as? UITabBarController {
