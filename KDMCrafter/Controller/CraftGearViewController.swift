@@ -11,25 +11,43 @@ import UIKit
 class CraftGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var filterView: UIView!
+    @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
+    
     @IBAction func segmentedControlAction(_ sender: Any) {
         sortedCraftableGear = getCraftableGear()
         sortedUncraftableGear = getUncraftableGear()
         updateSearchResults(for: self.searchController)
         tableView.reloadData()
     }
-    @IBAction func segmentedControlAction2(_ sender: Any) {
-        sortedCraftableGear = getCraftableGear()
-        sortedUncraftableGear = getUncraftableGear()
-        updateSearchResults(for: self.searchController)
-        tableView.reloadData()
-    }
+
     @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
-    @IBOutlet weak var segmentedControlOutlet2: UISegmentedControl!
     
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
         }
+    }
+    @IBAction func showFilterAction(_ sender: Any) {
+        UIView.animate(withDuration: 0.5, delay: 0.1, options: .curveEaseIn, animations: {
+            if !self.filterMenuIsVisible {
+                self.topLayoutConstraint.constant = 40
+                self.bottomLayoutConstraint.constant = -40
+                self.filterMenuIsVisible = true
+                self.filterView.isHidden = false
+            } else {
+                self.topLayoutConstraint.constant = 0
+                self.bottomLayoutConstraint.constant = 0
+                self.filterMenuIsVisible = false
+                self.filterView.isHidden = true
+            }
+            self.tableView.layoutIfNeeded()
+        }) { (animationComplete) in
+            print("Done!")
+        }
+        //updateStorage()
+        tableView.reloadData()
     }
     let dataModel = DataModel.sharedInstance
     let gearDetailSegueIdentifier = "ShowCraftGearDetailView"
@@ -55,6 +73,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var currentGear: Gear?
     
     var craftability = Bool()
+    var filterMenuIsVisible = false
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -80,7 +99,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
 
         NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
 
-        setupSearch()
+        //setupSearch()
         setUpMenuButton()
         
         navigationItem.title = "Craft Gear"
@@ -102,75 +121,21 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.filteredSortedGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.filteredSortedGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.filteredSortedGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.filteredSortedGear!
-                }
+                filtered = self.filteredSortedGear!
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.sortedGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.sortedGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.sortedGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.sortedGear!
-                }
+                filtered = self.sortedGear!
             }
         case 1:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.filteredSortedCraftableGear!
-                }
+                filtered = self.filteredSortedCraftableGear!
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.sortedCraftableGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.sortedCraftableGear!
-                }
+                filtered = self.sortedCraftableGear!
             }
         case 2:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.filteredSortedUncraftableGear!
-                }
+                filtered = self.filteredSortedUncraftableGear!
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .armor }
-                case 2:
-                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .item }
-                case 3:
-                    filtered = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }
-                default:
-                    filtered = self.sortedUncraftableGear!
-                }
+                filtered = self.sortedUncraftableGear!
             }
         default:
             return (self.sortedGear?.count)!
@@ -190,75 +155,21 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         switch(segmentedControlOutlet.selectedSegmentIndex) {
         case 0:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.filteredSortedGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.filteredSortedGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.filteredSortedGear![indexPath.row]
-                }
+                gear = self.filteredSortedGear![indexPath.row]
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.sortedGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.sortedGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.sortedGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.sortedGear![indexPath.row]
-                }
+                gear = self.sortedGear![indexPath.row]
             }
         case 1:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.filteredSortedCraftableGear![indexPath.row]
-                }
+                gear = self.filteredSortedCraftableGear![indexPath.row]
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.sortedCraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.sortedCraftableGear![indexPath.row]
-                }
+                gear = self.sortedCraftableGear![indexPath.row]
             }
         case 2:
             if isFiltering() {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.filteredSortedUncraftableGear![indexPath.row]
-                }
+                gear = self.filteredSortedUncraftableGear![indexPath.row]
             } else {
-                switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                case 1:
-                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[indexPath.row]
-                case 2:
-                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[indexPath.row]
-                case 3:
-                    gear = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }[indexPath.row]
-                default:
-                    gear = self.sortedUncraftableGear![indexPath.row]
-                }
+                gear = self.sortedUncraftableGear![indexPath.row]
             }
         default:
             gear = self.sortedGear![indexPath.row]
@@ -278,75 +189,21 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             switch(segmentedControlOutlet.selectedSegmentIndex) {
             case 0:
                 if isFiltering() {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.filteredSortedGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.filteredSortedGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.filteredSortedGear![gearIndex!]
                 } else {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.sortedGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.sortedGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.sortedGear![gearIndex!]
                 }
             case 1:
                 if isFiltering() {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.filteredSortedCraftableGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.filteredSortedCraftableGear![gearIndex!]
                 } else {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.sortedCraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
                 }
             case 2:
                 if isFiltering() {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.filteredSortedUncraftableGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.filteredSortedUncraftableGear![gearIndex!]
                 } else {
-                    switch (segmentedControlOutlet2.selectedSegmentIndex) {
-                    case 1:
-                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .armor }[gearIndex!]
-                    case 2:
-                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .item }[gearIndex!]
-                    case 3:
-                        craftDetailVC.gear = self.sortedUncraftableGear!.filter { $0.description.type == .weapon }[gearIndex!]
-                    default:
-                        craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
-                    }
+                    craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
                 }
             default:
                 craftDetailVC.gear = self.sortedGear![gearIndex!]

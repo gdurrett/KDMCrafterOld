@@ -30,21 +30,21 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
     @IBAction func showFilterAction(_ sender: Any) {
-        if !filterMenuIsVisible {
-            topLayoutConstraint.constant = 128
-            bottomLayoutConstraint.constant = 0
-            filterMenuIsVisible = true
-            filterView.isHidden = false
-        } else {
-            topLayoutConstraint.constant = 0
-            bottomLayoutConstraint.constant = 0
-            filterMenuIsVisible = false
-            filterView.isHidden = true
-        }
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseIn, animations: {
+        UIView.animate(withDuration: 3.0, delay: 0.1, options: .curveEaseIn, animations: {
+            if !self.filterMenuIsVisible {
+                self.topLayoutConstraint.constant = 128
+                self.bottomLayoutConstraint.constant = -128
+                self.filterMenuIsVisible = true
+                self.filterView.isHidden = false
+            } else {
+                self.topLayoutConstraint.constant = 0
+                self.bottomLayoutConstraint.constant = 0
+                self.filterMenuIsVisible = false
+                self.filterView.isHidden = true
+            }
             self.tableView.layoutIfNeeded()
         }) { (animationComplete) in
-            
+            print("Done!")
         }
         updateStorage()
         tableView.reloadData()
@@ -240,10 +240,12 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         if self.filteredStorageType == "All" || !filterMenuIsVisible {
             self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
             self.navigationItem.title = "All Resources"
+            self.setupFilterButton()
         } else {
             let type = convertFilteredTypeToResourceType(typeString: self.filteredStorageType!)
             self.sortedStorage = self.getBasicStorageForType(resourceType: type)
             self.navigationItem.title = "Filtered Resources"
+            self.setupFilterButton()
         }
 //        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
 //        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
@@ -302,7 +304,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @objc func setupFilterButton() {
         let filterBtn = UIButton(type: .custom)
         filterBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
-        if self.filteredStorageType == "All" {
+        if self.filteredStorageType == "All" || !filterMenuIsVisible {
             filterBtn.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
         } else {
             filterBtn.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
