@@ -42,8 +42,6 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
     var mySettlement: Settlement?
     
     var basicTypes = ["Bone", "Consumable", "Hide", "Iron", "Organ", "Scrap", "Vermin"]
-    var specialTypes = [String]()
-    var tableTypes = [String]()
     var selectedType: String?
     var filteredTypeCompletionHandler: ((String) -> String)?
     //var filteredTypeLabelCompletionHandler: ((String) -> String)?

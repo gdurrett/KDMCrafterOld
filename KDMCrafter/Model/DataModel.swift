@@ -48,7 +48,6 @@ class DataModel {
         // Test KVS cloud storage
         keyStore.set(currentSettlement.name, forKey: "settlementName")
         keyStore.synchronize()
-        print(keyStore.string(forKey: "Paint")!)
     }
 }
 extension NSMutableAttributedString {

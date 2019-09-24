@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FilterTypeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FilterGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -38,7 +38,7 @@ class FilterTypeViewController: UIViewController, UITableViewDelegate, UITableVi
     
 //    let dataModel = DataModel.sharedInstance
 //    var mySettlement: Settlement?
-    var types = ["Armor", "Item", "Weapon"]
+    var types = ["All Armor", "Craftable Armor", "Uncraftable Armor", "All Items","Craftable Items", "Uncraftable Items", "All Weapons", "Craftable Weapons", "Uncraftable Weapons"]
     var filteredTypeCompletionHandler: ((String) -> String)?
     var selectedType: String?
     
@@ -47,8 +47,6 @@ class FilterTypeViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ResourceTypeCell.nib, forCellReuseIdentifier: ResourceTypeCell.identifier)
-        
-        
     }
     
 
@@ -58,13 +56,25 @@ class FilterTypeViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTypeCell", for: indexPath) as! ResourceTypeCell
-        
-        cell.selectionStyle = .none
         configureChoiceLabel(for: cell, with: types[indexPath.row])
+        cell.selectionStyle = .none
+        
+        if selectedType != nil {
+            if cell.label.text?.lowercased() == selectedType {
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            }
+        }
         
         return cell
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedType = types[indexPath.row].lowercased()
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+    }
     
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        tableView.cellForRow(at: indexPath)?.accessoryType = .none
+    }
     func configureChoiceLabel(for cell: UITableViewCell, with string: String) {
         let label = cell.viewWithTag(4125) as! UILabel
         label.text = string

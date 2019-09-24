@@ -14,26 +14,24 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var filterView: UIView!
     @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
-    
-    @IBAction func segmentedControlAction(_ sender: Any) {
-        sortedCraftableGear = getCraftableGear()
-        sortedUncraftableGear = getUncraftableGear()
-        updateSearchResults(for: self.searchController)
-        tableView.reloadData()
-    }
-
-    @IBOutlet weak var segmentedControlOutlet: UISegmentedControl!
-    
+    @IBOutlet weak var filterTypesButton: UIButton!
+    @IBOutlet weak var filterArrow: UIButton!
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
         }
     }
+    @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
+    @IBAction func filterGearAction(_ sender: Any) {
+        filterGear()
+        updateResults()
+        tableView.reloadData()
+    }
     @IBAction func showFilterAction(_ sender: Any) {
         UIView.animate(withDuration: 0.5, delay: 0.1, options: .curveEaseIn, animations: {
             if !self.filterMenuIsVisible {
-                self.topLayoutConstraint.constant = 40
-                self.bottomLayoutConstraint.constant = -40
+                self.topLayoutConstraint.constant = 128
+                self.bottomLayoutConstraint.constant = -128
                 self.filterMenuIsVisible = true
                 self.filterView.isHidden = false
             } else {
@@ -44,9 +42,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             self.tableView.layoutIfNeeded()
         }) { (animationComplete) in
-            print("Done!")
         }
-        //updateStorage()
+        updateResults()
         tableView.reloadData()
     }
     let dataModel = DataModel.sharedInstance
@@ -65,6 +62,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var filteredSortedCraftableGear: [Gear]?
     var sortedUncraftableGear: [Gear]?
     var filteredSortedUncraftableGear: [Gear]?
+    var filteredGearType: String?
+    var filteredGear: [Gear]?
+    var filteredQuality = "all"
     
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
@@ -101,8 +101,14 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
 
         //setupSearch()
         setUpMenuButton()
+        setupFilterButton()
+        setupFilterArrow()
         
-        navigationItem.title = "Craft Gear"
+        filterView.isHidden = true
+        filterTypesButton.setTitle("All Types", for: .normal)
+        
+        navigationItem.title = "All Gear"
+        filteredGearType = "All"
         
         tableView.reloadData()
     }
@@ -113,33 +119,17 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         validator.resources = mySettlement!.resourceStorage
         sortedCraftableGear = getCraftableGear()
         sortedUncraftableGear = getUncraftableGear()
+        setupFilterButton()
         tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var filtered = [Gear]()
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
             if isFiltering() {
                 filtered = self.filteredSortedGear!
             } else {
                 filtered = self.sortedGear!
             }
-        case 1:
-            if isFiltering() {
-                filtered = self.filteredSortedCraftableGear!
-            } else {
-                filtered = self.sortedCraftableGear!
-            }
-        case 2:
-            if isFiltering() {
-                filtered = self.filteredSortedUncraftableGear!
-            } else {
-                filtered = self.sortedUncraftableGear!
-            }
-        default:
-            return (self.sortedGear?.count)!
-        }
         return filtered.count
     }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -152,28 +142,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.accessoryType = .disclosureIndicator
 
         var gear: Gear
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
             if isFiltering() {
                 gear = self.filteredSortedGear![indexPath.row]
             } else {
                 gear = self.sortedGear![indexPath.row]
             }
-        case 1:
-            if isFiltering() {
-                gear = self.filteredSortedCraftableGear![indexPath.row]
-            } else {
-                gear = self.sortedCraftableGear![indexPath.row]
-            }
-        case 2:
-            if isFiltering() {
-                gear = self.filteredSortedUncraftableGear![indexPath.row]
-            } else {
-                gear = self.sortedUncraftableGear![indexPath.row]
-            }
-        default:
-            gear = self.sortedGear![indexPath.row]
-        }
         
         configureTitle(for: cell, with: gear.name, with: 3750)
         configureNumCraftableLabel(for: cell, with: gear, for: 3975)
@@ -185,29 +158,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let craftDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "CraftGearDetailViewController") as? CraftGearDetailViewController {
             let gearIndex = tableView.indexPathForSelectedRow?.row
-
-            switch(segmentedControlOutlet.selectedSegmentIndex) {
-            case 0:
                 if isFiltering() {
                     craftDetailVC.gear = self.filteredSortedGear![gearIndex!]
                 } else {
                     craftDetailVC.gear = self.sortedGear![gearIndex!]
                 }
-            case 1:
-                if isFiltering() {
-                    craftDetailVC.gear = self.filteredSortedCraftableGear![gearIndex!]
-                } else {
-                    craftDetailVC.gear = self.sortedCraftableGear![gearIndex!]
-                }
-            case 2:
-                if isFiltering() {
-                    craftDetailVC.gear = self.filteredSortedUncraftableGear![gearIndex!]
-                } else {
-                    craftDetailVC.gear = self.sortedUncraftableGear![gearIndex!]
-                }
-            default:
-                craftDetailVC.gear = self.sortedGear![gearIndex!]
-            }
             craftDetailVC.craftability = self.validator.checkCraftability(gear: craftDetailVC.gear)
             self.navigationController?.pushViewController(craftDetailVC, animated: true)
         }
@@ -257,11 +212,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let labelString = "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available"
         label.text! = labelString
         if mySettlement!.gearCraftedDict[gear]! > 0 && !checkIfMaxedOut(gear: gear) {
-            label.textColor = UIColor.black
+            if #available(iOS 13.0, *) {
+                label.textColor = UIColor.label
+            } else {
+                label.textColor = UIColor.black
+                // Fallback on earlier versions
+            }
         } else if checkIfMaxedOut(gear: gear) {
             label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
         } else {
-            label.textColor = UIColor.gray
+            if #available(iOS 13.0, *) {
+                label.textColor = UIColor.secondaryLabel
+            } else {
+                label.textColor = UIColor.gray
+            }
         }
     }
     fileprivate func configureNumCraftableLabel(for cell: UITableViewCell, with gear: Gear, for tag: Int) {
@@ -273,11 +237,13 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         if validator.checkCraftability(gear:gear) == true && !checkIfMaxedOut(gear: gear) || mySettlement!.overrideEnabled && !checkIfMaxedOut(gear: gear) {
             labelString = "Craftable"
             self.craftability = true
-            label.textColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
+            //label.textColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
+            label.textColor = UIColor.systemGreen
         } else {
             labelString = "Uncraftable"
             self.craftability = false
-            label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            //label.textColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            label.textColor = UIColor.systemRed
         }
         label.text = labelString
     }
@@ -365,36 +331,27 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         //tableView.tableHeaderView = nil
         searchController.hidesNavigationBarDuringPresentation = false
     }
+    func updateResults() {
+        if self.filteredGearType == "All" || !filterMenuIsVisible {
+            self.sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
+            self.navigationItem.title = "All Gear"
+            self.setupFilterButton()
+        } else {
+            let type = convertFilteredTypeToGearType(typeString: self.filteredGearType!)
+            self.sortedGear = self.getGearForType(gearType: type, quality: filteredQuality)
+            self.navigationItem.title = "Filtered Gear"
+            self.setupFilterButton()
+            //print("Got back \(type), setting FilteredQuality to \(self.filteredQuality)")
+        }
+    }
     // Search Controller delegate stuff
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        switch(segmentedControlOutlet.selectedSegmentIndex) {
-        case 0:
             filteredSortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
                 for affinity in gear.description.affinities {
                     print(String(describing: affinity))
                 }
                 return gear.name.lowercased().contains(searchText.lowercased())
             })
-        case 1:
-            if mySettlement!.overrideEnabled == true {
-                filteredSortedCraftableGear = self.myAvailableGear!.filter( {( gear: Gear) -> Bool in
-                    return gear.name.lowercased().contains(searchText.lowercased())
-                })
-            } else {
-                filteredSortedCraftableGear = self.sortedCraftableGear!.filter( {( gear: Gear) -> Bool in
-                    return gear.name.lowercased().contains(searchText.lowercased())
-                })
-            }
-        case 2:
-            filteredSortedUncraftableGear = self.sortedUncraftableGear!.filter( {( gear: Gear) -> Bool in
-                return gear.name.lowercased().contains(searchText.lowercased())
-            })
-        default:
-            sortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
-                return gear.name.lowercased().contains(searchText.lowercased())
-            })
-        }
-        
         tableView.reloadData()
     }
     func searchBarIsEmpty() -> Bool {
@@ -404,6 +361,58 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     func isFiltering() -> Bool {
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
+    }
+    func getGearForType(gearType: gearType, quality: String) -> [Gear] {
+        self.filteredGear = myAvailableGear!.filter { $0.description.type == gearType }
+        var furtherFiltered = [Gear]()
+        if self.filteredQuality == "craftable" {
+            for gear in filteredGear! {
+                if sortedCraftableGear!.contains(gear) {
+                    furtherFiltered.append(gear)
+                }
+            }
+        } else if self.filteredQuality == "uncraftable" {
+            for gear in filteredGear! {
+                if sortedUncraftableGear!.contains(gear) {
+                    furtherFiltered.append(gear)
+                }
+            }
+        } else {
+            furtherFiltered = filteredGear!
+        }
+        //return filteredGear!.sorted(by: { $0.name < $1.name })
+        return furtherFiltered.sorted(by: { $0.name < $1.name })
+    }
+    func convertFilteredTypeToGearType(typeString: String) -> gearType {
+        switch typeString {
+        case "all armor":
+            self.filteredQuality = "all"
+            return .armor
+        case "craftable armor":
+            self.filteredQuality = "craftable"
+            return .armor
+        case "uncraftable armor":
+            self.filteredQuality = "uncraftable"
+            return .armor
+        case "all items":
+            return .item
+        case "craftable items":
+            self.filteredQuality = "craftable"
+            return .item
+        case "uncraftable items":
+            self.filteredQuality = "uncraftable"
+            return .item
+        case "all weapons":
+            return .weapon
+        case "craftable weapons":
+            self.filteredQuality = "craftable"
+            return .weapon
+        case "uncraftable weapons":
+            self.filteredQuality = "uncraftable"
+            return .weapon
+        default:
+            return .item
+        }
     }
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
@@ -422,9 +431,47 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
         tableView.reloadData()
-        self.segmentedControlAction(self)
     }
-
+    @objc func setupFilterButton() {
+        let filterBtn = UIButton(type: .custom)
+        filterBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        if self.filteredGearType == "All" || !filterMenuIsVisible {
+            filterBtn.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
+        } else {
+            filterBtn.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
+        }
+        filterBtn.addTarget(self, action: #selector(self.showFilterAction(_:)), for: UIControl.Event.touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: filterBtn)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.rightBarButtonItem = menuBarItem
+    }
+    func setupFilterArrow() {
+        //let filterArrow = UIButton(type: .custom)
+        filterArrow.frame = CGRect(x: 0.0, y: 0.0, width: 10, height: 10)
+        filterArrow.addTarget(self, action: #selector(self.filterGearAction(_:)), for: UIControl.Event.touchUpInside)
+    }
+    func filterGear() {
+        let filterGearVC = self.storyboard?.instantiateViewController(withIdentifier: "filterGearVC") as! FilterGearViewController
+        filterGearVC.selectedType = self.filteredGearType
+        self.present(filterGearVC, animated: true, completion: nil)
+        filterGearVC.filteredTypeCompletionHandler = { type in
+            self.filteredGearType = type
+            if type == "All" {
+                self.filterTypesButton.setTitle("All Types", for: .normal)
+                self.navigationItem.title = "All Resources"
+            } else {
+                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+                self.navigationItem.title = "Filtered Gear"
+            }
+            self.updateResults()
+            self.tableView.reloadData()
+            return type
+        }
+    }
 }
 
 extension CraftGearViewController: UISearchResultsUpdating {

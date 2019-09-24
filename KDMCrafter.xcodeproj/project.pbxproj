@@ -17,7 +17,7 @@
 		FB319EFC225681B500CAA684 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB319EFB225681B500CAA684 /* SettingsTableViewCell.swift */; };
 		FB319EFE225681C800CAA684 /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB319EFD225681C800CAA684 /* SettingsTableViewCell.xib */; };
 		FB319F002256919200CAA684 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB319EFF2256919200CAA684 /* SettingsViewController.swift */; };
-		FB53868D231882DD00CAA684 /* FilterTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB53868C231882DD00CAA684 /* FilterTypeViewController.swift */; };
+		FB53868D231882DD00CAA684 /* FilterGearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB53868C231882DD00CAA684 /* FilterGearViewController.swift */; };
 		FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */; };
 		FB5930BB2227188F00CAA684 /* CraftBuildValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930BA2227188F00CAA684 /* CraftBuildValidator.swift */; };
 		FB5930BC2227609F00CAA684 /* Gear.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F321CD66D100CAA684 /* Gear.swift */; };
@@ -68,7 +68,7 @@
 		FB319EFB225681B500CAA684 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		FB319EFD225681C800CAA684 /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
 		FB319EFF2256919200CAA684 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		FB53868C231882DD00CAA684 /* FilterTypeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTypeViewController.swift; sourceTree = "<group>"; };
+		FB53868C231882DD00CAA684 /* FilterGearViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterGearViewController.swift; sourceTree = "<group>"; };
 		FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftGearViewController.swift; sourceTree = "<group>"; };
 		FB5930B4222705AF00CAA684 /* GearTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearTableViewCell.swift; sourceTree = "<group>"; };
 		FB5930BA2227188F00CAA684 /* CraftBuildValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftBuildValidator.swift; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 				FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */,
 				FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */,
 				FB2AB1B2231477AB00CAA684 /* FilterResourceViewController.swift */,
-				FB53868C231882DD00CAA684 /* FilterTypeViewController.swift */,
+				FB53868C231882DD00CAA684 /* FilterGearViewController.swift */,
 				FBB85B232285E9EC00CAA684 /* MainViewController.swift */,
 				FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */,
 				FB319EFF2256919200CAA684 /* SettingsViewController.swift */,
@@ -363,7 +363,7 @@
 				FB319F002256919200CAA684 /* SettingsViewController.swift in Sources */,
 				FBFD695721C458B300CAA684 /* Resource.swift in Sources */,
 				FB5930C4222F3A4E00CAA684 /* AddInnovationViewController.swift in Sources */,
-				FB53868D231882DD00CAA684 /* FilterTypeViewController.swift in Sources */,
+				FB53868D231882DD00CAA684 /* FilterGearViewController.swift in Sources */,
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FB2AB1B723147F7A00CAA684 /* ResourceTypeCell.swift in Sources */,
 				FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */,
@@ -567,6 +567,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BER336RBH2;
 				INFOPLIST_FILE = KDMCrafter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -586,6 +587,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BER336RBH2;
 				INFOPLIST_FILE = KDMCrafter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

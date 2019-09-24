@@ -17,6 +17,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var filterTypesButton: UIButton!
     @IBAction func filterTypesAction(_ sender: Any) {
         filterResources()
+        updateStorage()
+        tableView.reloadData()
     }
 //    @IBAction func filterStockAction(_ sender: Any) {
 //    }
@@ -29,6 +31,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
+    
     @IBAction func showFilterAction(_ sender: Any) {
         UIView.animate(withDuration: 3.0, delay: 0.1, options: .curveEaseIn, animations: {
             if !self.filterMenuIsVisible {
@@ -44,7 +47,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             }
             self.tableView.layoutIfNeeded()
         }) { (animationComplete) in
-            print("Done!")
         }
         updateStorage()
         tableView.reloadData()
@@ -131,7 +133,11 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
-        cell.backgroundColor = UIColor.clear
+        if #available(iOS 13.0, *) {
+            cell.backgroundColor = UIColor.systemBackground
+        } else {
+            cell.backgroundColor = UIColor.clear
+        }
         cell.selectionStyle = .none
         cell.layoutMargins = UIEdgeInsets.zero
 
@@ -145,7 +151,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             key = sortedStorage![indexPath.row].0
             value = sortedStorage![indexPath.row].1
         }
-        
         resourceName = key!.name
         resourceValue = value
         
@@ -156,13 +161,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         cell.stepperOutlet.value = Double(value!)
         cell.stepperOutlet.minimumValue = 0.0
         cell.stepperOutlet.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        //cell.resourceCountLabel.text! = "\(value!)"
         cell.resourceCountLabel.text! = "\(value!)"
-        cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
+        cell.observation = cell.stepperOutlet!.observe(\.value, options: [.new]) { (stepper, change) in
             cell.resourceCountLabel.text = "\(Int(change.newValue!))"
             var selectedResource: Resource?
-
             selectedResource = self.sortedStorage![indexPath.row].0
-            
+
             //self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
             //self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
             self.myStorage![selectedResource!] = Int(change.newValue!)
@@ -247,10 +252,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             self.navigationItem.title = "Filtered Resources"
             self.setupFilterButton()
         }
-//        self.sortedBoneStorage = self.getBasicStorageForType(resourceType: .bone)
-//        self.sortedConsStorage = self.getBasicStorageForType(resourceType: .consumable)
-//        self.sortedHideStorage = self.getBasicStorageForType(resourceType: .hide)
-//        self.sortedOrganStorage = self.getBasicStorageForType(resourceType: .organ)
     }
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
@@ -349,7 +350,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
                 self.filterTypesButton.setTitle(type.capitalized, for: .normal)
                 self.navigationItem.title = "Filtered Resources"
             }
-//            self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+            self.updateStorage()
+            self.tableView.reloadData()
             return type
         }
     }
