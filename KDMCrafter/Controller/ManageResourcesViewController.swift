@@ -10,20 +10,20 @@ import UIKit
 
 class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
-    @IBOutlet weak var filterView: UIView!
+    //@IBOutlet weak var filterView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
-    @IBOutlet weak var filterTypesButton: UIButton!
-    @IBAction func filterTypesAction(_ sender: Any) {
-        filterResources()
-        updateStorage()
-        tableView.reloadData()
-    }
+    //@IBOutlet weak var filterTypesButton: UIButton!
+//    @IBAction func filterTypesAction(_ sender: Any) {
+//        filterResources()
+//        updateStorage()
+//        tableView.reloadData()
+//    }
 //    @IBAction func filterStockAction(_ sender: Any) {
 //    }
     
-    @IBOutlet weak var filterArrow: UIButton!
+//    @IBOutlet weak var filterArrow: UIButton!
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
@@ -33,23 +33,9 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
     
     @IBAction func showFilterAction(_ sender: Any) {
-        UIView.animate(withDuration: 3.0, delay: 0.1, options: .curveEaseIn, animations: {
-            if !self.filterMenuIsVisible {
-                self.topLayoutConstraint.constant = 128
-                self.bottomLayoutConstraint.constant = -128
-                self.filterMenuIsVisible = true
-                self.filterView.isHidden = false
-            } else {
-                self.topLayoutConstraint.constant = 0
-                self.bottomLayoutConstraint.constant = 0
-                self.filterMenuIsVisible = false
-                self.filterView.isHidden = true
-            }
-            self.tableView.layoutIfNeeded()
-        }) { (animationComplete) in
-        }
+        showHideFilterMenu()
+        updateFilterButton()
         updateStorage()
-        tableView.reloadData()
     }
     
     
@@ -78,6 +64,12 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     
     var numResourceRows: Int?
     
+    var filterViewIsHidden = true
+    var filterActionButton = UIButton()
+    var filterButton = UIButton(type: .custom)
+    
+    var filterViewHeightConstant = CGFloat(20)
+    
     let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
@@ -88,6 +80,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         tableView.register(ResourceTableViewCell.nib, forCellReuseIdentifier: ResourceTableViewCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorInset = UIEdgeInsets.zero
+        
+//        tableView.contentInset = UIEdgeInsets(top: -filterViewHeightConstant, left: 0, bottom: 0, right: 0) // change top to variable
         
         mySettlement = dataModel.currentSettlement!
         myStorage = dataModel.currentSettlement!.resourceStorage
@@ -100,18 +94,19 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
         
-        //setupSearch()
+//        setupSearch()
         setUpMenuButton()
         setupFilterButton()
-        setupFilterArrow()
+//        setupFilterArrow()
         setUpTabBarIcons()
         
-        filterView.isHidden = true
-        filterTypesButton.setTitle("All Types", for: .normal)
+//        filterView.isHidden = true
+        filterActionButton.setTitle("All Types", for: .normal)
         
         navigationItem.title = "All Resources"
-        
+        tableView.setContentOffset(CGPoint(x: 0, y: filterViewHeightConstant + 20), animated: false) //Hide filter view
         tableView.reloadData()
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -130,7 +125,24 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             return sortedStorage!.count
         }
     }
-    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: tableView.frame.width, height: filterViewHeightConstant))
+        headerView.backgroundColor = UIColor.gray
+        //let filterButton = UIButton()
+        filterActionButton.frame = CGRect.init(x: headerView.frame.width/3, y: 15, width: 60, height: 10)
+        filterActionButton.backgroundColor = UIColor.gray
+        //filterActionButton.setTitle("All Items", for: .normal)
+        filterActionButton.titleLabel!.font = UIFont(descriptor: UIFontDescriptor(name: "serif", size: 12), size: 12)
+        filterActionButton.tintColor = UIColor.black
+
+        filterActionButton.addTarget(self, action: #selector(self.filterResources(_:)), for: .touchUpInside)
+        
+        headerView.addSubview(filterActionButton)
+        return headerView
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return filterViewHeightConstant * 2
+    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
         if #available(iOS 13.0, *) {
@@ -222,7 +234,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         searchController.searchBar.backgroundColor = UIColor.white
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        //searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
         searchController.searchBar.searchBarStyle = .default
         searchController.searchBar.showsCancelButton = false
@@ -242,16 +254,15 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         tableView.reloadData()
     }
     func updateStorage() {
-        if self.filteredStorageType == "All" || !filterMenuIsVisible {
+        if self.filteredStorageType == "All" || filterViewIsHidden {
             self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
             self.navigationItem.title = "All Resources"
-            self.setupFilterButton()
         } else {
             let type = convertFilteredTypeToResourceType(typeString: self.filteredStorageType!)
             self.sortedStorage = self.getBasicStorageForType(resourceType: type)
             self.navigationItem.title = "Filtered Resources"
-            self.setupFilterButton()
         }
+        //tableView.reloadSections([0], with: .none)
     }
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
@@ -302,27 +313,38 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
     }
-    @objc func setupFilterButton() {
-        let filterBtn = UIButton(type: .custom)
-        filterBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
-        if self.filteredStorageType == "All" || !filterMenuIsVisible {
-            filterBtn.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
+    func updateFilterButton() {
+        if self.filteredStorageType == "All" || filterViewIsHidden {
+            filterButton.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
         } else {
-            filterBtn.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
+            filterButton.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
         }
-        filterBtn.addTarget(self, action: #selector(self.showFilterAction(_:)), for: UIControl.Event.touchUpInside)
-        
-        let menuBarItem = UIBarButtonItem(customView: filterBtn)
+    }
+    func setupFilterButton() {
+        filterButton.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        filterButton.addTarget(self, action: #selector(self.showFilterAction(_:)), for: UIControl.Event.touchUpInside)
+        filterButton.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
+        let menuBarItem = UIBarButtonItem(customView: filterButton)
         let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
         currWidth?.isActive = true
         let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
         currHeight?.isActive = true
         self.navigationItem.rightBarButtonItem = menuBarItem
+
     }
-    func setupFilterArrow() {
-        //let filterArrow = UIButton(type: .custom)
-        filterArrow.frame = CGRect(x: 0.0, y: 0.0, width: 10, height: 10)
-        filterArrow.addTarget(self, action: #selector(self.filterTypesAction(_:)), for: UIControl.Event.touchUpInside)
+//    func setupFilterArrow() {
+//        //let filterArrow = UIButton(type: .custom)
+//        filterArrow.frame = CGRect(x: 0.0, y: 0.0, width: 10, height: 10)
+//        filterArrow.addTarget(self, action: #selector(self.filterTypesAction(_:)), for: UIControl.Event.touchUpInside)
+//    }
+    func showHideFilterMenu() {
+        if filterViewIsHidden {
+            tableView.setContentOffset(CGPoint(x: 0, y: -filterViewHeightConstant + 20), animated: true)
+            filterViewIsHidden = false
+        } else {
+            tableView.setContentOffset(CGPoint(x: 0, y: filterViewHeightConstant + 20), animated: true)
+            filterViewIsHidden = true
+        }
     }
     func setUpTabBarIcons() {
         if let tabBarVC = self.navigationController?.parent as? UITabBarController {
@@ -337,21 +359,20 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
 
-    func filterResources() {
+    @objc func filterResources(_ sender: Any) {
         let filterResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "filterResourcesVC") as! FilterResourceViewController
         filterResourcesVC.selectedType = self.filteredStorageType
         self.present(filterResourcesVC, animated: true, completion: nil)
         filterResourcesVC.filteredTypeCompletionHandler = { type in
             self.filteredStorageType = type
             if type == "All" {
-                self.filterTypesButton.setTitle("All Types", for: .normal)
+                self.filterActionButton.setTitle("All Types", for: .normal)
                 self.navigationItem.title = "All Resources"
             } else {
-                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+                self.filterActionButton.setTitle(type.capitalized, for: .normal)
                 self.navigationItem.title = "Filtered Resources"
             }
             self.updateStorage()
-            self.tableView.reloadData()
             return type
         }
     }

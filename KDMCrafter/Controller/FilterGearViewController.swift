@@ -17,7 +17,11 @@ class FilterGearViewController: UIViewController, UITableViewDelegate, UITableVi
             self.dismiss(animated: true, completion: nil)
         } else {
             if selectedType != nil {
-                let filteredType = self.filteredTypeCompletionHandler?(selectedType!)
+                _ = self.filteredTypeCompletionHandler?(selectedType!)
+            }
+            if selectedCraftability != nil {
+                _ = self.filteredTypeCompletionHandler?(selectedCraftability!)
+                print("Over here we have \(selectedCraftability!)")
             }
             self.dismiss(animated: true, completion: nil)
         }
@@ -27,20 +31,40 @@ class FilterGearViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func clearFilterAction(_ sender: Any) {
-        let filteredType = self.filteredTypeCompletionHandler?("All")
+        _ = self.filteredTypeCompletionHandler?("All")
+        _ = self.filteredCraftabilityCompletionHandler?("All")
+        
         let rows = tableView.numberOfRows(inSection: 0)
         for row in 0..<rows {
             let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0))
             cell?.setSelected(false, animated: true)
         }
         self.selectedType = nil
+        self.selectedCraftability = nil
     }
     
-//    let dataModel = DataModel.sharedInstance
+    @IBAction func selectCraftabilityAction(_ sender: Any) {
+        switch self.selectCraftabilityOutlet.selectedSegmentIndex {
+        case 0:
+            self.selectedCraftability = "all"
+        case 1:
+            self.selectedCraftability = "craftable"
+        case 2:
+            self.selectedCraftability = "uncraftable"
+        default:
+            self.selectedCraftability = "all"
+        }
+    }
+    @IBOutlet weak var selectCraftabilityOutlet: UISegmentedControl!
+    
+    //    let dataModel = DataModel.sharedInstance
 //    var mySettlement: Settlement?
-    var types = ["All Armor", "Craftable Armor", "Uncraftable Armor", "All Items","Craftable Items", "Uncraftable Items", "All Weapons", "Craftable Weapons", "Uncraftable Weapons"]
+    var types = ["Armor", "Items", "Weapons"]
     var filteredTypeCompletionHandler: ((String) -> String)?
+    var filteredCraftabilityCompletionHandler: ((String) -> String)?
+    
     var selectedType: String?
+    var selectedCraftability: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +84,7 @@ class FilterGearViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.selectionStyle = .none
         
         if selectedType != nil {
+            print("Selecting \(selectedType!)?")
             if cell.label.text?.lowercased() == selectedType {
                 tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }

@@ -20,7 +20,7 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
             self.dismiss(animated: true, completion: nil)
         } else {
             if selectedType != nil {
-                let filteredType = self.filteredTypeCompletionHandler?(selectedType!)
+                _ = self.filteredTypeCompletionHandler?(selectedType!)
             }
             //let filteredTypeLabel = self.filteredTypeLabelCompletionHandler?(selectedType)
             self.dismiss(animated: true, completion: nil)
@@ -28,7 +28,7 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
 
     }
     @IBAction func clearFilterAction(_ sender: Any) {
-        let filteredType = self.filteredTypeCompletionHandler?("All")
+        _ = self.filteredTypeCompletionHandler?("All")
         let rows = tableView.numberOfRows(inSection: 0)
         for row in 0..<rows {
             let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0))

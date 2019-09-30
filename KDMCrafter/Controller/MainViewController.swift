@@ -22,7 +22,8 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         view.addGestureRecognizer(panGestureRecognizer)
-        
+
+        handlePan(panGestureRecognizer) // Fix issue with settings menu partially appearing upon first run
     }
     
     @objc func toggleSideMenu(fromViewController: UIViewController) {
@@ -73,18 +74,16 @@ class MainViewController: UIViewController {
                 })
             }
         }
-        
-        // early return so code below won't get executed
+                
+//        if (!menuVisible && translation.x > 0.0 && translation.x <= self.settingsMenuContainerView.frame.size.width) {
+//            self.settingsMenuViewLeadingConstraint.constant = 0 - self.settingsMenuContainerView.frame.size.width + translation.x
+//            self.contentViewLeadingConstraint.constant = 0 + translation.x
+//        }
+//
+//        if (menuVisible && translation.x < 0.0 && translation.x >= 0 - self.settingsMenuContainerView.frame.size.width) {
+//            self.settingsMenuViewLeadingConstraint.constant = 0 + translation.x
+//            self.contentViewLeadingConstraint.constant = self.settingsMenuContainerView.frame.size.width + translation.x
+//        }
         return
-        
-        if (!menuVisible && translation.x > 0.0 && translation.x <= self.settingsMenuContainerView.frame.size.width) {
-            self.settingsMenuViewLeadingConstraint.constant = 0 - self.settingsMenuContainerView.frame.size.width + translation.x
-            self.contentViewLeadingConstraint.constant = 0 + translation.x
-        }
-        
-        if (menuVisible && translation.x < 0.0 && translation.x >= 0 - self.settingsMenuContainerView.frame.size.width) {
-            self.settingsMenuViewLeadingConstraint.constant = 0 + translation.x
-            self.contentViewLeadingConstraint.constant = self.settingsMenuContainerView.frame.size.width + translation.x
-        }
     }
 }

@@ -64,7 +64,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var filteredSortedUncraftableGear: [Gear]?
     var filteredGearType: String?
     var filteredGear: [Gear]?
-    var filteredQuality = "all"
+    var filteredCraftability = "all"
     
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
@@ -322,7 +322,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         searchController.searchBar.backgroundColor = UIColor.white
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        //searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
         searchController.searchBar.searchBarStyle = .default
         searchController.searchBar.showsCancelButton = false
@@ -338,10 +338,10 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             self.setupFilterButton()
         } else {
             let type = convertFilteredTypeToGearType(typeString: self.filteredGearType!)
-            self.sortedGear = self.getGearForType(gearType: type, quality: filteredQuality)
+            self.sortedGear = self.getGearForType(gearType: type, craftability: filteredCraftability)
             self.navigationItem.title = "Filtered Gear"
             self.setupFilterButton()
-            //print("Got back \(type), setting FilteredQuality to \(self.filteredQuality)")
+            print("Got back \(type), setting filteredCraftability to \(self.filteredCraftability)")
         }
     }
     // Search Controller delegate stuff
@@ -362,16 +362,16 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
     }
-    func getGearForType(gearType: gearType, quality: String) -> [Gear] {
+    func getGearForType(gearType: gearType, craftability: String) -> [Gear] {
         self.filteredGear = myAvailableGear!.filter { $0.description.type == gearType }
         var furtherFiltered = [Gear]()
-        if self.filteredQuality == "craftable" {
+        if self.filteredCraftability == "craftable" {
             for gear in filteredGear! {
                 if sortedCraftableGear!.contains(gear) {
                     furtherFiltered.append(gear)
                 }
             }
-        } else if self.filteredQuality == "uncraftable" {
+        } else if self.filteredCraftability == "uncraftable" {
             for gear in filteredGear! {
                 if sortedUncraftableGear!.contains(gear) {
                     furtherFiltered.append(gear)
@@ -385,30 +385,11 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func convertFilteredTypeToGearType(typeString: String) -> gearType {
         switch typeString {
-        case "all armor":
-            self.filteredQuality = "all"
+        case "armor":
             return .armor
-        case "craftable armor":
-            self.filteredQuality = "craftable"
-            return .armor
-        case "uncraftable armor":
-            self.filteredQuality = "uncraftable"
-            return .armor
-        case "all items":
+        case "items":
             return .item
-        case "craftable items":
-            self.filteredQuality = "craftable"
-            return .item
-        case "uncraftable items":
-            self.filteredQuality = "uncraftable"
-            return .item
-        case "all weapons":
-            return .weapon
-        case "craftable weapons":
-            self.filteredQuality = "craftable"
-            return .weapon
-        case "uncraftable weapons":
-            self.filteredQuality = "uncraftable"
+        case "weapons":
             return .weapon
         default:
             return .item
@@ -457,20 +438,29 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     func filterGear() {
         let filterGearVC = self.storyboard?.instantiateViewController(withIdentifier: "filterGearVC") as! FilterGearViewController
         filterGearVC.selectedType = self.filteredGearType
+        filterGearVC.selectedCraftability = self.filteredCraftability
         self.present(filterGearVC, animated: true, completion: nil)
-        filterGearVC.filteredTypeCompletionHandler = { type in
-            self.filteredGearType = type
-            if type == "All" {
-                self.filterTypesButton.setTitle("All Types", for: .normal)
-                self.navigationItem.title = "All Resources"
-            } else {
-                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
-                self.navigationItem.title = "Filtered Gear"
-            }
-            self.updateResults()
-            self.tableView.reloadData()
-            return type
+        
+        filterGearVC.filteredCraftabilityCompletionHandler = { myCraftability in
+            self.filteredCraftability = myCraftability
+            return myCraftability
         }
+//        filterGearVC.filteredTypeCompletionHandler = { type in
+//            self.filteredGearType = type
+//            if type == "All" {
+//                self.filterTypesButton.setTitle("All Types", for: .normal)
+//                self.navigationItem.title = "All Resources"
+//            } else {
+//                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
+//                self.navigationItem.title = "Filtered Gear"
+//            }
+//            print("Up in here we have \(self.filteredGearType)")
+//            self.updateResults()
+//            self.tableView.reloadData()
+//            return type
+//        }
+        print("Down here we have \(self.filteredCraftability)")
+
     }
 }
 
