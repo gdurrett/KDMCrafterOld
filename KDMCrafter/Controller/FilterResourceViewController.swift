@@ -27,15 +27,6 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
         }
 
     }
-    @IBAction func clearFilterAction(_ sender: Any) {
-        _ = self.filteredTypeCompletionHandler?("All")
-        let rows = tableView.numberOfRows(inSection: 0)
-        for row in 0..<rows {
-            let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0))
-            cell?.setSelected(false, animated: true)
-        }
-        self.selectedType = nil
-    }
     
     let dataModel = DataModel.sharedInstance
     
@@ -44,7 +35,6 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
     var basicTypes = ["Bone", "Consumable", "Hide", "Iron", "Organ", "Scrap", "Vermin"]
     var selectedType: String?
     var filteredTypeCompletionHandler: ((String) -> String)?
-    //var filteredTypeLabelCompletionHandler: ((String) -> String)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +60,7 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
         basicTypes = basicTypes.removingDuplicates()
+        basicTypes.insert("All Resource Types", at: 0)
         
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -78,7 +69,13 @@ class FilterResourceViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTypeCell", for: indexPath) as! ResourceTypeCell
-        configureTypeLabel(for: cell, with: (resourceType)(rawValue: basicTypes[indexPath.row])!)
+        
+        if indexPath.row == 0 { // First row is just text - not a type
+            let label = cell.viewWithTag(4125) as! UILabel
+            label.text = basicTypes[0]
+        } else {
+            configureTypeLabel(for: cell, with: (resourceType)(rawValue: basicTypes[indexPath.row])!)
+        }
         cell.selectionStyle = .none
         
         if selectedType != nil {

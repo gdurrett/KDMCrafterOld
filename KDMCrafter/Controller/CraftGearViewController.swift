@@ -11,41 +11,34 @@ import UIKit
 class CraftGearViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var filterView: UIView!
-    @IBOutlet weak var topLayoutConstraint: NSLayoutConstraint!
-    @IBOutlet weak var bottomLayoutConstraint: NSLayoutConstraint!
-    @IBOutlet weak var filterTypesButton: UIButton!
-    @IBOutlet weak var filterArrow: UIButton!
+
     @IBAction func settingsButtonAction(_ sender: Any) {
         if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
             mainVC.toggleSideMenu(fromViewController: self)
         }
     }
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
+
+    @IBOutlet weak var currentlyFilteredOutlet: UIBarButtonItem!
+    
     @IBAction func filterGearAction(_ sender: Any) {
         filterGear()
         updateResults()
-        tableView.reloadData()
     }
-    @IBAction func showFilterAction(_ sender: Any) {
-        UIView.animate(withDuration: 0.5, delay: 0.1, options: .curveEaseIn, animations: {
-            if !self.filterMenuIsVisible {
-                self.topLayoutConstraint.constant = 128
-                self.bottomLayoutConstraint.constant = -128
-                self.filterMenuIsVisible = true
-                self.filterView.isHidden = false
-            } else {
-                self.topLayoutConstraint.constant = 0
-                self.bottomLayoutConstraint.constant = 0
-                self.filterMenuIsVisible = false
-                self.filterView.isHidden = true
-            }
-            self.tableView.layoutIfNeeded()
-        }) { (animationComplete) in
+    @IBAction func selectCraftabilityAction(_ sender: Any) {
+        switch self.selectCraftabilityOutlet.selectedSegmentIndex {
+        case 0:
+            self.selectedCraftability = "craftable"
+        case 1:
+            self.selectedCraftability = "uncraftable"
+        default:
+            self.selectedCraftability = "all"
         }
         updateResults()
         tableView.reloadData()
     }
+    @IBOutlet weak var selectCraftabilityOutlet: UISegmentedControl!
+    
     let dataModel = DataModel.sharedInstance
     let gearDetailSegueIdentifier = "ShowCraftGearDetailView"
     
@@ -64,7 +57,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var filteredSortedUncraftableGear: [Gear]?
     var filteredGearType: String?
     var filteredGear: [Gear]?
-    var filteredCraftability = "all"
+    var selectedCraftability = "craftable"
     
     var myAvailableGear: [Gear]?
     var myInnovations: [Innovation]?
@@ -92,7 +85,10 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         numGearRows = dataModel.currentSettlement!.availableGear.count
         myAvailableGear = mySettlement!.availableGear
         
-        sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
+        filteredGearType = "all gear types" // Set first
+        selectedCraftability = "craftable" // Set first
+        updateResults() // Call before establishing sortedGear
+        //sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
         sortedCraftableGear = getCraftableGear()
         sortedUncraftableGear = getUncraftableGear()
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
@@ -102,14 +98,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         //setupSearch()
         setUpMenuButton()
         setupFilterButton()
-        setupFilterArrow()
-        
-        filterView.isHidden = true
-        filterTypesButton.setTitle("All Types", for: .normal)
-        
-        navigationItem.title = "All Gear"
-        filteredGearType = "All"
-        
+                
+        navigationItem.title = ("All " + selectedCraftability.capitalized + " Gear")
+
         tableView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -120,6 +111,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedCraftableGear = getCraftableGear()
         sortedUncraftableGear = getUncraftableGear()
         setupFilterButton()
+        addNavBarImage() //Test
         tableView.reloadData()
     }
 
@@ -142,12 +134,12 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.accessoryType = .disclosureIndicator
 
         var gear: Gear
-            if isFiltering() {
-                gear = self.filteredSortedGear![indexPath.row]
-            } else {
-                gear = self.sortedGear![indexPath.row]
-            }
-        
+        if isFiltering() {
+            gear = self.filteredSortedGear![indexPath.row]
+        } else {
+            gear = self.sortedGear![indexPath.row]
+        }
+
         configureTitle(for: cell, with: gear.name, with: 3750)
         configureNumCraftableLabel(for: cell, with: gear, for: 3975)
         configureQtyAvailableLabel(for: cell, with: gear, with: 4000)
@@ -332,16 +324,23 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         searchController.hidesNavigationBarDuringPresentation = false
     }
     func updateResults() {
-        if self.filteredGearType == "All" || !filterMenuIsVisible {
-            self.sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
-            self.navigationItem.title = "All Gear"
+        var preSortedGear = [Gear]()
+        if self.selectedCraftability == "craftable" {
+            preSortedGear = getCraftableGear()
+        } else {
+            preSortedGear = getUncraftableGear()
+        }
+        if self.filteredGearType == "all gear types" {
+            self.sortedGear = preSortedGear.sorted(by: { $0.name < $1.name })
+            print("Getting all gear that is \(selectedCraftability)")
+            self.navigationItem.title = ("All " + selectedCraftability.capitalized + " Gear")
             self.setupFilterButton()
         } else {
             let type = convertFilteredTypeToGearType(typeString: self.filteredGearType!)
-            self.sortedGear = self.getGearForType(gearType: type, craftability: filteredCraftability)
-            self.navigationItem.title = "Filtered Gear"
+            self.sortedGear = self.getGearForType(gearType: type, craftability: selectedCraftability)
+//            self.navigationItem.title = "Filtered Gear"
+            addNavBarImage()
             self.setupFilterButton()
-            print("Got back \(type), setting filteredCraftability to \(self.filteredCraftability)")
         }
     }
     // Search Controller delegate stuff
@@ -364,14 +363,15 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func getGearForType(gearType: gearType, craftability: String) -> [Gear] {
         self.filteredGear = myAvailableGear!.filter { $0.description.type == gearType }
+
         var furtherFiltered = [Gear]()
-        if self.filteredCraftability == "craftable" {
+        if self.selectedCraftability == "craftable" {
             for gear in filteredGear! {
                 if sortedCraftableGear!.contains(gear) {
                     furtherFiltered.append(gear)
                 }
             }
-        } else if self.filteredCraftability == "uncraftable" {
+        } else if self.selectedCraftability == "uncraftable" {
             for gear in filteredGear! {
                 if sortedUncraftableGear!.contains(gear) {
                     furtherFiltered.append(gear)
@@ -381,6 +381,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             furtherFiltered = filteredGear!
         }
         //return filteredGear!.sorted(by: { $0.name < $1.name })
+        //print("Returning furtherFiltered of: \(furtherFiltered.compactMap { $0.name })")
         return furtherFiltered.sorted(by: { $0.name < $1.name })
     }
     func convertFilteredTypeToGearType(typeString: String) -> gearType {
@@ -392,7 +393,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         case "weapons":
             return .weapon
         default:
-            return .item
+            return .armor
         }
     }
     @objc func setUpMenuButton(){
@@ -416,12 +417,12 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func setupFilterButton() {
         let filterBtn = UIButton(type: .custom)
         filterBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
-        if self.filteredGearType == "All" || !filterMenuIsVisible {
+        if self.filteredGearType == "all gear types" {
             filterBtn.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
         } else {
             filterBtn.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
         }
-        filterBtn.addTarget(self, action: #selector(self.showFilterAction(_:)), for: UIControl.Event.touchUpInside)
+        filterBtn.addTarget(self, action: #selector(self.filterGearAction(_:)), for: UIControl.Event.touchUpInside)
         
         let menuBarItem = UIBarButtonItem(customView: filterBtn)
         let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
@@ -430,38 +431,73 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         currHeight?.isActive = true
         self.navigationItem.rightBarButtonItem = menuBarItem
     }
-    func setupFilterArrow() {
-        //let filterArrow = UIButton(type: .custom)
-        filterArrow.frame = CGRect(x: 0.0, y: 0.0, width: 10, height: 10)
-        filterArrow.addTarget(self, action: #selector(self.filterGearAction(_:)), for: UIControl.Event.touchUpInside)
-    }
+
     func filterGear() {
         let filterGearVC = self.storyboard?.instantiateViewController(withIdentifier: "filterGearVC") as! FilterGearViewController
         filterGearVC.selectedType = self.filteredGearType
-        filterGearVC.selectedCraftability = self.filteredCraftability
         self.present(filterGearVC, animated: true, completion: nil)
         
-        filterGearVC.filteredCraftabilityCompletionHandler = { myCraftability in
-            self.filteredCraftability = myCraftability
-            return myCraftability
+        filterGearVC.filteredTypeCompletionHandler = { type in
+            self.filteredGearType = type
+            self.updateResults()
+            self.tableView.reloadData()
+            return type
         }
-//        filterGearVC.filteredTypeCompletionHandler = { type in
-//            self.filteredGearType = type
-//            if type == "All" {
-//                self.filterTypesButton.setTitle("All Types", for: .normal)
-//                self.navigationItem.title = "All Resources"
-//            } else {
-//                self.filterTypesButton.setTitle(type.capitalized, for: .normal)
-//                self.navigationItem.title = "Filtered Gear"
-//            }
-//            print("Up in here we have \(self.filteredGearType)")
-//            self.updateResults()
-//            self.tableView.reloadData()
-//            return type
-//        }
-        print("Down here we have \(self.filteredCraftability)")
-
     }
+    func addNavBarImage() {
+
+//        let navController = navigationController!
+        var image = UIImage()
+        var titleString = String()
+        switch self.filteredGearType {
+        case "armor":
+            titleString = (self.selectedCraftability.capitalized + " Armor")
+            image = UIImage(named: "icons8-body-armor-50")!
+        case "items":
+            titleString = (self.selectedCraftability.capitalized + " Items")
+            image = UIImage(named: "icons8-mardi-gras-mask-50")!
+        case "weapons":
+            titleString = (self.selectedCraftability.capitalized + " Weapons")
+            image = UIImage(named: "icons8-saber-weapon-50")!
+        default:
+            titleString = ("All " + selectedCraftability.capitalized + " Gear")
+        }
+        let imageView = UIImageView(image: image)
+
+//        let imageWidth = imageView.widthAnchor.constraint(equalToConstant: 24)
+//        let imageHeight = imageView.heightAnchor.constraint(equalToConstant: 24)
+//        imageWidth.isActive = true
+//        imageHeight.isActive = true
+//
+//        let bannerWidth = navController.navigationBar.frame.size.width
+//        let bannerHeight = navController.navigationBar.frame.size.height
+//
+//        let bannerX = bannerWidth / 2 - (image.size.width) / 2
+//        let bannerY = bannerHeight / 2 - (image.size.height) / 2
+//
+//        imageView.frame = CGRect(x: bannerX, y: bannerY, width: bannerWidth, height: bannerHeight)
+        
+        // Test
+//        let titleLabel = UILabel()
+//        let titleString = NSMutableAttributedString(string: "Filtering:")
+//        let imageAttachment = NSTextAttachment()
+//        imageAttachment.image = image.resized(toWidth: 30)
+//        let comboString = NSAttributedString(attachment: imageAttachment)
+//        titleString.append(comboString)
+//        titleLabel.attributedText = titleString
+//        navigationItem.titleView = titleLabel
+
+        //navigationItem.titleView = imageView
+        let filteredTypeIcon = UIBarButtonItem(customView: imageView)
+        let currWidth = filteredTypeIcon.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = filteredTypeIcon.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        
+        currentlyFilteredOutlet.customView = filteredTypeIcon.customView
+        navigationItem.title = titleString
+    }
+
 }
 
 extension CraftGearViewController: UISearchResultsUpdating {
@@ -476,3 +512,12 @@ extension CraftGearViewController: UISearchBarDelegate {
     }
 }
 
+extension UIImage {
+    func resized(toWidth width: CGFloat) -> UIImage? {
+        let canvasSize = CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))
+        UIGraphicsBeginImageContextWithOptions(canvasSize, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: canvasSize))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+}
