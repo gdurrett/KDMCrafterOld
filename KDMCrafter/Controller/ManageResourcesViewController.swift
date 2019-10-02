@@ -102,6 +102,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResourceTableViewCell", for: indexPath) as! ResourceTableViewCell
+
         if #available(iOS 13.0, *) {
             cell.backgroundColor = UIColor.systemBackground
         } else {
@@ -130,21 +131,20 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         cell.stepperOutlet.value = Double(value!)
         cell.stepperOutlet.minimumValue = 0.0
         cell.stepperOutlet.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        //cell.resourceCountLabel.text! = "\(value!)"
         cell.resourceCountLabel.text! = "\(value!)"
-        cell.observation = cell.stepperOutlet!.observe(\.value, options: [.new]) { (stepper, change) in
-            cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            var selectedResource: Resource?
-            selectedResource = self.sortedStorage![indexPath.row].0
 
-            //self.sortedStorage![indexPath.row].1 = Int(change.newValue!)
-            //self.myStorage![self.sortedStorage![indexPath.row].0] = Int(change.newValue!)
-            self.myStorage![selectedResource!] = Int(change.newValue!)
-            self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(change.newValue!)
-            self.dataModel.writeData()
-            self.updateResults()
-        }
+        cell.stepperOutlet.addTarget(self, action: #selector(stepperChanged(sender:)), for: .valueChanged)
+        cell.stepperOutlet.tag = indexPath.row
+
         return cell
+    }
+    @objc fileprivate func stepperChanged(sender: UIStepper) {
+        var selectedResource: Resource?
+        selectedResource = self.sortedStorage![sender.tag].0
+        self.myStorage![selectedResource!] = Int(sender.value)
+        self.sortedStorage![sender.tag].1 = Int(sender.value)
+        self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(sender.value)
+        self.updateResults()
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         switch indexPath.section {
