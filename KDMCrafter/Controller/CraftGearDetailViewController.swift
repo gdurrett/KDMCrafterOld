@@ -66,7 +66,13 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     
     var result: ([Resource:Int], [resourceType:Int], Bool)?
     
-    let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-50")
+//    if #available(iOS 13.0, *) {
+//        let cellStatusImageChecked = UIImage(systemName: "checkmark.seal")
+//    } else {
+//        let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-50")
+//    }
+//    let cellStatusImageChecked = UIImage(systemName: "checkmark.square.fill")
+    let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-100-dark")
     let cellStatusImageUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
     let cellStatusImageIndeterminate = #imageLiteral(resourceName: "icons8-indeterminate-checkbox-100")
     let cellStatusImageOverride = #imageLiteral(resourceName: "icons8-settings-filled-50")
@@ -435,6 +441,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         mySettlement!.gearCraftedDict[self.gear!]! += 1
         configureCraftButton()
         configureArchiveButton()
+        configureNumAvailableLabel()
         dataModel.writeData()
         tableView.reloadData()
     }
@@ -453,7 +460,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         //let alert = UIAlertController(title: "\(mySettlement!.gearCraftedDict[gear]!) crafted of \(gear.qtyAvailable) available", message: "", preferredStyle: .alert)
         let alert = UIAlertController(title: "Craft one \(gear.name)?", message: "", preferredStyle: .alert)
         
-        alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: { (UIAlertAction) in
             
@@ -462,6 +468,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             } else {
                 self.mySettlement!.gearCraftedDict[gear]! += 1
             }
+            print("In here now?")
             self.configureCraftButton()
             self.configureArchiveButton()
             self.configureNumAvailableLabel()
@@ -472,7 +479,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     }
     func showArchivedAlert(for gear: Gear) {
         let alert = UIAlertController(title: "Archive \(gear.name)?", message: "", preferredStyle: .alert)
-        alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
             self.mySettlement!.gearCraftedDict[gear]! -= 1

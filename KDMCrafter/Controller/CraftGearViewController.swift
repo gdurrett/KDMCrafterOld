@@ -380,8 +380,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         } else {
             furtherFiltered = filteredGear!
         }
-        //return filteredGear!.sorted(by: { $0.name < $1.name })
-        //print("Returning furtherFiltered of: \(furtherFiltered.compactMap { $0.name })")
         return furtherFiltered.sorted(by: { $0.name < $1.name })
     }
     func convertFilteredTypeToGearType(typeString: String) -> gearType {
@@ -446,7 +444,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func addNavBarImage() {
 
-//        let navController = navigationController!
         var image = UIImage()
         var titleString = String()
         switch self.filteredGearType {
@@ -463,31 +460,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
             titleString = ("All " + selectedCraftability.capitalized + " Gear")
         }
         let imageView = UIImageView(image: image)
-
-//        let imageWidth = imageView.widthAnchor.constraint(equalToConstant: 24)
-//        let imageHeight = imageView.heightAnchor.constraint(equalToConstant: 24)
-//        imageWidth.isActive = true
-//        imageHeight.isActive = true
-//
-//        let bannerWidth = navController.navigationBar.frame.size.width
-//        let bannerHeight = navController.navigationBar.frame.size.height
-//
-//        let bannerX = bannerWidth / 2 - (image.size.width) / 2
-//        let bannerY = bannerHeight / 2 - (image.size.height) / 2
-//
-//        imageView.frame = CGRect(x: bannerX, y: bannerY, width: bannerWidth, height: bannerHeight)
-        
-        // Test
-//        let titleLabel = UILabel()
-//        let titleString = NSMutableAttributedString(string: "Filtering:")
-//        let imageAttachment = NSTextAttachment()
-//        imageAttachment.image = image.resized(toWidth: 30)
-//        let comboString = NSAttributedString(attachment: imageAttachment)
-//        titleString.append(comboString)
-//        titleLabel.attributedText = titleString
-//        navigationItem.titleView = titleLabel
-
-        //navigationItem.titleView = imageView
         let filteredTypeIcon = UIBarButtonItem(customView: imageView)
         let currWidth = filteredTypeIcon.customView?.widthAnchor.constraint(equalToConstant: 24)
         currWidth?.isActive = true

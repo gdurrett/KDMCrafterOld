@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -38,12 +35,11 @@
                                     <rect key="frame" x="40" y="5" width="28.5" height="58"/>
                                 </imageView>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             <constraints>
-                                <constraint firstItem="x3p-ep-XiX" firstAttribute="leading" secondItem="WiU-Qy-GOA" secondAttribute="leading" constant="40" id="Lys-Nm-Noc"/>
-                                <constraint firstAttribute="trailing" secondItem="x3p-ep-XiX" secondAttribute="trailing" constant="5" id="Pd3-dP-7Dy"/>
-                                <constraint firstItem="x3p-ep-XiX" firstAttribute="top" secondItem="WiU-Qy-GOA" secondAttribute="top" constant="5" id="ZUl-r4-N77"/>
-                                <constraint firstAttribute="bottom" secondItem="x3p-ep-XiX" secondAttribute="bottom" constant="5" id="oj1-ga-xcg"/>
+                                <constraint firstItem="ioW-ea-SEO" firstAttribute="trailing" secondItem="x3p-ep-XiX" secondAttribute="trailing" constant="5" id="6Z3-UN-t7G"/>
+                                <constraint firstItem="x3p-ep-XiX" firstAttribute="top" secondItem="ioW-ea-SEO" secondAttribute="top" constant="5" id="Ngj-1Z-rkg"/>
+                                <constraint firstItem="ioW-ea-SEO" firstAttribute="bottom" secondItem="x3p-ep-XiX" secondAttribute="bottom" constant="5" id="wNt-gN-Qui"/>
                             </constraints>
                             <viewLayoutGuide key="safeArea" id="ioW-ea-SEO"/>
                         </view>
@@ -51,9 +47,6 @@
                 </stackView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kWZ-ZK-xqn">
                     <rect key="frame" x="0.0" y="0.0" width="151" height="68"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="151" id="swj-bN-cnQ"/>
-                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -62,14 +55,15 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="GearRequirementTableViewCell"/>
             <constraints>
-                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="2cg-K5-Vog"/>
-                <constraint firstAttribute="trailing" secondItem="KzH-sW-VRl" secondAttribute="trailing" id="7Ix-Zs-pk4"/>
-                <constraint firstItem="KzH-sW-VRl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="150" id="8tX-a1-4JS"/>
-                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="Fvj-hU-pJb"/>
-                <constraint firstItem="KzH-sW-VRl" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="J7R-rE-b5B"/>
-                <constraint firstItem="mtG-ld-tEg" firstAttribute="leading" secondItem="kWZ-ZK-xqn" secondAttribute="trailing" constant="-1" id="Xgh-Vt-GVA"/>
-                <constraint firstItem="KzH-sW-VRl" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="vQQ-nc-nuC"/>
-                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="z9N-8I-xae"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="bottom" secondItem="KzH-sW-VRl" secondAttribute="bottom" id="6hc-Ht-hQ3"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="6v1-lV-HT0"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="top" secondItem="KzH-sW-VRl" secondAttribute="top" id="E8z-C5-jDd"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="I7I-MR-HJ6"/>
+                <constraint firstItem="KzH-sW-VRl" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="150" id="JeB-dV-jZe"/>
+                <constraint firstItem="kWZ-ZK-xqn" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="KLB-gG-aLL"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="kWZ-ZK-xqn" secondAttribute="trailing" constant="224" id="KiB-Ca-UHd"/>
+                <constraint firstItem="KzH-sW-VRl" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="k5U-ee-8dH"/>
+                <constraint firstItem="x3p-ep-XiX" firstAttribute="leading" secondItem="kWZ-ZK-xqn" secondAttribute="trailing" constant="190.5" id="u5E-F0-uSR"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
@@ -79,7 +73,7 @@
                 <outlet property="requiredTypeLabel" destination="kWZ-ZK-xqn" id="gOX-gS-GpH"/>
                 <outlet property="statusImage" destination="x3p-ep-XiX" id="8zd-fT-dwd"/>
             </connections>
-            <point key="canvasLocation" x="16.800000000000001" y="-229.38530734632684"/>
+            <point key="canvasLocation" x="-186" y="-247"/>
         </view>
     </objects>
 </document>

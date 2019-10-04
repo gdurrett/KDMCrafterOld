@@ -41,7 +41,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     var missingResource: [resourceType:Int]?
     var currentLocation: Location?
     
-    var hidden:[Bool] = [true, true, true] // For collapsible sections
     var numResourceRows: Int?
     var numLocationRows: Int?
     var numInnovationRows: Int?
@@ -301,7 +300,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     }
     func showAlert(for location: Location, action: buildingAction) {
         let alert = UIAlertController(title: "\(action.rawValue) \(location.name)?", message: "", preferredStyle: .alert)
-        alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         if action == .archive {
             alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in

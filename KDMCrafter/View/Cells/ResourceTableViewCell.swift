@@ -19,10 +19,7 @@ class ResourceTableViewCell: UITableViewCell {
     @IBOutlet weak var stepperOutlet: UIStepper!
     
     @IBAction func stepperAction(_ sender: UIStepper) {
-        //resourceCountLabel.text = "\(Int(sender.value))" // Temporary!
     }
-    //var stepperVal = Int()
-    var observation: NSKeyValueObservation?
     
     static var nib:UINib {
         return UINib(nibName: identifier, bundle: nil)

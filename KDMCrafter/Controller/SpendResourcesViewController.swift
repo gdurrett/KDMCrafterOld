@@ -20,6 +20,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func save(_ sender: Any) { // Maybe use notification to update values?
         delegate!.updateStorage(with: spentResources)
+        print("Updating storage with: \(spentResources)")
         self.dismiss(dismiss(animated: true, completion: nil))
     }
     
@@ -60,6 +61,9 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     var selectedType: resourceType?
     var currentCell: ResourceTableViewCell?
     var stepperVal: Int?
+    var maxStepperValues: [(key: Resource, value: Int)]?
+    
+    var previousValues: [(key: Resource, value: Int)]?
     
     weak var delegate: SpendResourcesVCDelegate?
     
@@ -96,6 +100,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                         preSpend()
                     }
                     sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+                    maxStepperValues = sortedSpendableResources // Initialize max stepper values before we start changing them
+                    previousValues = sortedSpendableResources
                     sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
                     
                     for (type, qty) in requiredResourceTypes {
@@ -131,6 +137,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 preSpend()
             }
             sortedSpendableResources = spendableResources!.sorted(by: { $0.key.name < $1.key.name })
+            maxStepperValues = sortedSpendableResources // Initialize max stepper values before we start changing them
+            previousValues = sortedSpendableResources
             sortedSpentResources = sortedSpendableResources! // Initialize to same values as spendable to begin with
             
                 for (type, qty) in requiredResourceTypes {
@@ -163,7 +171,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
 
         resourceName = key.name
         resourceValue = value
-        
         configureTitle(for: cell, with: resourceName!, with: 3500)
         configureValue(for: cell, with: resourceValue!)
         
@@ -182,58 +189,65 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         cell.providedTypesLabel.textColor = UIColor.gray
         
         cell.stepperOutlet.value = Double(value)
-        cell.stepperOutlet.maximumValue = Double(value)
+        cell.stepperOutlet.maximumValue = Double(maxStepperValues![indexPath.row].value)
         cell.resourceCountLabel.text! = "\(value)"
+        
+        cell.stepperOutlet.addTarget(self, action: #selector(stepperChanged(sender:)), for: .valueChanged)
+        cell.stepperOutlet.tag = indexPath.row
+        
+        self.typeChoices.removeAll()
+        
+        self.currentCell = cell
 
-        cell.observation = cell.stepperOutlet.observe(\.value, options: [.new]) { (stepper, change) in
-            
-            self.typeChoices.removeAll()
-            
-            self.stepperVal = Int(change.newValue!)
-            self.currentCell = cell
-            self.prevSpentResources = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            self.sortedSpentResources![indexPath.row].1 = Int(change.newValue!)
-            let spentResourceQty = self.sortedSpendableResources![indexPath.row].1 - self.sortedSpentResources![indexPath.row].1
-            var typesProvidedByThisResource = [resourceType]()
-            for type in self.requiredResourceTypes.keys { // Get a count of types provided by this resource that are required by gear in question
-                if key.type.contains(type) {
-                    typesProvidedByThisResource.append(type)
-                }
-            }
-            let weDecremented = (spentResourceQty < self.prevSpentResources) ? true:false
-            if key.type.count == 1 { // No need for picker
-                self.setSpentTypes(key: key, type: key.type[0], spentResourceQty: spentResourceQty) // Spend the only type this resource has
-                self.setSpentTypes()
-                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            } else if typesProvidedByThisResource.count == 1 { // If this resource provides multiple types, but only one of the types qualifies for use
-                self.setSpentTypes(key: key, type: typesProvidedByThisResource[0], spentResourceQty: spentResourceQty)
-                self.setSpentTypes()
-                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            } else if weDecremented { // If we 'unspent'
-                self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: spentResourceQty)
-                self.setSpentTypes()
-                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            } else if (key.kind != .basic && key.type.count > 2) || (key.name == "???") { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
-                for type in self.sortedSpentResources![indexPath.row].0.type {
-                    if type == self.sortedSpentResources![indexPath.row].0.type[0] && key.name != "???" {
-                        continue
-                    } else if !self.requiredResourceTypes.keys.contains(type) {
-                        continue
-                    } else {
-                        self.typeChoices.append(type)
-                    }
-                }
-                self.currentResource = key
-                self.currentQty = spentResourceQty
-                self.showChoices(self)
-            } else {
-                self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: 1)
-                self.setSpentTypes()
-                cell.resourceCountLabel.text = "\(Int(change.newValue!))"
-            }
-            
-        }
         return cell
+    }
+    @objc fileprivate func stepperChanged(sender: UIStepper) {
+        var weDecremented = false
+        let key = sortedSpendableResources![sender.tag].0
+        //let value = sortedSpendableResources![sender.tag].1
+        let spentResourceQty = self.previousValues![sender.tag].1 - Int(sender.value)
+        if Int(sender.value) < self.previousValues![sender.tag].1 {
+            self.sortedSpendableResources![sender.tag].1 -= 1
+            weDecremented = false
+        } else {
+            self.sortedSpendableResources![sender.tag].1 += 1
+            weDecremented = true
+        }
+        
+        var typesProvidedByThisResource = [resourceType]()
+        for type in self.requiredResourceTypes.keys { // Get a count of types provided by this resource that are required by gear in question
+            if key.type.contains(type) {
+                typesProvidedByThisResource.append(type)
+            }
+        }
+        if key.type.count == 1 { // No need for picker
+            self.setSpentTypes(key: key, type: key.type[0], spentResourceQty: spentResourceQty) // Spend the only type this resource has
+            self.setSpentTypes()
+        } else if typesProvidedByThisResource.count == 1 { // If this resource provides multiple types, but only one of the types qualifies for use
+            self.setSpentTypes(key: key, type: typesProvidedByThisResource[0], spentResourceQty: spentResourceQty)
+            self.setSpentTypes()
+        } else if weDecremented { // If we 'unspent'
+            self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: spentResourceQty)
+            self.setSpentTypes()
+        } else if (key.kind != .basic && key.type.count > 2) || (key.name == "???") { // Call picker but strip away Special Type first, but only if there's more than one non-basic type after the initial special type
+            for type in self.sortedSpentResources![sender.tag].0.type {
+                if type == self.sortedSpentResources![sender.tag].0.type[0] && key.name != "???" {
+                    continue
+                } else if !self.requiredResourceTypes.keys.contains(type) {
+                    continue
+                } else {
+                    self.typeChoices.append(type)
+                }
+            }
+            self.currentResource = key
+            self.currentQty = spentResourceQty
+            self.showChoices(self)
+        } else {
+            self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: 1)
+            self.setSpentTypes()
+        }
+        
+        tableView.reloadData()
     }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
@@ -249,8 +263,7 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         if gear != nil && gear!.name == "Skull Helm" && (self.spentResourceTypes.keys.compactMap { $0.name }[0].contains("Skull")) {
             save.isHidden = false
             self.spentTypesLabel.textColor = UIColor.black
-        } else
-        if spentResourceTypesTemp == requiredResourceTypes {
+        } else if spentResourceTypesTemp == requiredResourceTypes {
             save.isHidden = false
             //self.spentTypesLabel.textColor = UIColor(red: 0, green: 0.8588, blue: 0.1412, alpha: 1.0)
             self.spentTypesLabel.textColor = UIColor.black
@@ -302,7 +315,6 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
     }
     @IBAction func showChoices(_ sender: Any) {
         let alert = UIAlertController(title: "Use resource for which type?", message: "\n\n\n\n\n\n", preferredStyle: .alert)
-        alert.isModalInPopover = true
         
         let pickerFrame = UIPickerView(frame: CGRect(x: 5, y: 20, width: 250, height: 140))
         

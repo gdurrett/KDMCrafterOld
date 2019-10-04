@@ -89,7 +89,6 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     func showResetAlert() {
         let alert = UIAlertController(title: "Reset settlement \(mySettlement!.name)?", message: "", preferredStyle: .alert)
-        alert.isModalInPopover = true
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Reset", style: .default, handler:  { (UIAlertAction) in
             self.mySettlement!.initializeDictionaries()

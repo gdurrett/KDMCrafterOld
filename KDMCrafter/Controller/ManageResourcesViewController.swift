@@ -24,6 +24,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @IBAction func filterResourcesAction(_ sender: Any) {
         filterResources()
     }
+    @IBOutlet weak var currentlyFilteredOutlet: UIBarButtonItem!
     
     let dataModel = DataModel.sharedInstance
     
@@ -89,6 +90,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         updateResults()
         setUpMenuButton()
         setupFilterButton()
+        addNavBarImage()
         tableView.reloadData()
     }
 
@@ -145,11 +147,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         self.sortedStorage![sender.tag].1 = Int(sender.value)
         self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(sender.value)
         self.updateResults()
+        //self.dataModel.writeData()
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            (cell as! ResourceTableViewCell).observation = nil
+            //(cell as! ResourceTableViewCell).observation = nil
+            print("")
         case 1:
             break
         default: break
@@ -214,7 +218,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         } else {
             let type = convertFilteredTypeToResourceType(typeString: self.filteredResourceType!)
             self.sortedStorage = self.getBasicStorageForType(resourceType: type)
-            self.navigationItem.title = (self.filteredResourceType!.capitalized + " Resources")
+            //self.navigationItem.title = (self.filteredResourceType!.capitalized + " Resources")
+            addNavBarImage()
         }
         tableView.reloadData()
     }
@@ -267,13 +272,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         currHeight?.isActive = true
         self.navigationItem.leftBarButtonItem = menuBarItem
     }
-//    func updateFilterButton() {
-//        if self.filteredResourceType == "All" || filterViewIsHidden {
-//            filterButton.setImage(UIImage(named: "icons8-filter-50-empty"), for: .normal)
-//        } else {
-//            filterButton.setImage(UIImage(named: "icons8-filter-50-filled"), for: .normal)
-//        }
-//    }
+
     func setupFilterButton() {
         filterButton.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         filterButton.addTarget(self, action: #selector(self.filterResourcesAction(_:)), for: UIControl.Event.touchUpInside)
@@ -303,7 +302,44 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
             innovateTabItem.image = UIImage(named: "icons8-idea-30")
         }
     }
-
+    func addNavBarImage() {
+        var image = UIImage()
+        var titleString = String()
+        switch self.filteredResourceType {
+        case "bone":
+            titleString = "Bone Resources"
+            image = UIImage(named: "icons8-human-bone-50")!
+        case "consumable":
+            titleString = "Consumable Resources"
+            image = UIImage(named: "icons8-meat-50")!
+        case "hide":
+            titleString = "Leather Resources"
+            image = UIImage(named: "icons8-leather-50")!
+        case "iron":
+            titleString = "Iron Resources"
+            image = UIImage(named: "icons8-iron-ore-60")!
+        case "organ":
+            titleString = "Organ Resources"
+            image = UIImage(named: "icons8-medical-heart-50")!
+        case "scrap":
+            titleString = "Scrap Resources"
+            image = UIImage(named: "icons8-sheet-metal-50")!
+        case "vermin":
+            titleString = "Vermin Resources"
+            image = UIImage(named: "icons8-insect-50")!
+        default:
+            titleString = ("All Resources")
+        }
+        let imageView = UIImageView(image: image)
+        let filteredTypeIcon = UIBarButtonItem(customView: imageView)
+        let currWidth = filteredTypeIcon.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = filteredTypeIcon.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        
+        currentlyFilteredOutlet.customView = filteredTypeIcon.customView
+        navigationItem.title = titleString
+    }
     func filterResources() {
         let filterResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "filterResourcesVC") as! FilterResourceViewController
         filterResourcesVC.selectedType = self.filteredResourceType
