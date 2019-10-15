@@ -23,7 +23,7 @@ enum armorLocation: String, Codable {
 enum affinity: String, Codable, CaseIterable {
     case blueRight = "Blue Right"
     case redRight = "Red Right"
-    case greenRight = "GreenRight"
+    case greenRight = "Green Right"
     case blueLeft = "Blue Left"
     case redLeft = "Red Left"
     case greenLeft = "Green Left"

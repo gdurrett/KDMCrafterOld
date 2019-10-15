@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SettingsTableViewCell" customModule="KDMCrafter" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" userLabel="Settings Switch Table View Cell" customClass="SettingsSwitchTableViewCell" customModule="KDMCrafter" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="414" height="104"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -25,16 +22,24 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KIL-YO-bUa">
+                            <rect key="frame" x="355" y="36.5" width="51" height="31"/>
+                            <connections>
+                                <action selector="settingsOverrideSwitch:" destination="iN0-l3-epB" eventType="valueChanged" id="Gpv-ra-rc1"/>
+                            </connections>
+                        </switch>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="KIL-YO-bUa" secondAttribute="trailing" constant="10" id="COF-dW-XbD"/>
+                        <constraint firstItem="KIL-YO-bUa" firstAttribute="centerY" secondItem="KY6-O4-u58" secondAttribute="centerY" id="SYT-0a-Ia5"/>
                         <constraint firstItem="G97-jW-Nz5" firstAttribute="centerY" secondItem="KY6-O4-u58" secondAttribute="centerY" id="cGB-Q6-xDU"/>
                         <constraint firstItem="G97-jW-Nz5" firstAttribute="leading" secondItem="KY6-O4-u58" secondAttribute="leading" constant="8" id="wbJ-sX-ZLm"/>
                     </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-            <accessibility key="accessibilityConfiguration" identifier="SettingsTableViewCell"/>
+            <accessibility key="accessibilityConfiguration" identifier="SettingsSwitchTableViewCell"/>
             <constraints>
                 <constraint firstItem="KY6-O4-u58" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="1iH-g4-6zo"/>
                 <constraint firstAttribute="bottom" secondItem="KY6-O4-u58" secondAttribute="bottom" id="GXi-Op-VmP"/>
@@ -44,8 +49,8 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
-                <outlet property="settingNameLabel" destination="G97-jW-Nz5" id="2d3-pi-IUu"/>
-                <outlet property="view" destination="KY6-O4-u58" id="hkH-ha-laL"/>
+                <outlet property="settingsNameLabel" destination="G97-jW-Nz5" id="S0g-jt-TwQ"/>
+                <outlet property="settingsOverrideSwitchOutlet" destination="KIL-YO-bUa" id="99r-QN-jfi"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="-125.22321428571428"/>
         </view>

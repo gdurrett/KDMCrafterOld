@@ -8,15 +8,18 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SettingsButtonTableViewCellDelegate, SettingsSwitchTableViewCellDelegate {
     
 
     @IBOutlet weak var tableView: UITableView!
     
-    var mySettlement = DataModel.sharedInstance.currentSettlement
+    @IBAction func doneAction(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+ 
+    var dataModel = DataModel.sharedInstance
     
-    var settingsButton = UIButton(type: .system)
-    var settingsSwitch = UISwitch(frame: CGRect(x: 340, y: 6, width: 60, height: 30))
+    var overrideSwitchState: Bool?
     
     let notificationCenter = NotificationCenter.default
     
@@ -25,15 +28,17 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(SettingsTableViewCell.nib, forCellReuseIdentifier: SettingsTableViewCell.identifier)
+        tableView.register(SettingsSwitchTableViewCell.nib, forCellReuseIdentifier: SettingsSwitchTableViewCell.identifier)
+        tableView.register(SettingsButtonTableViewCell.nib, forCellReuseIdentifier: SettingsButtonTableViewCell.identifier)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorInset = UIEdgeInsets.zero
         
-        settingsButton.frame = CGRect(x: 340, y: 6, width: 60, height: 30)
-        
-        navigationItem.title = "Settings"
+        overrideSwitchState = dataModel.currentSettlement.overrideEnabled ? true:false
     }
 
+//    override func viewWillAppear(_ animated: Bool) {
+//        overrideSwitchState = dataModel.currentSettlement.overrideEnabled ? true:false
+//    }
     // MARK: - Table view data source
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -51,47 +56,52 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as! SettingsTableViewCell
-        
         if indexPath.section == 0 {
-            cell.view.addSubview(settingsButton)
-            cell.settingNameLabel.text = "Reset Settlement"
-
-            settingsButton.setTitle("OK", for: .normal)
-            settingsButton.tintColor = UIColor.white
-            settingsButton.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
-            settingsButton.layer.masksToBounds = true
-            settingsButton.layer.cornerRadius = 5
-            settingsButton.frame.origin.x = 271
-            settingsButton.addTarget(self, action: #selector(resetSettlement(sender:)), for: .touchUpInside)
-            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsButtonTableViewCell", for: indexPath) as! SettingsButtonTableViewCell
+            cell.cellDelegate = self
+            cell.settingsNameLabelOutlet.text = "Reset Settlement"
+            cell.settingsResetButtonOutlet.setTitle("OK", for: .normal)
+            cell.settingsResetButtonOutlet.tintColor = UIColor.white
+            cell.settingsResetButtonOutlet.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            cell.settingsResetButtonOutlet.layer.masksToBounds = true
+            cell.settingsResetButtonOutlet.layer.cornerRadius = 5
+            return cell
         } else if indexPath.section == 1 {
-            cell.view.addSubview(settingsSwitch)
-            cell.settingNameLabel.text = "Enable Override"
-            
-            settingsSwitch.frame.origin.x = 271
-            settingsSwitch.addTarget(self, action: #selector(enableOverride(sender:)), for: .touchUpInside)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsSwitchTableViewCell", for: indexPath) as! SettingsSwitchTableViewCell
+            cell.settingsNameLabel.text = "Enable Override"
+            cell.cellDelegate = self
+            if self.overrideSwitchState == true {
+                cell.settingsOverrideSwitchOutlet.setOn(true, animated: true)
+            } else {
+                cell.settingsOverrideSwitchOutlet.setOn(false, animated: true)
+            }
+            return cell
         }
-        return cell
+        return UITableViewCell()
     }
 
-    @objc func resetSettlement(sender: UIButton) {
+    func tappedResetButton(cell: SettingsButtonTableViewCell) {
         showResetAlert()
     }
-    @objc func enableOverride(sender: UISwitch) {
-        if sender.isOn {
-            mySettlement!.overrideEnabled = true
+    func tappedOverrideButton(cell: SettingsSwitchTableViewCell) {
+        let overrideSwitch = cell.settingsOverrideSwitchOutlet
+        if overrideSwitch!.isOn {
+            dataModel.currentSettlement.overrideEnabled = true
             notificationCenter.post(Notification(name: .didToggleOverride, object: nil))
+            print("Triggering override on")
+            self.overrideSwitchState = true
         } else {
-            mySettlement!.overrideEnabled = false
+            dataModel.currentSettlement.overrideEnabled = false
             notificationCenter.post(Notification(name: .didToggleOverride, object: nil))
+            self.overrideSwitchState = false
         }
     }
     func showResetAlert() {
-        let alert = UIAlertController(title: "Reset settlement \(mySettlement!.name)?", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Reset settlement \(dataModel.currentSettlement.name)?", message: "", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Reset", style: .default, handler:  { (UIAlertAction) in
-            self.mySettlement!.initializeDictionaries()
+            self.dataModel.currentSettlement.initializeDictionaries()
+            self.dataModel.writeData()
         }))
         
         self.present(alert, animated: true, completion: nil)

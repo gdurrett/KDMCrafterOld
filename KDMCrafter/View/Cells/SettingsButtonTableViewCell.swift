@@ -1,17 +1,27 @@
 //
-//  SettingsTableViewCell.swift
+//  SettingsButtonTableViewCell.swift
 //  KDMCrafter
 //
-//  Created by Greg Durrett on 4/4/19.
+//  Created by Greg Durrett on 10/8/19.
 //  Copyright © 2019 AppHazard Productions. All rights reserved.
 //
 
 import UIKit
 
-class SettingsTableViewCell: UITableViewCell {
+protocol SettingsButtonTableViewCellDelegate: class {
+    func tappedResetButton(cell: SettingsButtonTableViewCell)
+}
 
-    @IBOutlet weak var view: UIView!
-    @IBOutlet weak var settingNameLabel: UILabel!
+class SettingsButtonTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var settingsNameLabelOutlet: UILabel!
+    @IBOutlet weak var settingsResetButtonOutlet: UIButton!
+    @IBAction func settingsResetButtonAction(_ sender: Any) {
+        cellDelegate?.tappedResetButton(cell: self)
+        print("Tapped?")
+    }
+    
+    weak var cellDelegate: SettingsButtonTableViewCellDelegate?
     
     static var nib:UINib {
         return UINib(nibName: identifier, bundle: nil)

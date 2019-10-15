@@ -8,14 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		FB09C5502231CA7A00CAA684 /* GearDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB09C54F2231CA7A00CAA684 /* GearDescription.swift */; };
+		FB11E44B234D51FA00CAA684 /* SettingsButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB11E44A234D51FA00CAA684 /* SettingsButtonTableViewCell.xib */; };
+		FB11E44D234D5B5900CAA684 /* SettingsButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11E44C234D5B5900CAA684 /* SettingsButtonTableViewCell.swift */; };
 		FB1309F621CD687D00CAA684 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F521CD687D00CAA684 /* Location.swift */; };
 		FB1309F821CDA5FE00CAA684 /* Innovation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1309F721CDA5FE00CAA684 /* Innovation.swift */; };
 		FB2AB1B3231477AB00CAA684 /* FilterResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2AB1B2231477AB00CAA684 /* FilterResourceViewController.swift */; };
 		FB2AB1B723147F7A00CAA684 /* ResourceTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2AB1B623147F7A00CAA684 /* ResourceTypeCell.swift */; };
 		FB2AB1B92315CB4D00CAA684 /* ResourceTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB2AB1B82315CB4D00CAA684 /* ResourceTypeCell.xib */; };
 		FB2B42A2221CD5B200CAA684 /* SpendResourcesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */; };
-		FB319EFC225681B500CAA684 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB319EFB225681B500CAA684 /* SettingsTableViewCell.swift */; };
-		FB319EFE225681C800CAA684 /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB319EFD225681C800CAA684 /* SettingsTableViewCell.xib */; };
+		FB319EFC225681B500CAA684 /* SettingsSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB319EFB225681B500CAA684 /* SettingsSwitchTableViewCell.swift */; };
+		FB319EFE225681C800CAA684 /* SettingsSwitchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB319EFD225681C800CAA684 /* SettingsSwitchTableViewCell.xib */; };
 		FB319F002256919200CAA684 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB319EFF2256919200CAA684 /* SettingsViewController.swift */; };
 		FB53868D231882DD00CAA684 /* FilterGearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB53868C231882DD00CAA684 /* FilterGearViewController.swift */; };
 		FB5930B3222701AB00CAA684 /* CraftGearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */; };
@@ -28,7 +30,6 @@
 		FB5930C6222F401F00CAA684 /* InnovationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5930C5222F401F00CAA684 /* InnovationTableViewCell.swift */; };
 		FB5930C8222F404F00CAA684 /* InnovationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB5930C7222F404E00CAA684 /* InnovationTableViewCell.xib */; };
 		FB5D9F18223192CA00CAA684 /* CraftGearDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */; };
-		FBB85B242285E9EC00CAA684 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB85B232285E9EC00CAA684 /* MainViewController.swift */; };
 		FBBD1AD322396C8400CAA684 /* GearRequirementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBBD1AD222396C8400CAA684 /* GearRequirementTableViewCell.swift */; };
 		FBBD1AD522396CA000CAA684 /* GearRequirementTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBBD1AD422396CA000CAA684 /* GearRequirementTableViewCell.xib */; };
 		FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEA749A21FB7C2800CAA684 /* ResourceTableViewCell.swift */; };
@@ -58,6 +59,8 @@
 /* Begin PBXFileReference section */
 		7B409FD5E70A0412F246B420 /* Pods_KDMCrafter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KDMCrafter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB09C54F2231CA7A00CAA684 /* GearDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearDescription.swift; sourceTree = "<group>"; };
+		FB11E44A234D51FA00CAA684 /* SettingsButtonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsButtonTableViewCell.xib; sourceTree = "<group>"; };
+		FB11E44C234D5B5900CAA684 /* SettingsButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsButtonTableViewCell.swift; sourceTree = "<group>"; };
 		FB1309F321CD66D100CAA684 /* Gear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gear.swift; sourceTree = "<group>"; };
 		FB1309F521CD687D00CAA684 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		FB1309F721CDA5FE00CAA684 /* Innovation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Innovation.swift; sourceTree = "<group>"; };
@@ -65,8 +68,8 @@
 		FB2AB1B623147F7A00CAA684 /* ResourceTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceTypeCell.swift; sourceTree = "<group>"; };
 		FB2AB1B82315CB4D00CAA684 /* ResourceTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceTypeCell.xib; sourceTree = "<group>"; };
 		FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendResourcesViewController.swift; sourceTree = "<group>"; };
-		FB319EFB225681B500CAA684 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
-		FB319EFD225681C800CAA684 /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
+		FB319EFB225681B500CAA684 /* SettingsSwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSwitchTableViewCell.swift; sourceTree = "<group>"; };
+		FB319EFD225681C800CAA684 /* SettingsSwitchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsSwitchTableViewCell.xib; sourceTree = "<group>"; };
 		FB319EFF2256919200CAA684 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		FB53868C231882DD00CAA684 /* FilterGearViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterGearViewController.swift; sourceTree = "<group>"; };
 		FB5930B2222701AB00CAA684 /* CraftGearViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftGearViewController.swift; sourceTree = "<group>"; };
@@ -77,7 +80,6 @@
 		FB5930C5222F401F00CAA684 /* InnovationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnovationTableViewCell.swift; sourceTree = "<group>"; };
 		FB5930C7222F404E00CAA684 /* InnovationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InnovationTableViewCell.xib; sourceTree = "<group>"; };
 		FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CraftGearDetailViewController.swift; sourceTree = "<group>"; };
-		FBB85B232285E9EC00CAA684 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FBBD1AD222396C8400CAA684 /* GearRequirementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GearRequirementTableViewCell.swift; sourceTree = "<group>"; };
 		FBBD1AD422396CA000CAA684 /* GearRequirementTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GearRequirementTableViewCell.xib; sourceTree = "<group>"; };
 		FBCA21CD22F0B8A100CAA684 /* KDMCrafter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KDMCrafter.entitlements; sourceTree = "<group>"; };
@@ -134,7 +136,6 @@
 				FB5D9F17223192CA00CAA684 /* CraftGearDetailViewController.swift */,
 				FB2AB1B2231477AB00CAA684 /* FilterResourceViewController.swift */,
 				FB53868C231882DD00CAA684 /* FilterGearViewController.swift */,
-				FBB85B232285E9EC00CAA684 /* MainViewController.swift */,
 				FBFD694321C43BA200CAA684 /* ManageResourcesViewController.swift */,
 				FB319EFF2256919200CAA684 /* SettingsViewController.swift */,
 				FB2B42A1221CD5B200CAA684 /* SpendResourcesViewController.swift */,
@@ -164,10 +165,12 @@
 				FB5930BE222764C300CAA684 /* GearTableViewCell.xib */,
 				FB5930C5222F401F00CAA684 /* InnovationTableViewCell.swift */,
 				FB5930C7222F404E00CAA684 /* InnovationTableViewCell.xib */,
-				FB319EFB225681B500CAA684 /* SettingsTableViewCell.swift */,
-				FB319EFD225681C800CAA684 /* SettingsTableViewCell.xib */,
+				FB319EFB225681B500CAA684 /* SettingsSwitchTableViewCell.swift */,
+				FB319EFD225681C800CAA684 /* SettingsSwitchTableViewCell.xib */,
 				FB2AB1B623147F7A00CAA684 /* ResourceTypeCell.swift */,
 				FB2AB1B82315CB4D00CAA684 /* ResourceTypeCell.xib */,
+				FB11E44C234D5B5900CAA684 /* SettingsButtonTableViewCell.swift */,
+				FB11E44A234D51FA00CAA684 /* SettingsButtonTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -321,8 +324,9 @@
 				FB2AB1B92315CB4D00CAA684 /* ResourceTypeCell.xib in Resources */,
 				FB5930BF222764C300CAA684 /* GearTableViewCell.xib in Resources */,
 				FBFD694C21C43BA400CAA684 /* LaunchScreen.storyboard in Resources */,
-				FB319EFE225681C800CAA684 /* SettingsTableViewCell.xib in Resources */,
+				FB319EFE225681C800CAA684 /* SettingsSwitchTableViewCell.xib in Resources */,
 				FBEA749D21FB7C9900CAA684 /* ResourceTableViewCell.xib in Resources */,
+				FB11E44B234D51FA00CAA684 /* SettingsButtonTableViewCell.xib in Resources */,
 				FB5930C8222F404F00CAA684 /* InnovationTableViewCell.xib in Resources */,
 				FBFD694921C43BA400CAA684 /* Assets.xcassets in Resources */,
 				FBFD694721C43BA200CAA684 /* Main.storyboard in Resources */,
@@ -345,7 +349,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB5930C6222F401F00CAA684 /* InnovationTableViewCell.swift in Sources */,
-				FBB85B242285E9EC00CAA684 /* MainViewController.swift in Sources */,
 				FB5930C02228C13D00CAA684 /* ManageResourcesViewController.swift in Sources */,
 				FB5930BD222760EE00CAA684 /* GearTableViewCell.swift in Sources */,
 				FB5930BC2227609F00CAA684 /* Gear.swift in Sources */,
@@ -357,12 +360,13 @@
 				FB2AB1B3231477AB00CAA684 /* FilterResourceViewController.swift in Sources */,
 				FB2B42A2221CD5B200CAA684 /* SpendResourcesViewController.swift in Sources */,
 				FBFD694021C43BA200CAA684 /* AppDelegate.swift in Sources */,
-				FB319EFC225681B500CAA684 /* SettingsTableViewCell.swift in Sources */,
+				FB319EFC225681B500CAA684 /* SettingsSwitchTableViewCell.swift in Sources */,
 				FB5930BB2227188F00CAA684 /* CraftBuildValidator.swift in Sources */,
 				FBBD1AD322396C8400CAA684 /* GearRequirementTableViewCell.swift in Sources */,
 				FB319F002256919200CAA684 /* SettingsViewController.swift in Sources */,
 				FBFD695721C458B300CAA684 /* Resource.swift in Sources */,
 				FB5930C4222F3A4E00CAA684 /* AddInnovationViewController.swift in Sources */,
+				FB11E44D234D5B5900CAA684 /* SettingsButtonTableViewCell.swift in Sources */,
 				FB53868D231882DD00CAA684 /* FilterGearViewController.swift in Sources */,
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FB2AB1B723147F7A00CAA684 /* ResourceTypeCell.swift in Sources */,

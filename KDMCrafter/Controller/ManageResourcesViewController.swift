@@ -14,9 +14,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     @IBOutlet weak var tableView: UITableView!
  
     @IBAction func settingsButtonAction(_ sender: Any) {
-        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
-            mainVC.toggleSideMenu(fromViewController: self)
-        }
+        let settingsVC = self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        self.present(settingsVC, animated: true, completion: nil)
     }
     
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
@@ -32,17 +31,8 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     var myStorage: [Resource:Int]?
     var sortedStorage: [(key: Resource, value: Int)]?
     var filteredSortedStorage: [(key: Resource, value: Int)]?
-    var sortedBoneStorage: [(key: Resource, value: Int)]?
-    var filteredSortedBoneStorage: [(key: Resource, value: Int)]?
-    var sortedConsStorage: [(key: Resource, value: Int)]?
-    var filteredSortedConsStorage: [(key: Resource, value: Int)]?
-    var sortedHideStorage: [(key: Resource, value: Int)]?
-    var filteredSortedHideStorage: [(key: Resource, value: Int)]?
-    var sortedOrganStorage: [(key: Resource, value: Int)]?
-    var filteredSortedOrganStorage: [(key: Resource, value: Int)]?
-    
     var filteredResourceType: String?
-
+    
     var filterMenuIsVisible = false
     
     var resourceName: String?
@@ -75,7 +65,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
         
-//        setupSearch()
+        setupSearch()
                 
         setUpMenuButton() // Settings Button leftNav
         setupFilterButton() // Filter Button rightNav
@@ -94,6 +84,9 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         tableView.reloadData()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        dataModel.writeData()
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
             return filteredSortedStorage!.count
@@ -142,23 +135,20 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
     @objc fileprivate func stepperChanged(sender: UIStepper) {
         var selectedResource: Resource?
-        selectedResource = self.sortedStorage![sender.tag].0
+        
+        if isFiltering() {
+            selectedResource = self.filteredSortedStorage![sender.tag].0
+            self.filteredSortedStorage![sender.tag].1 = Int(sender.value)
+        } else {
+            selectedResource = self.sortedStorage![sender.tag].0
+            self.sortedStorage![sender.tag].1 = Int(sender.value)
+        }
         self.myStorage![selectedResource!] = Int(sender.value)
-        self.sortedStorage![sender.tag].1 = Int(sender.value)
         self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(sender.value)
         self.updateResults()
         //self.dataModel.writeData()
     }
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        switch indexPath.section {
-        case 0:
-            //(cell as! ResourceTableViewCell).observation = nil
-            print("")
-        case 1:
-            break
-        default: break
-        }
-    }
+
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
         let label = cell.viewWithTag(tag) as! UILabel
         label.text = name
@@ -184,7 +174,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     
     fileprivate func setupSearch() {
         //Set up searchController stuff
-        //searchController.searchBar.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 44.0)
         searchController.searchBar.delegate = self
         searchController.searchBar.barTintColor = UIColor.white
         searchController.searchBar.placeholder = "Search resource names"
@@ -192,20 +181,17 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         searchController.searchBar.backgroundColor = UIColor.white
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
-        //searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
         searchController.searchBar.searchBarStyle = .default
         searchController.searchBar.showsCancelButton = false
         definesPresentationContext = true
         tableView.tableHeaderView = searchController.searchBar
-        //tableView.tableHeaderView = nil
         searchController.hidesNavigationBarDuringPresentation = false
     }
     
     // Search Controller delegate stuff
-    //func filterContentForSearchText(_ searchText: String, scope: String = "All") {
     func filterContentForSearchText(_ searchText: String) {
-
             filteredSortedStorage = self.sortedStorage!.filter( {(resource: Resource, value:Int) -> Bool in
                 return resource.name.lowercased().contains(searchText.lowercased())
             })
@@ -215,11 +201,13 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         if self.filteredResourceType == "all resource types" {
             self.sortedStorage = self.dataModel.currentSettlement!.resourceStorage.sorted(by: { $0.key.name < $1.key.name })
             self.navigationItem.title = "All Resources"
+            setupFilterButton()
+            addNavBarImage()
         } else {
             let type = convertFilteredTypeToResourceType(typeString: self.filteredResourceType!)
             self.sortedStorage = self.getBasicStorageForType(resourceType: type)
-            //self.navigationItem.title = (self.filteredResourceType!.capitalized + " Resources")
             addNavBarImage()
+            setupFilterButton()
         }
         tableView.reloadData()
     }
@@ -292,14 +280,15 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
 
     func setUpTabBarIcons() {
         if let tabBarVC = self.navigationController?.parent as? UITabBarController {
-            let manageTabItem = tabBarVC.tabBar.items![0]
-            manageTabItem.image = UIImage(named: "icons8-drawstring-bag-24")
-            let craftTabItem = tabBarVC.tabBar.items![1]
+            let craftTabItem = tabBarVC.tabBar.items![0]
             craftTabItem.image = UIImage(named: "icons8-metal-26")
+            let manageTabItem = tabBarVC.tabBar.items![1]
+            manageTabItem.image = UIImage(named: "icons8-drawstring-bag-24")
             let buildTabItem = tabBarVC.tabBar.items![2]
             buildTabItem.image = UIImage(named: "icons8-home-24")
             let innovateTabItem = tabBarVC.tabBar.items![3]
             innovateTabItem.image = UIImage(named: "icons8-idea-30")
+            tabBarVC.tabBar.unselectedItemTintColor = UIColor.systemGray
         }
     }
     func addNavBarImage() {
@@ -307,28 +296,32 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         var titleString = String()
         switch self.filteredResourceType {
         case "bone":
-            titleString = "Bone Resources"
+            titleString = "Bone Resources (\(countTypes(type: .bone)))"
             image = UIImage(named: "icons8-human-bone-50")!
         case "consumable":
-            titleString = "Consumable Resources"
+            titleString = "Consumable Resources (\(countTypes(type: .consumable)))"
             image = UIImage(named: "icons8-meat-50")!
         case "hide":
-            titleString = "Leather Resources"
+            titleString = "Hide Resources (\(countTypes(type: .hide)))"
             image = UIImage(named: "icons8-leather-50")!
         case "iron":
-            titleString = "Iron Resources"
+            titleString = "Iron Resources (\(countTypes(type: .iron)))"
             image = UIImage(named: "icons8-iron-ore-60")!
         case "organ":
-            titleString = "Organ Resources"
+            titleString = "Organ Resources (\(countTypes(type: .organ)))"
             image = UIImage(named: "icons8-medical-heart-50")!
         case "scrap":
-            titleString = "Scrap Resources"
+            titleString = "Scrap Resources (\(countTypes(type: .scrap)))"
             image = UIImage(named: "icons8-sheet-metal-50")!
         case "vermin":
-            titleString = "Vermin Resources"
+            titleString = "Vermin Resources (\(countTypes(type: .vermin)))"
             image = UIImage(named: "icons8-insect-50")!
         default:
-            titleString = ("All Resources")
+            var count: Int = 0
+            for type in self.sortedStorage! {
+                count += type.value
+            }
+            titleString = "All Resources (\(count))"
         }
         let imageView = UIImageView(image: image)
         let filteredTypeIcon = UIBarButtonItem(customView: imageView)
@@ -346,14 +339,17 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         self.present(filterResourcesVC, animated: true, completion: nil)
         filterResourcesVC.filteredTypeCompletionHandler = { type in
             self.filteredResourceType = type
-//            if type == "All" {
-//                self.navigationItem.title = "All Resources"
-//            } else {
-//                self.navigationItem.title = (type.capitalized + " Resources")
-//            }
             self.updateResults()
             return type
         }
+    }
+    func countTypes(type: resourceType) -> Int {
+        var count: Int = 0
+        let types = self.sortedStorage!.filter { $0.key.type.contains(type) }.filter { $0.value > 0 }
+        for type in types {
+            count += type.value
+        }
+        return count
     }
 }
 

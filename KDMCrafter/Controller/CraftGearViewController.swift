@@ -13,9 +13,8 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var tableView: UITableView!
 
     @IBAction func settingsButtonAction(_ sender: Any) {
-        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
-            mainVC.toggleSideMenu(fromViewController: self)
-        }
+        let settingsVC = self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        self.present(settingsVC, animated: true, completion: nil)
     }
     @IBOutlet weak var settingsButtonOutlet: UIBarButtonItem!
 
@@ -64,7 +63,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     var myLocations: [Location]?
     var numGearRows: Int?
     var currentGear: Gear?
-    
+
     var craftability = Bool()
     var filterMenuIsVisible = false
     
@@ -85,17 +84,18 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         numGearRows = dataModel.currentSettlement!.availableGear.count
         myAvailableGear = mySettlement!.availableGear
         
+        mySettlement?.overrideEnabled = false // Don't want override enabled on load
+        
         filteredGearType = "all gear types" // Set first
         selectedCraftability = "craftable" // Set first
         updateResults() // Call before establishing sortedGear
-        //sortedGear = myAvailableGear!.sorted(by: { $0.name < $1.name })
         sortedCraftableGear = getCraftableGear()
         sortedUncraftableGear = getUncraftableGear()
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
 
         NotificationCenter.default.addObserver(self, selector: #selector(setUpMenuButton), name: .didToggleOverride, object: nil)
-
-        //setupSearch()
+        
+        setupSearch()
         setUpMenuButton()
         setupFilterButton()
                 
@@ -104,7 +104,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
-        mySettlement = dataModel.currentSettlement!
+        //mySettlement = dataModel.currentSettlement!
         myAvailableGear = mySettlement!.availableGear
         myStorage = mySettlement!.resourceStorage
         validator.resources = mySettlement!.resourceStorage
@@ -112,6 +112,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         sortedUncraftableGear = getUncraftableGear()
         setupFilterButton()
         addNavBarImage() //Test
+        updateResults()
         tableView.reloadData()
     }
 
@@ -221,7 +222,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     fileprivate func configureNumCraftableLabel(for cell: UITableViewCell, with gear: Gear, for tag: Int) {
-//        let numCraftable = self.validator.checkCraftability(gear: gear) > gear.qtyAvailable ? gear.qtyAvailable:self.validator.checkCraftability(gear: gear) // If numCraftable greater than qty available, use qtyAvailable
         
         let label = cell.viewWithTag(tag) as! UILabel
         var labelString = String()
@@ -306,15 +306,20 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     fileprivate func setupSearch() {
+        // Customize searchbar placeholder text
+        let defTextAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor: UIColor.black]
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = defTextAttributes as [NSAttributedString.Key : Any]
+        
         //Set up searchController stuff
         searchController.searchBar.delegate = self
         searchController.searchBar.barTintColor = UIColor.white
-        searchController.searchBar.placeholder = "Search gear names"
+        searchController.searchBar.placeholder = "Gear name/affinity (blue right, one green)"
         searchController.searchBar.tintColor = UIColor.black
         searchController.searchBar.backgroundColor = UIColor.white
+        searchController.searchBar.textField?.font = UIFont.systemFont(ofSize: 16)
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
-        //searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
         searchController.searchBar.searchBarStyle = .default
         searchController.searchBar.showsCancelButton = false
@@ -332,7 +337,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         if self.filteredGearType == "all gear types" {
             self.sortedGear = preSortedGear.sorted(by: { $0.name < $1.name })
-            print("Getting all gear that is \(selectedCraftability)")
             self.navigationItem.title = ("All " + selectedCraftability.capitalized + " Gear")
             self.setupFilterButton()
         } else {
@@ -344,12 +348,14 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     // Search Controller delegate stuff
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    func filterContentForSearchText(_ searchText: String) {
             filteredSortedGear = self.sortedGear!.filter( {( gear: Gear) -> Bool in
+                var affinitiesText = [String]()
                 for affinity in gear.description.affinities {
-                    print(String(describing: affinity))
+                    affinitiesText.append(affinity.rawValue.lowercased())
                 }
-                return gear.name.lowercased().contains(searchText.lowercased())
+                return { gear.name.lowercased().contains(searchText.lowercased()) || affinitiesText.contains(searchText.lowercased()) }()
+
             })
         tableView.reloadData()
     }
@@ -358,8 +364,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         return searchController.searchBar.text?.isEmpty ?? true
     }
     func isFiltering() -> Bool {
-        let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
-        return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
+        return searchController.isActive && !searchBarIsEmpty()
     }
     func getGearForType(gearType: gearType, craftability: String) -> [Gear] {
         self.filteredGear = myAvailableGear!.filter { $0.description.type == gearType }
@@ -397,6 +402,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
+        print("Enabled? \(mySettlement?.overrideEnabled)")
         if mySettlement!.overrideEnabled {
             menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
         } else {
@@ -480,7 +486,7 @@ extension CraftGearViewController: UISearchResultsUpdating {
 extension CraftGearViewController: UISearchBarDelegate {
     // MARK: - UISearchBar Delegate
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+        filterContentForSearchText(searchBar.text!)
     }
 }
 

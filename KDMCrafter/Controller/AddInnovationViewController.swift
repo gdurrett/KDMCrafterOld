@@ -14,9 +14,8 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     @IBOutlet weak var tableView: UITableView!
     
     @IBAction func settingsButtonAction(_ sender: Any) {
-        if let mainVC = self.navigationController?.tabBarController?.parent as? MainViewController {
-            mainVC.toggleSideMenu(fromViewController: self)
-        }
+        let settingsVC = self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        self.present(settingsVC, animated: true, completion: nil)
     }
     let dataModel = DataModel.sharedInstance
     
