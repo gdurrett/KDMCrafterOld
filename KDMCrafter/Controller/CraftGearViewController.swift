@@ -402,7 +402,6 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
-        print("Enabled? \(mySettlement?.overrideEnabled)")
         if mySettlement!.overrideEnabled {
             menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
         } else {

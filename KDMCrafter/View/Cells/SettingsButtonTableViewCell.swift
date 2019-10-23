@@ -18,7 +18,6 @@ class SettingsButtonTableViewCell: UITableViewCell {
     @IBOutlet weak var settingsResetButtonOutlet: UIButton!
     @IBAction func settingsResetButtonAction(_ sender: Any) {
         cellDelegate?.tappedResetButton(cell: self)
-        print("Tapped?")
     }
     
     weak var cellDelegate: SettingsButtonTableViewCellDelegate?

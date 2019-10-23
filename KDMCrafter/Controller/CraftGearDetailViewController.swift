@@ -468,7 +468,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             } else {
                 self.mySettlement!.gearCraftedDict[gear]! += 1
             }
-            print("In here now?")
             self.configureCraftButton()
             self.configureArchiveButton()
             self.configureNumAvailableLabel()

@@ -88,7 +88,6 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         if overrideSwitch!.isOn {
             dataModel.currentSettlement.overrideEnabled = true
             notificationCenter.post(Notification(name: .didToggleOverride, object: nil))
-            print("Triggering override on")
             self.overrideSwitchState = true
         } else {
             dataModel.currentSettlement.overrideEnabled = false

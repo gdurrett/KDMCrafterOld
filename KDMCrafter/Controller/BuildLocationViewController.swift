@@ -123,9 +123,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return " Build Locations"
-//    }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
@@ -147,6 +144,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         button.setTitle(status, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 5
+        
         if location.name == "Lantern Hoard" && mySettlement!.locationsBuiltDict[location] == false {
             button.setTitle("Build", for: .normal)
             button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
@@ -200,19 +198,15 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             if dict == [:] && location.innovationRequirement != nil {
                 missingResourcesString = "Missing: \(location.innovationRequirement!.name)"
             } else if dict == [:] {
-                if location.name == "Barber Surgeon" { print("First one") }
                 missingResourcesString = "Missing: \(location.locationRequirement)"
             } else if !location.locationRequirement.contains("Special") &&
                 builtLocationNames.contains(location.locationRequirement) {
-                if location.name == "Barber Surgeon" { print("second one") }
                 missingResourcesString = "Missing: \(dict)"
             } else {
                 if location.innovationRequirement != nil && location.locationRequirement != "" {
-                    if location.name == "Barber Surgeon" { print("Third one: \(location.locationRequirement)") }
                     missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(location.locationRequirement), \(dict)"
                 } else if location.innovationRequirement != nil &&
                     mySettlement!.innovationsAddedDict[location.innovationRequirement!] != true {
-                    if location.name == "Barber Surgeon" { print("Fourth one: \(location.locationRequirement)") }
                     missingResourcesString = "Missing: \(location.innovationRequirement!.name), \(dict)"
                 } else {
                     if location.locationRequirement == "" {
@@ -223,7 +217,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
                 }
             }
         } else {
-            if location.name == "Barber Surgeon" { print("Fifth one") }
             missingResourcesString = location.locationRequirement
         }
         return missingResourcesString
@@ -231,7 +224,7 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
     
     func tappedBuildButton(cell: LocationTableViewCell) {
         let location = myLocations![cell.tag]
-        if (location.locationRequirement.contains("Special") && mySettlement!.locationsBuiltDict[location] == false) || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
+        if ((location.locationRequirement.contains("Special") || location.name == "Barber Surgeon") && mySettlement!.locationsBuiltDict[location] == false) || (mySettlement!.overrideEnabled == true && validator.isBuildable(locations: myLocations!, location: location) == true) {
             showAlert(for: location, action: .buildSpecial)
         } else if validator.isBuildable(locations: myLocations!, location: location) {
             showAlert(for: location, action: .build)

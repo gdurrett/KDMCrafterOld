@@ -8,8 +8,15 @@
 
 import UIKit
 
-class AddInnovationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, InnovationTableViewCellDelegate {
+enum innovationAction: String {
+    case add = "Add"
+    case addSpecial = "Add Special"
+    case archive = "Archive"
+}
+
+class AddInnovationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, InnovationTableViewCellDelegate, SpendResourcesVCDelegate {
     
+    @IBOutlet weak var tableViewTopConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -17,14 +24,20 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         let settingsVC = self.storyboard?.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
         self.present(settingsVC, animated: true, completion: nil)
     }
+    @IBOutlet weak var innovateStatusLabel: UILabel!
+    
     let dataModel = DataModel.sharedInstance
     
     var mySettlement: Settlement?
     var myInnovations: [Innovation]?
+    var myStorage: [Resource:Int]?
+    var sortedStorage: [(key: Resource, value: Int)]?
+    var currentInnovation: Innovation?
     var numInnovationRows: Int?
-    
+    var validator: CraftBuildValidator?
     var keyStore: NSUbiquitousKeyValueStore?
-    
+    var missingString = ""
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -35,7 +48,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.separatorInset = UIEdgeInsets.zero
         
         mySettlement = dataModel.currentSettlement!
+        myStorage = mySettlement!.resourceStorage
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name })
         myInnovations = mySettlement!.availableInnovations
+        validator = CraftBuildValidator(settlement: mySettlement!)
         
         numInnovationRows = myInnovations!.count
         
@@ -51,6 +67,7 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
 
     override func viewWillAppear(_ animated: Bool) {
         myInnovations = mySettlement!.availableInnovations
+        myStorage = mySettlement!.resourceStorage
         tableView.reloadData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -65,17 +82,45 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         cell.layoutMargins = UIEdgeInsets.zero
         
         var innoStatusString = String()
+        var innoStatus = false
         let innovation = self.myInnovations![indexPath.row]
         let innovationName = innovation.name
         
-        if mySettlement!.innovationsAddedDict[innovation] == false {
+        if mySettlement!.overrideEnabled && mySettlement!.innovationsAddedDict[innovation] == false {
             innoStatusString = "Add"
-        } else {
+            innoStatus = true
+            tableViewTopConstraint.constant = 0
+        } else if mySettlement!.innovationsAddedDict[innovation] == false {
+            let result = validator?.canWeInnovate(settlement: mySettlement!)
+            missingString = ""
+            innoStatusString = "Add"
+            if result!.0 == true {
+                innoStatus = true
+                innovateStatusLabel.text = ("No Missing Resources")
+                innovateStatusLabel.textColor = UIColor.systemGreen
+                tableViewTopConstraint.constant = 0
+            } else {
+                for type in result!.2 {
+                    if result!.2.count == 1 || type == result!.2.last {
+                        missingString.append(type.rawValue)
+                    } else {
+                        missingString.append("\(type.rawValue), ")
+                    }
+                }
+                innovateStatusLabel.text = ("Missing: \(missingString)")
+                innovateStatusLabel.textColor = UIColor.systemRed
+                tableViewTopConstraint.constant = 50
+                innoStatus = false
+            }
+        } else if innovationName != "Other Innovation" {
             innoStatusString = "Archive"
+            innoStatus = false
+        } else { // For other Innovation
+            innoStatusString = "Add"
+            innoStatus = false
         }
-        
         configureTitle(for: cell, with: innovationName, for: 4500)
-        configureAddInnovationButton(for: cell, with: innoStatusString, with: 5000, for: innovation)
+        configureAddInnovationButton(for: cell, with: innoStatus, with: innoStatusString, with: 5000, for: innovation)
         return cell
     }
     // Helper functions
@@ -84,31 +129,34 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         label.text = name
         
     }
-    fileprivate func configureAddInnovationButton(for cell: UITableViewCell, with status: String, with tag: Int, for innovation: Innovation) {
+    fileprivate func configureAddInnovationButton(for cell: UITableViewCell, with status: Bool, with statusString: String, with tag: Int, for innovation: Innovation) {
         let cell = cell as! InnovationTableViewCell
         let button = cell.addInnovationButton!
         
-        button.setTitle(status, for: .normal)
+        button.setTitle(statusString, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 5
         
-        if status == "Add" {
+        if status == true {
             button.backgroundColor = UIColor(red: 0.3882, green: 0.6078, blue: 0.2549, alpha: 1.0)
+            button.isEnabled = true
+        } else if status == false && statusString == "Archive" {
+            button.backgroundColor = UIColor.systemRed
+            button.isEnabled = true
         } else {
-            button.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            button.backgroundColor = UIColor.systemGray
+            button.isEnabled = false
         }
     
     }
     func tappedAddInnovationButton(cell: InnovationTableViewCell) {
         let innovation = myInnovations![cell.tag]
-        let key = innovation.name
-        if mySettlement!.innovationsAddedDict[innovation] == false {
-            mySettlement!.innovationsAddedDict[innovation] = true
-            // KVS test
-            keyStore?.set(true, forKey: key)
+        if mySettlement!.innovationsAddedDict[innovation] == false && mySettlement!.overrideEnabled == true {
+            showAlert(for: innovation, action: .addSpecial)
+        } else if mySettlement!.innovationsAddedDict[innovation] == false {
+            showAlert(for: innovation, action: .add)
         } else {
-            mySettlement!.innovationsAddedDict[innovation] = false
-            keyStore?.set(false, forKey: key)
+            showAlert(for: innovation, action: .archive)
         }
         dataModel.writeData()
         tableView.reloadData()
@@ -136,4 +184,66 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     {
         print("KVS updated!")
     }
+    func showAlert(for innovation: Innovation, action: innovationAction) {
+        let alert = UIAlertController(title: "\(action.rawValue) \(innovation.name)?", message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        if action == .archive {
+            alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
+                self.mySettlement!.innovationsAddedDict[innovation] = false
+                self.tableView.reloadData()
+                self.dataModel.writeData()
+            }))
+        } else if action == .add {
+            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (UIAlertAction) in
+                self.spendResources(for: innovation)
+            }))
+        } else if action == .addSpecial {
+            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (UIAlertAction) in
+                if innovation.name != "Other Innovation" {
+                    self.mySettlement!.innovationsAddedDict[innovation] = true
+                }
+                self.dataModel.writeData()
+                self.tableView.reloadData()
+            }))
+        }
+
+        self.present(alert, animated: true, completion: nil)
+    }
+    fileprivate func spendResources(for innovation: Innovation) {
+        let requiredTypes: [resourceType] = [.bone, .endeavor, .hide, .organ]
+        var spendableResources = [Resource:Int]()
+        validator!.resources = mySettlement!.resourceStorage // Update validator here?
+
+        let spendResourcesVC = self.storyboard?.instantiateViewController(withIdentifier: "spendResourcesVC") as! SpendResourcesViewController
+        
+        for resource in myStorage!.keys {
+            if myStorage![resource]! > 0 {
+                for type in resource.type {
+                    if requiredTypes.contains(type) {
+                        spendableResources[resource] = myStorage![resource]! //assign value
+                        break
+                    }
+                }
+            }
+        }
+        spendResourcesVC.spendableResources = spendableResources
+        spendResourcesVC.requiredResourceTypes = [.bone:1, .endeavor:1, .hide:1, .organ:1] //don't need resources per se
+
+        self.currentInnovation = innovation
+        spendResourcesVC.delegate = self
+        
+        self.present(spendResourcesVC, animated: true, completion: nil)
+    }
+    func updateStorage(with spentResources: [Resource : Int]) {
+        for (resource, qty) in spentResources {
+            mySettlement!.resourceStorage[resource]! -= qty
+            //myStorage![resource]! -= qty
+        }
+        sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
+        validator!.resources = mySettlement!.resourceStorage // Update validator here?
+        if currentInnovation!.name != "Other Innovation" {         mySettlement!.innovationsAddedDict[currentInnovation!] = true } // Don't set to true if other
+        dataModel.writeData()
+        tableView.reloadData()
+    }
+    
 }

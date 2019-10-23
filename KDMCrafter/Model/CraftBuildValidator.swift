@@ -100,7 +100,7 @@ public class CraftBuildValidator {
     }
     func getMissingLocationResourceRequirements(location: Location) -> [String:Int] {
         var myDict = [String:Int]()
-        let resourceRequirements = location.resourceRequirements
+        let resourceRequirements = location.resourceRequirements.sorted(by: { $0.key.rawValue < $1.key.rawValue } )
         if resourceRequirements.count != 0 {
             for (type, qty) in resourceRequirements {
                 let typeCount = getTypeCount(type: type, resources: resources)
@@ -161,7 +161,6 @@ public class CraftBuildValidator {
         } else {
             resourceRequirementsMet = true
         }
-        if location.name == "Barber Surgeon" { print(resourceRequirementsMet)}
         return resourceRequirementsMet
     }
     func isLocationRequirementMet(locations: [Location], location: Location) -> Bool {
@@ -172,7 +171,6 @@ public class CraftBuildValidator {
             
             let completedInnovations = settlement!.innovationsAddedDict
             if completedInnovations[location.innovationRequirement!] == true {
-                if location.name == "Barber Surgeon" { print("Should be here") }
                 locationRequirementMet = true
             } else {
                 locationRequirementMet = false
@@ -286,42 +284,42 @@ public class CraftBuildValidator {
             reduce = true
         }
         if gear.name == "Oxidized Lantern Sword" {
-            print("Available Before: \(availableBasics)")
-            print("PreBasics Before: \(preBasics)")
+//            print("Available Before: \(availableBasics)")
+//            print("PreBasics Before: \(preBasics)")
         }
         if reduce == true {
             while loopCounter <= resourceCountDict.values.reduce(0, +) && availableBasics != [:] {
                 if gear.name == "Oxidized Lantern Sword" {
-                    print("Loop counter: \(loopCounter)")
+//                    print("Loop counter: \(loopCounter)")
                 }
                 let max = availableBasics.map { $1 }.max()!
                 let sum = availableBasics.values.reduce(0, +)
                 if gear.name == "Oxidized Lantern Sword" {
-                    print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
-                    print("PreBasics inside: \(preBasics)")
+//                    print("max:\(max), sum: \(sum), reduce: \(resourceCountDict.values.reduce(0, +))")
+//                    print("PreBasics inside: \(preBasics)")
                 }
 
                 if sum == resourceCountDict.values.reduce(0, +) {
                     if gear.name == "Oxidized Lantern Sword" {
-                        print("Leaving so soon?")
+//                        print("Leaving so soon?")
                     }
                     break
                 }
                 for (type, qty) in availableBasics {
                     if qty == max {
                         if gear.name == "Oxidized Lantern Sword" {
-                            print("Inside: \(type.rawValue) is \(qty)")
+//                            print("Inside: \(type.rawValue) is \(qty)")
                         }
                         if (preBasics[type] != nil) && (preBasics[type]! >= gear.resourceTypeRequirements![type]!) || (availableBasics[type] != nil) && (availableBasics[type]! >= gear.resourceTypeRequirements![type]!) {
                             availableBasics[type]! -= 1
                             if gear.name == "Oxidized Lantern Sword" {
-                                print("Reducing \(type.rawValue)")
+//                                print("Reducing \(type.rawValue)")
                             }
                             break
                         } else if (preBasics[type] != nil) && (qty + preBasics[type]! >= gear.resourceTypeRequirements![type]!) {
                             availableBasics[type]! -= 1
                             if gear.name == "Oxidized Lantern Sword" {
-                                print("Reducing \(type.rawValue)")
+//                                print("Reducing \(type.rawValue)")
                             }
                             break
                         } else {
@@ -329,7 +327,7 @@ public class CraftBuildValidator {
                         }
                     } else {
                         if gear.name == "Oxidized Lantern Sword" {
-                            print("Instead: \(type.rawValue) is \(qty)")
+//                            print("Instead: \(type.rawValue) is \(qty)")
                         }
                     }
                 }
@@ -337,7 +335,7 @@ public class CraftBuildValidator {
             }
         }
         if gear.name == "Oxidized Lantern Sword" {
-            print("Basics now: \(availableBasics)")
+//            print("Basics now: \(availableBasics)")
         }
         // Now get basic types and add to remaining multis (availableBasics)
         let postBasics = settlement!.resourceStorage.filter { $0.key.kind == .basic }
@@ -347,7 +345,7 @@ public class CraftBuildValidator {
                 for type in resource.type {
                     if gear.resourceTypeRequirements!.keys.contains(type) {
                         if gear.name == "Oxidized Lantern Sword" {
-                            print("postBasics: \(resource.name) \(type), \(qty)")
+//                            print("postBasics: \(resource.name) \(type), \(qty)")
                         }
                         if qty > 0 {
                             if availableBasics[type] != nil {
@@ -376,5 +374,65 @@ public class CraftBuildValidator {
             returnValue = true
         }
         return (availableSpecials, availableBasics, returnValue)
+    }
+    func canWeInnovate(settlement: Settlement) -> (Bool, [Resource:Int], [resourceType]) {
+        var weCan = false
+        var haveEndeavor: Bool = false
+        var haveBone: Bool = false
+        var haveHide: Bool = false
+        var haveOrgan: Bool = false
+        let requiredTypes: [resourceType] = [.bone, .endeavor, .hide, .organ]
+        var spendableResources = [Resource:Int]()
+        var missingResourceTypes = [resourceType]()
+        let availableResources = settlement.resourceStorage.filter { $0.value > 0 }
+        
+        for (resource, qty) in availableResources.sorted(by: { $0.key.name > $1.key.name }) {
+            for _ in 1...qty {
+                if !(haveEndeavor && haveHide && haveOrgan && haveBone) {
+                    if !haveEndeavor && resource.type.contains(.endeavor) {
+                        haveEndeavor = true
+                        continue
+                    }
+                    if !haveBone && resource.type.contains(.bone) {
+                        haveBone = true
+                        continue
+                    }
+                    if !haveHide && resource.type.contains(.hide) {
+                        haveHide = true
+                        continue
+                    }
+                    if !haveOrgan && resource.type.contains(.organ) {
+                        haveOrgan = true
+                        continue
+                    }
+                }
+            }
+            if (haveEndeavor && haveHide && haveOrgan && haveBone) {
+                weCan = true
+                break
+            }
+        }
+
+        if weCan {
+            for (resource, qty) in availableResources {
+                if resource.type.contains(where: requiredTypes.contains) {
+                    spendableResources[resource] = qty
+                }
+            }
+        } else {
+            if !haveBone {
+                missingResourceTypes.append(.bone)
+            }
+            if !haveEndeavor {
+                missingResourceTypes.append(.endeavor)
+            }
+            if !haveHide {
+                missingResourceTypes.append(.hide)
+            }
+            if !haveOrgan {
+                missingResourceTypes.append(.organ)
+            }
+        }
+        return (weCan, spendableResources, missingResourceTypes)
     }
 }

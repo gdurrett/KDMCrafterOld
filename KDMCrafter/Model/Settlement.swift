@@ -83,7 +83,7 @@ class Settlement: Codable, Equatable {
     var availableInnovations = [Innovation]()
     var innovationsAddedDict = [Innovation:Bool]()
     var overrideEnabled = false
-    
+
     //var keyStore = DataModel.sharedInstance.keyStore
     
     init(name: String) {
@@ -107,6 +107,8 @@ class Settlement: Codable, Equatable {
         availableInnovations.append(pottery)
         let scrapSmelting = Innovation(name: "Scrap Smelting")
         availableInnovations.append(scrapSmelting)
+        let innovateAction = Innovation(name: "Other Innovation")
+        availableInnovations.append(innovateAction)
         
         let barberSurgeon = Location(name: "Barber Surgeon", locationRequirement: "Defeat L2 Screaming Antelope with Pottery innovated", resourceRequirement: [:], innovationRequirement: pottery) // Allow toggle, but pop up message confirming requirement met
         allLocations.append(barberSurgeon)
