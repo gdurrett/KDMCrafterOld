@@ -14,23 +14,41 @@ class DataModel {
     static var sharedInstance = DataModel()
     var currentSettlement: Settlement!
     var observation: NSKeyValueObservation?
-    var pathURL: URL
+//    var pathURL: URL
     var saveData = Data()
     
     var keyStore = NSUbiquitousKeyValueStore()
+    let defaults = UserDefaults.standard
+    var decodedSettlement: Settlement?
     
-
     private init() {
-        pathURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Settlement.plist")
-        let xml = FileManager.default.contents(atPath: pathURL.path)
-        if xml != nil {
-            let _currentSettlement = try? PropertyListDecoder().decode(Settlement.self, from: xml!)
-            currentSettlement = _currentSettlement!
-            print(pathURL)
+        
+        if FileManager.default.ubiquityIdentityToken != nil {
+            Zephyr.addKeysToBeMonitored(keys: ["settlement"])
+            Zephyr.debugEnabled = false
+            Zephyr.sync(keys: ["settlement"]) // See if we can get existing defaults from cloud for new device
+            let data = defaults.value(forKey: "settlement") as! Data
+                            do {
+                let settlementData = try PropertyListDecoder().decode(Settlement.self, from: data)
+                currentSettlement = settlementData
+            } catch {
+                print("Couldn't create settlementData: \(error)")
+            }
         } else {
-            print("Couldn't find \(pathURL)")
-            currentSettlement = Settlement(name: "Death's Respite")
+            if defaults.value(forKey: "settlement") == nil {
+                currentSettlement = Settlement(name: "Death's Respite")
+            } else {
+                let data = defaults.value(forKey: "settlement") as! Data
+                do {
+                    let settlementData = try PropertyListDecoder().decode(Settlement.self, from: data)
+                    currentSettlement = settlementData
+                } catch {
+                    print("Couldn't create settlementData: \(error)")
+                }
+            }
         }
+        // KVS Notification Center Setup
+        NotificationCenter.default.addObserver(self, selector: #selector(onUbiquitousKeyValueStoreDidChangeExternally(notification:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: keyStore)
     }
 
     func writeData() {
@@ -40,14 +58,14 @@ class DataModel {
         
         do {
             let data = try encoder.encode(currentSettlement)
-            try data.write(to: path)
-            dump(path)
+            defaults.set(data, forKey: "settlement")
         } catch {
             print(error)
         }
-        // Test KVS cloud storage
-        keyStore.set(currentSettlement.name, forKey: "settlementName")
-        keyStore.synchronize()
+    }
+    @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
+    {
+        print("KVS updated!")
     }
 }
 extension NSMutableAttributedString {

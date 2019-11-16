@@ -37,7 +37,7 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
     var validator: CraftBuildValidator?
     var keyStore: NSUbiquitousKeyValueStore?
     var missingString = ""
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -60,9 +60,9 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         setUpMenuButton()
         navigationItem.title = "Add Innovations"
         
-        keyStore = dataModel.keyStore
-        // KVS Notification Center Setup
-        NotificationCenter.default.addObserver(self, selector: #selector(onUbiquitousKeyValueStoreDidChangeExternally(notification:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: DataModel.sharedInstance.keyStore)
+//        // KVS Notification Center Setup
+//        NotificationCenter.default.addObserver(self, selector: #selector(onUbiquitousKeyValueStoreDidChangeExternally(notification:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: DataModel.sharedInstance.keyStore)
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -158,9 +158,8 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         } else {
             showAlert(for: innovation, action: .archive)
         }
-        dataModel.writeData()
+        //dataModel.writeData()
         tableView.reloadData()
-        keyStore!.synchronize()
     }
     @objc func setUpMenuButton(){
         let menuBtn = UIButton(type: .custom)
@@ -180,10 +179,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         self.navigationItem.leftBarButtonItem = menuBarItem
         tableView.reloadData()
     }
-    @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
-    {
-        print("KVS updated!")
-    }
+//    @objc func onUbiquitousKeyValueStoreDidChangeExternally(notification:Notification)
+//    {
+//        print("KVS updated!")
+//    }
     func showAlert(for innovation: Innovation, action: innovationAction) {
         let alert = UIAlertController(title: "\(action.rawValue) \(innovation.name)?", message: "", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
@@ -191,7 +190,6 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
             alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
                 self.mySettlement!.innovationsAddedDict[innovation] = false
                 self.tableView.reloadData()
-                self.dataModel.writeData()
             }))
         } else if action == .add {
             alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { (UIAlertAction) in
@@ -202,7 +200,6 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
                 if innovation.name != "Other Innovation" {
                     self.mySettlement!.innovationsAddedDict[innovation] = true
                 }
-                self.dataModel.writeData()
                 self.tableView.reloadData()
             }))
         }
@@ -242,8 +239,10 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         validator!.resources = mySettlement!.resourceStorage // Update validator here?
         if currentInnovation!.name != "Other Innovation" {         mySettlement!.innovationsAddedDict[currentInnovation!] = true } // Don't set to true if other
-        dataModel.writeData()
         tableView.reloadData()
     }
-    
+    // Test func
+//    func printDict() {
+//        print(dataModel.keyStore.dictionary(forKey: "resourceStorage"))
+//    }
 }

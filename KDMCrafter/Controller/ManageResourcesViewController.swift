@@ -85,7 +85,7 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        dataModel.writeData()
+        //dataModel.writeData()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
@@ -146,7 +146,6 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         self.myStorage![selectedResource!] = Int(sender.value)
         self.dataModel.currentSettlement!.resourceStorage[selectedResource!] = Int(sender.value)
         self.updateResults()
-        //self.dataModel.writeData()
     }
 
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {

@@ -231,7 +231,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         } else if mySettlement!.locationsBuiltDict[location] == true {
             showAlert(for: location, action: .archive)
         }
-        dataModel.writeData()
         tableView.reloadData()
     }
     fileprivate func spendResources(for location: Location) {
@@ -269,7 +268,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
         sortedStorage = myStorage!.sorted(by: { $0.key.name < $1.key.name }) //Update here?
         validator.resources = mySettlement!.resourceStorage // Update validator here?
         mySettlement!.locationsBuiltDict[currentLocation!] = true
-        dataModel.writeData()
         tableView.reloadData()
     }
     @objc func setUpMenuButton(){
@@ -297,7 +295,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             alert.addAction(UIAlertAction(title: "Archive", style: .default, handler: { (UIAlertAction) in
                 self.mySettlement!.locationsBuiltDict[location] = false
                 self.tableView.reloadData()
-                self.dataModel.writeData()
             }))
         } else if action == .build {
             alert.addAction(UIAlertAction(title: "Build", style: .default, handler: { (UIAlertAction) in
@@ -307,7 +304,6 @@ class BuildLocationViewController: UIViewController, UITableViewDelegate, UITabl
             alert.addAction(UIAlertAction(title: "Build", style: .default, handler: { (UIAlertAction) in
                 self.mySettlement!.locationsBuiltDict[location] = true
                 self.tableView.reloadData()
-                self.dataModel.writeData()
             }))
         }
         self.present(alert, animated: true, completion: nil)

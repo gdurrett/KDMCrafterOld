@@ -96,7 +96,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     func showResetAlert() {
-        let alert = UIAlertController(title: "Reset settlement \(dataModel.currentSettlement.name)?", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Reset settlement?", message: "", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Reset", style: .default, handler:  { (UIAlertAction) in
             self.dataModel.currentSettlement.initializeDictionaries()

@@ -44,6 +44,7 @@
 		FBFD695421C4581A00CAA684 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695321C4581A00CAA684 /* DataModel.swift */; };
 		FBFD695721C458B300CAA684 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695621C458B300CAA684 /* Resource.swift */; };
 		FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFD695821C8181F00CAA684 /* Settlement.swift */; };
+		FBFF41B22376292F00CAA684 /* Zephyr.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFF41B12376292F00CAA684 /* Zephyr.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +100,7 @@
 		FBFD695321C4581A00CAA684 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		FBFD695621C458B300CAA684 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		FBFD695821C8181F00CAA684 /* Settlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settlement.swift; sourceTree = "<group>"; };
+		FBFF41B12376292F00CAA684 /* Zephyr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zephyr.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,6 +221,7 @@
 				FB1309F521CD687D00CAA684 /* Location.swift */,
 				FB1309F721CDA5FE00CAA684 /* Innovation.swift */,
 				FB09C54F2231CA7A00CAA684 /* GearDescription.swift */,
+				FBFF41B12376292F00CAA684 /* Zephyr.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -371,6 +374,7 @@
 				FBFD695921C8181F00CAA684 /* Settlement.swift in Sources */,
 				FB2AB1B723147F7A00CAA684 /* ResourceTypeCell.swift in Sources */,
 				FBEA749F220A533000CAA684 /* LocationTableViewCell.swift in Sources */,
+				FBFF41B22376292F00CAA684 /* Zephyr.swift in Sources */,
 				FB5D9F18223192CA00CAA684 /* CraftGearDetailViewController.swift in Sources */,
 				FBFD694221C43BA200CAA684 /* BuildLocationViewController.swift in Sources */,
 				FBEA749B21FB7C2800CAA684 /* ResourceTableViewCell.swift in Sources */,

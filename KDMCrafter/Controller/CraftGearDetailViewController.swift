@@ -442,7 +442,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         configureCraftButton()
         configureArchiveButton()
         configureNumAvailableLabel()
-        dataModel.writeData()
         tableView.reloadData()
     }
     func checkCraftableStatus() {
@@ -471,7 +470,6 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
             self.configureCraftButton()
             self.configureArchiveButton()
             self.configureNumAvailableLabel()
-            self.dataModel.writeData()
         }))
         
         self.present(alert, animated: true, completion: nil)

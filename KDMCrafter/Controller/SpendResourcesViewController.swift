@@ -241,15 +241,12 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
             self.currentResource = key
-            //self.currentQty![key.type] = spentResourceQty
             self.currentStepper = sender
-            print("Way up here, value is: \(sender.value)")
             self.showChoices(self)
         } else {
             self.setSpentTypes(key: key, type: key.type[1], spentResourceQty: 1)
             self.setSpentTypes()
         }
-        print("Up and after, stepper is: \(sender.value)")
         tableView.reloadData()
     }
     fileprivate func configureTitle(for cell: UITableViewCell, with name: String, with tag: Int) {
@@ -276,16 +273,16 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             spentTypesLabel.textColor = UIColor.white
         }
         for (resource, qty) in self.spentResourceTypes {
-            self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
+//            self.spentResources[resource] = Array(qty.values)[0] // Assign spent resources
+            self.spentResources[resource] = Array(qty.values).reduce(0, +) // Assign spent resources
+            //let cobby = Array(qty.values).reduce(0, +)
         }
     }
     fileprivate func setSpentTypes(key: Resource, type: resourceType, spentResourceQty: Int) {
-        print("Spending \(key.name)")
-            self.spentResourceTypes[key] = [type:spentResourceQty]
+        self.spentResourceTypes[key] = [type:spentResourceQty]
     }
     fileprivate func setSpentTypes() {
         let typeVals = Array(self.spentResourceTypes.values)
-        print("typeVals: \(typeVals)")
         self.spentTypesString = spentResourcesString
         for (type, qty ) in self.requiredResourceTypes {
             let spentAmount = typeVals.flatMap{$0}.filter { $0.key == type }.map{ $0.value }.reduce(0,+)
@@ -331,12 +328,8 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
         pickerFrame.delegate = self
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) in
-
-
-            print("Before:\(activeCell.stepperOutlet.value)")
             activeCell.stepperOutlet.value = originalVal // Re-increment stepper value if we cancel out of picker
             activeCell.resourceCountLabel.text = String(Int(originalVal))
-            print("After:\(activeCell.stepperOutlet.value)")
         }))
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) in
@@ -352,11 +345,10 @@ class SpendResourcesViewController: UIViewController, UITableViewDelegate, UITab
             if self.spentResourceTypes[self.currentResource!] == nil {
                 self.spentResourceTypes[self.currentResource!] = [self.selectedType!:0]
             }
-            //self.spentResourceTypes[self.currentResource!] = [self.selectedType!:self.currentQty!]
             self.spentResourceTypes[self.currentResource!]![self.selectedType!] = self.currentQty[self.selectedType!]
-            print("After OK, spentResourceTypes is: \(self.spentResourceTypes)")
-            //self.currentCell!.resourceCountLabel.text = "\(self.stepperVal)"
+
             self.setSpentTypes()
+            
         }))
         self.present(alert,animated: true, completion: nil )
     }
