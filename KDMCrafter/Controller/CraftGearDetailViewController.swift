@@ -75,7 +75,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
     let cellStatusImageChecked = #imageLiteral(resourceName: "icons8-tick-box-100-dark")
     let cellStatusImageUnchecked = #imageLiteral(resourceName: "icons8-unchecked-checkbox-100")
     let cellStatusImageIndeterminate = #imageLiteral(resourceName: "icons8-indeterminate-checkbox-100")
-    let cellStatusImageOverride = #imageLiteral(resourceName: "icons8-settings-filled-50")
+    let cellStatusImageOverride = #imageLiteral(resourceName: "icons8-settings-filled-50-gray")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +108,7 @@ class CraftGearDetailViewController: UIViewController, UITextViewDelegate, UITab
         gearStatsLeftLabel.text = leftStats
         
         gearInfoTextView.attributedText = gear!.description.detailText.attributedString
+        gearInfoTextView.textColor = UIColor.systemGray
 
         affinityLeftLabel.isHidden = true
         affinityTopLabel.isHidden = true

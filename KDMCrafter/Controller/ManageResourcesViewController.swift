@@ -174,10 +174,10 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
     fileprivate func setupSearch() {
         //Set up searchController stuff
         searchController.searchBar.delegate = self
-        searchController.searchBar.barTintColor = UIColor.white
+        searchController.searchBar.barTintColor = UIColor.systemBackground
         searchController.searchBar.placeholder = "Search resource names"
         searchController.searchBar.tintColor = UIColor.black
-        searchController.searchBar.backgroundColor = UIColor.white
+        searchController.searchBar.backgroundColor = UIColor.systemBackground
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -246,9 +246,9 @@ class ManageResourcesViewController: UIViewController, UITableViewDelegate, UITa
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         if mySettlement!.overrideEnabled {
-            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50-gray"), for: .normal)
         } else {
-            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-50-gray"), for: .normal)
         }
         menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
         

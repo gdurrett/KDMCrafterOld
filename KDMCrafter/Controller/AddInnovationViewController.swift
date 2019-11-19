@@ -165,9 +165,9 @@ class AddInnovationViewController: UIViewController, UITableViewDelegate, UITabl
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         if mySettlement!.overrideEnabled {
-            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50-gray"), for: .normal)
         } else {
-            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-50-gray"), for: .normal)
         }
         menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
         

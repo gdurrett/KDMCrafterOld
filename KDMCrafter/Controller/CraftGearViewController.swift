@@ -98,7 +98,7 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         setupSearch()
         setUpMenuButton()
         setupFilterButton()
-                
+        
         navigationItem.title = ("All " + selectedCraftability.capitalized + " Gear")
 
         tableView.reloadData()
@@ -312,10 +312,10 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //Set up searchController stuff
         searchController.searchBar.delegate = self
-        searchController.searchBar.barTintColor = UIColor.white
+        searchController.searchBar.barTintColor = UIColor.systemBackground
         searchController.searchBar.placeholder = "Gear name/affinity (blue right, one green)"
         searchController.searchBar.tintColor = UIColor.black
-        searchController.searchBar.backgroundColor = UIColor.white
+        searchController.searchBar.backgroundColor = UIColor.systemBackground
         searchController.searchBar.textField?.font = UIFont.systemFont(ofSize: 16)
         searchController.searchBar.textField?.backgroundColor = UIColor(red: 0.9686, green: 0.9686, blue: 0.9686, alpha: 1.0)
         searchController.searchResultsUpdater = self
@@ -403,9 +403,9 @@ class CraftGearViewController: UIViewController, UITableViewDelegate, UITableVie
         let menuBtn = UIButton(type: .custom)
         menuBtn.frame = CGRect(x: 0.0, y: 0.0, width: 20, height: 20)
         if mySettlement!.overrideEnabled {
-            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-filled-50-gray"), for: .normal)
         } else {
-            menuBtn.setImage(UIImage(named:"icons8-settings-50"), for: .normal)
+            menuBtn.setImage(UIImage(named:"icons8-settings-50-gray"), for: .normal)
         }
         menuBtn.addTarget(self, action: #selector(self.settingsButtonAction(_:)), for: UIControl.Event.touchUpInside)
         

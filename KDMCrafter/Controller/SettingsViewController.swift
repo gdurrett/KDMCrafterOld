@@ -61,8 +61,8 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
             cell.cellDelegate = self
             cell.settingsNameLabelOutlet.text = "Reset Settlement"
             cell.settingsResetButtonOutlet.setTitle("OK", for: .normal)
-            cell.settingsResetButtonOutlet.tintColor = UIColor.white
-            cell.settingsResetButtonOutlet.backgroundColor = UIColor(red: 0.9373, green: 0.3412, blue: 0, alpha: 1.0)
+            //cell.settingsResetButtonOutlet.tintColor = UIColor.white
+            cell.settingsResetButtonOutlet.backgroundColor = UIColor.systemFill
             cell.settingsResetButtonOutlet.layer.masksToBounds = true
             cell.settingsResetButtonOutlet.layer.cornerRadius = 5
             return cell

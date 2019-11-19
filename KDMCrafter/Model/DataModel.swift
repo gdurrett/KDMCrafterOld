@@ -92,19 +92,20 @@ extension NSAttributedString {
     
     public static func makeWithBold(text: String) -> NSMutableAttributedString {
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold)]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold), .foregroundColor: UIColor.systemYellow]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
     public static func makeWithNormal(text: String) -> NSMutableAttributedString {
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
+//        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular), .foregroundColor: UIColor.systemYellow]
         return NSMutableAttributedString(string: text, attributes:attrs)
     }
     public static func makeWithBoldCenter(text: String) -> NSMutableAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         
-        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold), NSAttributedString.Key.paragraphStyle: paragraphStyle]
+        let attrs = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .bold), NSAttributedString.Key.paragraphStyle: paragraphStyle, .foregroundColor: UIColor.systemYellow]
         return NSMutableAttributedString(string: text, attributes:attrs)
         
     }
